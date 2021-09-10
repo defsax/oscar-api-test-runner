@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-// import axios from "axios";
+import axios from "axios";
 
 import "./css/nav.css";
 import "./css/button.css";
@@ -28,14 +28,33 @@ export default function Nav(props) {
         setUser(user.email);
         setToken(token);
 
-        // axios
-        //   .post("https://kennedy-dev1.gojitech.systems/api/v1/login", {
-        //     token: token,
-        //     // providerNo: "8",
-        //   })
-        //   .then((res) => {
-        //     console.log(res);
-        //   });
+        axios({
+          method: "get",
+          url: "https://kennedy-dev1.gojitech.systems/api/v1/oscarrest/auth",
+          headers: { Accept: "application/json" },
+        }).then((res) => {
+          console.log(res);
+        });
+
+        // axios({
+        //   method: "POST",
+        //   url: "https://kennedy-dev1.gojitech.systems/oscar/ws/services/oauth/initiate",
+        //   headers: { Accept: "application/json" },
+        // })
+        //   .then((response) => response.json())
+        //   .then((response) => console.log(response))
+        //   .catch((err) => console.error(err));
+
+        // axios({
+        //   method: "post",
+        //   url: "http://localhost:5001/oscar-api-test-runner-bf891/us-central1/decodeToken",
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        //   data: { token: token },
+        // }).then((res) => {
+        //   console.log(res);
+        // });
       })
       .catch((error) => {
         // Handle Errors here.

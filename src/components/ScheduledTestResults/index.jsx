@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import "./firebase"; // initialize firebase
+import "../../firebase-config/firebase"; // initialize firebase
 import {
   collection,
   query,

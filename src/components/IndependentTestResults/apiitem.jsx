@@ -28,13 +28,14 @@ export default function ApiItem(props) {
       method: api.method,
       url: currentApi.endpointURL + api.url,
       data: api.body,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
     })
       .then((res) => {
         setResponse(res);
         console.log(res);
+        console.log(token);
       })
       .catch((err) => {
         if (err.response) setResponse(err.response);
@@ -47,7 +48,6 @@ export default function ApiItem(props) {
   }, [api, token]);
 
   const expandContract = useCallback((isExpanded) => {
-    console.log(isExpanded);
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
