@@ -12,9 +12,13 @@ const apiVersion = [
     apitype: "staging",
     endpointURL: "https://kennedy-dev2.gojitech.systems",
   },
+  {
+    apitype: "staging",
+    endpointURL: "https://kennedy-staging1.gojitech.systems",
+  },
 ];
 // switch here to change from dev to staging
-const currentApi = apiVersion[0];
+const currentApi = apiVersion[2];
 
 export default function ApiItem(props) {
   const { api, callBack, token } = props;
@@ -28,9 +32,9 @@ export default function ApiItem(props) {
       method: api.method,
       url: currentApi.endpointURL + api.url,
       data: api.body,
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         setResponse(res);

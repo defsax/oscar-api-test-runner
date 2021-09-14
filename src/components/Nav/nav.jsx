@@ -1,73 +1,79 @@
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import axios from "axios";
+import { getAuth, signOut } from "firebase/auth";
+// import GoogleLogin from "react-google-login";
+
+import Login from "../../auth/login";
 
 import "./css/nav.css";
 import "./css/button.css";
 
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 export default function Nav(props) {
   const [user, setUser] = useState();
   const { setToken } = props;
-  const login = function () {
-    const provider = new GoogleAuthProvider();
-    const auth = getAuth();
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.idToken;
-        // The signed-in user info.
-        const user = result.user;
+  // const gLoginSuccess = (response) => {
+  //   /*
+  //     if (auth2.isSignedIn.get()) {
+  //       var profile = auth2.currentUser.get().getBasicProfile();
+  //       console.log('ID: ' + profile.getId());
+  //       console.log('Full Name: ' + profile.getName());
+  //       console.log('Given Name: ' + profile.getGivenName());
+  //       console.log('Family Name: ' + profile.getFamilyName());
+  //       console.log('Image URL: ' + profile.getImageUrl());
+  //       console.log('Email: ' + profile.getEmail());
+  //     }
+  //   */
+  //   console.log("successful login", response.getBasicProfile().getGivenName());
+  //   // console.log("token before ", token);
+  //   // setToken(response.tokenId);
+  //   // console.log("token after ", token);
+  //   // const currentUser = "lerry";
+  //   const currentUser = response.getBasicProfile().getGivenName();
 
-        console.log("credential:", credential);
-        console.log("token:", token);
-        console.log("user:", user);
-        // console.log(localStorage.getItem("rememberMe"));
-        setUser(user.email);
-        setToken(token);
+  //   axios({
+  //     method: "get",
+  //     url: "https://kennedy-staging1.gojitech.systems/api/v1/oscarrest/providers",
+  //     headers: {
+  //       Accept: "application/json",
+  //     },
+  //   })
+  //     .then((res) => {
+  //       const data = res.data.result;
+  //       try {
+  //         // Extract providerNo for current user
+  //         const providerNo = data.find((provider) => {
+  //           return provider.firstName.toLowerCase() === currentUser;
+  //         }).providerNo;
 
-        axios({
-          method: "get",
-          url: "https://kennedy-dev1.gojitech.systems/api/v1/oscarrest/auth",
-          headers: { Accept: "application/json" },
-        }).then((res) => {
-          console.log(res);
-        });
+  //         axios({
+  //           method: "post",
+  //           url: "https://kennedy-staging1.gojitech.systems/api/v1/login",
+  //           headers: {
+  //             Accept: "application/json",
+  //             Authorization: `Bearer ${response.tokenId}`,
+  //           },
+  //           data: { token: response.tokenId, providerNo: providerNo },
+  //         })
+  //           .then((response) => {
+  //             console.log(response);
+  //             setToken(response.data.profile.jwt);
+  //           })
+  //           .catch((err) => console.error(err));
+  //       } catch (err) {
+  //         console.log("Error loggin in: Provider not found", err);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log("Error fetching providers:", err);
+  //     });
+  // };
 
-        // axios({
-        //   method: "POST",
-        //   url: "https://kennedy-dev1.gojitech.systems/oscar/ws/services/oauth/initiate",
-        //   headers: { Accept: "application/json" },
-        // })
-        //   .then((response) => response.json())
-        //   .then((response) => console.log(response))
-        //   .catch((err) => console.error(err));
-
-        // axios({
-        //   method: "post",
-        //   url: "http://localhost:5001/oscar-api-test-runner-bf891/us-central1/decodeToken",
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        //   data: { token: token },
-        // }).then((res) => {
-        //   console.log(res);
-        // });
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-        console.log(errorCode, errorMessage, email, credential);
-      });
-  };
+  // const gLoginFail = function (error) {
+  //   console.log(error);
+  // };
 
   return (
     <nav>
@@ -80,11 +86,31 @@ export default function Nav(props) {
         </Link>
       </div>
       {user ? (
-        <h1>{user}</h1>
+        <div className="float-right">
+          <h1>{user}</h1>
+          <button
+            className="link-item login-button"
+            onClick={() => {
+              const auth = getAuth();
+              signOut(auth)
+                .then(() => {
+                  // Sign-out successful.
+                  setUser(null);
+                  console.log("Sign out successful.");
+                })
+                .catch((error) => {
+                  // An error happened.
+                  console.log("Error signing out.", error);
+                });
+            }}
+          >
+            <h1>Logout</h1>
+          </button>
+        </div>
       ) : (
-        <button className="link-item login-button" onClick={login}>
-          <h1>Login</h1>
-        </button>
+        <div>
+          <Login setToken={setToken} clientId={googleClientId} />
+        </div>
       )}
     </nav>
   );

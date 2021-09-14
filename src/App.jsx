@@ -7,6 +7,7 @@ import Nav from "./components/Nav/nav";
 
 function App() {
   const [token, setToken] = useState("");
+
   return (
     <div>
       <Router>
