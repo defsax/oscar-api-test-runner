@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { UseSessionProvider } from "react-session-hook";
 
 import ScheduledResults from "./components/ScheduledTestResults";
 import IndependentResults from "./components/IndependentTestResults";
@@ -7,9 +8,11 @@ import Nav from "./components/Nav/nav";
 
 function App() {
   const [token, setToken] = useState("");
+  // const session = useSession();
+  // console.log(session);
 
   return (
-    <div>
+    <UseSessionProvider>
       <Router>
         <Nav setToken={setToken} />
         <Switch>
@@ -21,7 +24,7 @@ function App() {
           />
         </Switch>
       </Router>
-    </div>
+    </UseSessionProvider>
   );
 }
 

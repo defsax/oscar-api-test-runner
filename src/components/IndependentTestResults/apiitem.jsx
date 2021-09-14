@@ -39,7 +39,7 @@ export default function ApiItem(props) {
       .then((res) => {
         setResponse(res);
         console.log(res);
-        console.log(token);
+        // console.log(token);
       })
       .catch((err) => {
         if (err.response) setResponse(err.response);
