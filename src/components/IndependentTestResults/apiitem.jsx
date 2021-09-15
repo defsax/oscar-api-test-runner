@@ -3,25 +3,8 @@ import axios from "axios";
 import StatusBox from "../statusbox";
 import "./css/listitem.css";
 
-const apiVersion = [
-  {
-    apitype: "dev",
-    endpointURL: "https://kennedy-dev1.gojitech.systems",
-  },
-  {
-    apitype: "staging",
-    endpointURL: "https://kennedy-dev2.gojitech.systems",
-  },
-  {
-    apitype: "staging",
-    endpointURL: "https://kennedy-staging1.gojitech.systems",
-  },
-];
-// switch here to change from dev to staging
-const currentApi = apiVersion[2];
-
 export default function ApiItem(props) {
-  const { api, callBack, token, delay } = props;
+  const { api, callBack, token, delay, server } = props;
   const [response, setResponse] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -31,7 +14,7 @@ export default function ApiItem(props) {
     const timer = setTimeout(() => {
       axios({
         method: api.method,
-        url: currentApi.endpointURL + api.url,
+        url: server.endpointURL + api.url,
         data: api.body,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,7 +34,7 @@ export default function ApiItem(props) {
         });
     }, delay * 1000);
     return () => clearTimeout(timer);
-  }, [api, token, delay]);
+  }, [api, token, delay, server]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
@@ -71,9 +54,9 @@ export default function ApiItem(props) {
         }}
       >
         <div className="button-contents">
-          <div className="flex-row-left">
+          <div className="flex-left">
             <h2>
-              <b>({currentApi.apitype})</b>
+              <b>({server.apitype})</b>
             </h2>
             <h2 style={{ marginLeft: ".5rem" }}>{api.url}</h2>
           </div>
@@ -95,7 +78,7 @@ export default function ApiItem(props) {
           </button>
           <div>
             <p>Method: {api.method}</p>
-            <p>URL: {currentApi.endpointURL + api.url}</p>
+            <p>URL: {server.endpointURL + api.url}</p>
             <p>Status: {JSON.stringify(response.status)}</p>
             <p>Data: {JSON.stringify(response.data)}</p>
           </div>

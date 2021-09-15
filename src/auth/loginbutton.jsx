@@ -9,9 +9,6 @@ export default function LoginButton(props) {
   const { clientId, setToken, server } = props;
 
   const session = useSession();
-  // useEffect(() => {
-  //   console.log("session updated", session);
-  // }, [session]);
 
   const loginSuccess = function (response) {
     // if (auth2.isSignedIn.get()) {
@@ -24,7 +21,6 @@ export default function LoginButton(props) {
     //   console.log('Email: ' + profile.getEmail());
     // }
 
-    // console.log(response);
     const currentUser = response.getBasicProfile().getGivenName();
     console.log("successful login", currentUser);
 
@@ -75,7 +71,7 @@ export default function LoginButton(props) {
   };
 
   const loginFail = function (error) {
-    console.log(error);
+    console.log("Login failed", error);
   };
 
   return (

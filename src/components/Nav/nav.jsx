@@ -27,10 +27,10 @@ export default function Nav(props) {
     <nav>
       <div className="float-left">
         <Link to="/" className="link-item">
-          <h1>Test APIs</h1>
+          <h1>Endpoint Tests</h1>
         </Link>
         <Link to="/scheduled" className="link-item">
-          <h1>Scheduled Results</h1>
+          <h1>Scheduled Tests</h1>
         </Link>
       </div>
       {session.isAuthenticated ? (
