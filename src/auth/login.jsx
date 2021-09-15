@@ -10,20 +10,12 @@ export default function Login(props) {
 
   return (
     <div>
-      {/* <UseSessionProvider> */}
-      {/* <LoginButton
-        buttonText={"dev"}
-        clientId={clientId}
-        setToken={setToken}
-        server={server[0]}
-      /> */}
       <LoginButton
         clientId={clientId}
         setToken={setToken}
         session={session}
         server={server[1]}
       />
-      {/* </UseSessionProvider> */}
     </div>
   );
 }

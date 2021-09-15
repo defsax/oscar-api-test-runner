@@ -13,21 +13,17 @@ import "./css/button.css";
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 export default function Nav(props) {
-  // const [user, setUser] = useState();
   const { setToken } = props;
   const session = useSession();
-  // const handleLogin = () => session.setSession({ token: newToken })
-  // const handleLogout = () => session.removeSession()
-  // console.log(session);
 
   useEffect(() => {
-    console.log("nav login", session.isAuthenticated);
-    console.log("token:", session.storage.get().token);
-    console.log("session:", session);
-  }, [session]);
+    // console.log("nav login", session.isAuthenticated);
+    // console.log("token:", session.storage.get().token);
+    // console.log("session:", session);
+    setToken(session.storage.get().token);
+  }, [session, setToken]);
 
   return (
-    // <UseSessionProvider>
     <nav>
       <div className="float-left">
         <Link to="/" className="link-item">
@@ -56,6 +52,5 @@ export default function Nav(props) {
         </div>
       )}
     </nav>
-    // </UseSessionProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { React, useCallback, useRef, useState } from "react";
+import { React, useCallback, useRef, useState, useEffect } from "react";
 import ApiItem from "./apiitem";
 import "./css/button.css";
 import "./css/menu.css";
@@ -103,12 +103,20 @@ export default function IndependentResults(props) {
   const testRefs = useRef([]);
   const expandRefs = useRef([]);
 
+  useEffect(() => {
+    console.log(expandRefs.current.length);
+  }, [expandRefs]);
+
   // useCallback so that component doesn't reload on setCallback updating
-  const setCallback = useCallback((callback) => {
-    // Register all functions by pushing them into our useRef array
-    testRefs.current.push(callback.queryAPI);
-    expandRefs.current.push(callback.expandContract);
-  }, []);
+  const setCallback = useCallback(
+    (callback) => {
+      // Register all functions by pushing them into our useRef array
+      testRefs.current.push(callback.queryAPI);
+      expandRefs.current.push(callback.expandContract);
+      console.log("callback registered.");
+    },
+    [testRefs, expandRefs]
+  );
 
   console.log("App Rerender");
   return (
@@ -124,7 +132,7 @@ export default function IndependentResults(props) {
 
             // Call each function in the useRef array (created in child component)
             testRefs.current.forEach((test) => {
-              test();
+              test(token);
             });
             setExpanded(true);
           }}
@@ -135,6 +143,8 @@ export default function IndependentResults(props) {
         <button
           className={"arrow-button"}
           onClick={() => {
+            console.log("Expand refs length:", expandRefs.current.length);
+
             expanded ? setExpanded(false) : setExpanded(true);
             expandRefs.current.forEach((expand) => {
               expand(expanded);
@@ -145,9 +155,7 @@ export default function IndependentResults(props) {
         </button>
       </div>
       {apis.map((api, i) => {
-        return (
-          <ApiItem key={i} api={api} callBack={setCallback} token={token} />
-        );
+        return <ApiItem key={i} api={api} callBack={setCallback} />;
       })}
     </div>
   );

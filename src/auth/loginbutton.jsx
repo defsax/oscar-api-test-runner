@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import useSession from "react-session-hook";
 
@@ -9,9 +9,9 @@ export default function LoginButton(props) {
   const { clientId, setToken, server } = props;
 
   const session = useSession();
-  useEffect(() => {
-    console.log("session updated", session);
-  }, [session]);
+  // useEffect(() => {
+  //   console.log("session updated", session);
+  // }, [session]);
 
   const loginSuccess = function (response) {
     // if (auth2.isSignedIn.get()) {
@@ -24,14 +24,8 @@ export default function LoginButton(props) {
     //   console.log('Email: ' + profile.getEmail());
     // }
 
-    console.log(response);
-    // const currentUser = "lerry";
+    // console.log(response);
     const currentUser = response.getBasicProfile().getGivenName();
-    // session.removeSession(() => {
-    //   console.log("remove");
-    // });
-    // session.setSession({ token: response });
-    console.log(session);
     console.log("successful login", currentUser);
 
     const createSession = new Promise((resolve, reject) => {
@@ -84,7 +78,6 @@ export default function LoginButton(props) {
     console.log(error);
   };
   return (
-    // <UseSessionProvider>
     <GoogleLogin
       clientId={clientId}
       render={(renderProps) => (
@@ -101,6 +94,5 @@ export default function LoginButton(props) {
       onFailure={loginFail}
       cookiePolicy={"single_host_origin"}
     />
-    // </UseSessionProvider>
   );
 }

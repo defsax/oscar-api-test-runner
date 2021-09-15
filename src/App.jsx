@@ -8,23 +8,21 @@ import Nav from "./components/Nav/nav";
 
 function App() {
   const [token, setToken] = useState("");
-  // const session = useSession();
-  // console.log(session);
 
   return (
-    <UseSessionProvider>
-      <Router>
+    <Router>
+      <UseSessionProvider>
         <Nav setToken={setToken} />
-        <Switch>
-          <Route exact path="/scheduled" render={() => <ScheduledResults />} />
-          <Route
-            exact
-            path="/"
-            render={() => <IndependentResults token={token} />}
-          />
-        </Switch>
-      </Router>
-    </UseSessionProvider>
+      </UseSessionProvider>
+      <Switch>
+        <Route exact path="/scheduled" render={() => <ScheduledResults />} />
+        <Route
+          exact
+          path="/"
+          render={() => <IndependentResults token={token} />}
+        />
+      </Switch>
+    </Router>
   );
 }
 

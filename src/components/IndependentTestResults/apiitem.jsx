@@ -21,35 +21,37 @@ const apiVersion = [
 const currentApi = apiVersion[2];
 
 export default function ApiItem(props) {
-  const { api, callBack, token } = props;
+  const { api, callBack } = props;
   const [response, setResponse] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
-  const queryAPI = useCallback(() => {
-    axios({
-      method: api.method,
-      url: currentApi.endpointURL + api.url,
-      data: api.body,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        setResponse(res);
-        console.log(res);
-        // console.log(token);
+  const queryAPI = useCallback(
+    (token) => {
+      axios({
+        method: api.method,
+        url: currentApi.endpointURL + api.url,
+        data: api.body,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((err) => {
-        if (err.response) setResponse(err.response);
-        else return null;
-        console.log(err);
-      })
-      .then(() => {
-        setShowMenu(true);
-      });
-  }, [api, token]);
+        .then((res) => {
+          setResponse(res);
+          console.log(res);
+        })
+        .catch((err) => {
+          if (err.response) setResponse(err.response);
+          else return null;
+          console.log(err);
+        })
+        .then(() => {
+          setShowMenu(true);
+        });
+    },
+    [api]
+  );
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
