@@ -1,4 +1,8 @@
 .login-button {
   border: none;
   background-color: cornflowerblue;
+  height: 100%;
+}
+.login-button:hover {
+  cursor: pointer;
 }

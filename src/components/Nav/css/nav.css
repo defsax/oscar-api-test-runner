@@ -22,3 +22,7 @@ nav h1 {
 .float-left {
   display: flex;
 }
+
+.float-right {
+  display: flex;
+}

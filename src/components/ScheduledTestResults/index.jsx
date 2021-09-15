@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import "./firebase"; // initialize firebase
+import "../../config/firebase.js"; // initialize firebase
 import {
   collection,
   query,
@@ -35,7 +35,6 @@ function ScheduledResults() {
       setResults(items);
     });
   }, []);
-
   return (
     <div>
       <Menu results={results} />

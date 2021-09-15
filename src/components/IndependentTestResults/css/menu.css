@@ -3,8 +3,31 @@
   text-align: center;
 }
 
-.flex-row-right {
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem;
+  padding: 0 1rem;
+}
+
+.flex-right {
   display: flex;
   justify-content: right;
+}
+
+.flex-left {
+  display: flex;
+  justify-content: left;
+}
+
+.error {
+  color: rgb(173, 13, 13);
+  background-color: rgb(218, 121, 140);
+  display: inline-block;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+hr {
   margin: 1rem;
 }
