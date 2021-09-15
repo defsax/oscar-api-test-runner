@@ -1,4 +1,6 @@
 import { React, useCallback, useEffect, useState } from "react";
+import Loader from "react-loader-spinner";
+
 import axios from "axios";
 import StatusBox from "../statusbox";
 import "./css/listitem.css";
@@ -6,11 +8,13 @@ import "./css/listitem.css";
 export default function ApiItem(props) {
   const { api, callBack, token, delay, server } = props;
   const [response, setResponse] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
+    setLoading(true);
     const timer = setTimeout(() => {
       axios({
         method: api.method,
@@ -31,6 +35,7 @@ export default function ApiItem(props) {
         })
         .then(() => {
           setShowMenu(true);
+          setLoading(false);
         });
     }, delay * 1000);
     return () => clearTimeout(timer);
@@ -60,9 +65,19 @@ export default function ApiItem(props) {
             </h2>
             <h2 style={{ marginLeft: ".5rem" }}>{api.url}</h2>
           </div>
-          <div className="pass-fail-container">
-            <StatusBox response={response} />
-          </div>
+          {loading ? (
+            <Loader
+              className="loading-results"
+              type="Bars"
+              color="rgb(0, 0, 0)"
+              height={15}
+              width={15}
+            />
+          ) : (
+            <div className="pass-fail-container">
+              <StatusBox response={response} />
+            </div>
+          )}
         </div>
       </button>
 
