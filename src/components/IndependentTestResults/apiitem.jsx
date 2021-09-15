@@ -21,14 +21,14 @@ const apiVersion = [
 const currentApi = apiVersion[2];
 
 export default function ApiItem(props) {
-  const { api, callBack } = props;
+  const { api, callBack, token, delay } = props;
   const [response, setResponse] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
-  const queryAPI = useCallback(
-    (token) => {
+  const queryAPI = useCallback(() => {
+    const timer = setTimeout(() => {
       axios({
         method: api.method,
         url: currentApi.endpointURL + api.url,
@@ -49,17 +49,18 @@ export default function ApiItem(props) {
         .then(() => {
           setShowMenu(true);
         });
-    },
-    [api]
-  );
+    }, delay * 1000);
+    return () => clearTimeout(timer);
+  }, [api, token, delay]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
   useEffect(() => {
-    callBack({ queryAPI, expandContract });
-  }, [callBack, queryAPI, expandContract]);
+    // Only register callback if component has a token
+    if (token) callBack({ queryAPI, expandContract });
+  }, [callBack, queryAPI, expandContract, token]);
 
   return (
     <div className="list-item">
@@ -70,7 +71,12 @@ export default function ApiItem(props) {
         }}
       >
         <div className="button-contents">
-          <h2>{api.url}</h2>
+          <div className="flex-row-left">
+            <h2>
+              <b>({currentApi.apitype})</b>
+            </h2>
+            <h2 style={{ marginLeft: ".5rem" }}>{api.url}</h2>
+          </div>
           <div className="pass-fail-container">
             <StatusBox response={response} />
           </div>
@@ -79,18 +85,18 @@ export default function ApiItem(props) {
 
       {showMenu ? (
         <div className="test-options">
-          <p>Method: {api.method}</p>
           <button
             onClick={() => {
               setResponse([]);
-              queryAPI(api);
+              queryAPI();
             }}
           >
             Test
           </button>
           <div>
+            <p>Method: {api.method}</p>
+            <p>URL: {currentApi.endpointURL + api.url}</p>
             <p>Status: {JSON.stringify(response.status)}</p>
-            <p>Response: {JSON.stringify(response)}</p>
             <p>Data: {JSON.stringify(response.data)}</p>
           </div>
         </div>

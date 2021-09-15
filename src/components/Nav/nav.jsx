@@ -36,19 +36,11 @@ export default function Nav(props) {
       {session.isAuthenticated ? (
         <div className="float-right">
           <h1>{session.profile.email}</h1>
-          <Logout
-            setToken={setToken}
-            session={session}
-            clientId={googleClientId}
-          />
+          <Logout setToken={setToken} clientId={googleClientId} />
         </div>
       ) : (
         <div className="float-right">
-          <Login
-            setToken={setToken}
-            session={session}
-            clientId={googleClientId}
-          />
+          <Login setToken={setToken} clientId={googleClientId} />
         </div>
       )}
     </nav>

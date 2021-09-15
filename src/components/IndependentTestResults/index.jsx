@@ -99,32 +99,36 @@ export default function IndependentResults(props) {
   const { token } = props;
   const [expanded, setExpanded] = useState(false);
 
-  // Create array of useRefs
+  // Create arrays of useRefs
   const testRefs = useRef([]);
   const expandRefs = useRef([]);
 
   useEffect(() => {
-    console.log(expandRefs.current.length);
-  }, [expandRefs]);
+    // Clear refs when user logs out
+    if (!token) {
+      testRefs.current = [];
+      console.log("callbacks cleared.");
+    }
+  }, [token]);
 
   // useCallback so that component doesn't reload on setCallback updating
   const setCallback = useCallback(
     (callback) => {
-      // Register all functions by pushing them into our useRef array
       testRefs.current.push(callback.queryAPI);
-      expandRefs.current.push(callback.expandContract);
+      if (expandRefs.current.length < apis.length) {
+        expandRefs.current.push(callback.expandContract);
+      }
       console.log("callback registered.");
     },
     [testRefs, expandRefs]
   );
 
-  console.log("App Rerender");
   return (
     <div className="menu">
       <h1>Oscar API Individual Test Routes</h1>
 
       <div className={"flex-row-right"}>
-        {/* // The Test All button calls each registered function: */}
+        {/* The Test All button calls each registered function:  */}
         <button
           className={"button"}
           onClick={() => {
@@ -132,7 +136,7 @@ export default function IndependentResults(props) {
 
             // Call each function in the useRef array (created in child component)
             testRefs.current.forEach((test) => {
-              test(token);
+              test();
             });
             setExpanded(true);
           }}
@@ -154,8 +158,17 @@ export default function IndependentResults(props) {
           {expanded ? <p>▲</p> : <p>▼</p>}
         </button>
       </div>
+
       {apis.map((api, i) => {
-        return <ApiItem key={i} api={api} callBack={setCallback} />;
+        return (
+          <ApiItem
+            key={i}
+            delay={i}
+            api={api}
+            callBack={setCallback}
+            token={token}
+          />
+        );
       })}
     </div>
   );

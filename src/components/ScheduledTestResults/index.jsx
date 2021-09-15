@@ -35,7 +35,6 @@ function ScheduledResults() {
       setResults(items);
     });
   }, []);
-
   return (
     <div>
       <Menu results={results} />

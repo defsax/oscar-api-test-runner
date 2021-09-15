@@ -8,3 +8,8 @@
   justify-content: right;
   margin: 1rem;
 }
+
+.flex-row-left {
+  display: flex;
+  justify-content: left;
+}

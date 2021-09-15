@@ -2,7 +2,7 @@
 import LoginButton from "./loginbutton";
 
 export default function Login(props) {
-  const { setToken, clientId, session } = props;
+  const { setToken, clientId } = props;
   const server = [
     "https://kennedy-dev1.gojitech.systems",
     "https://kennedy-staging1.gojitech.systems",
@@ -10,12 +10,7 @@ export default function Login(props) {
 
   return (
     <div>
-      <LoginButton
-        clientId={clientId}
-        setToken={setToken}
-        session={session}
-        server={server[1]}
-      />
+      <LoginButton clientId={clientId} setToken={setToken} server={server[1]} />
     </div>
   );
 }

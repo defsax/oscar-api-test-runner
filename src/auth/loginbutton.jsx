@@ -77,6 +77,7 @@ export default function LoginButton(props) {
   const loginFail = function (error) {
     console.log(error);
   };
+
   return (
     <GoogleLogin
       clientId={clientId}
