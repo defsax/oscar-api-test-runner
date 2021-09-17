@@ -1,10 +1,11 @@
 import { React, useState } from "react";
+import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 import moment from "moment";
 import "./css/menuitem.css";
 
 export default function MenuItem(props) {
-  const { test } = props;
+  const { test, server } = props;
   const [showMenu, setShowMenu] = useState(false);
 
   const beforeTimeout = function (time) {
@@ -46,6 +47,7 @@ export default function MenuItem(props) {
           >
             <div className="button-contents">
               <h2>
+                <b>{server}</b>
                 {new Date(test.timestamp.seconds * 1000).toLocaleString()}
               </h2>
               <div className="pass-fail-container">
@@ -75,9 +77,6 @@ export default function MenuItem(props) {
                   </div>
                 </div>
                 <p>
-                  <b>API Type:</b> {result.apiType}
-                </p>
-                <p>
                   <b>Endpoint URL: </b>
                   {result.endpointURL}
                 </p>
@@ -87,8 +86,9 @@ export default function MenuItem(props) {
                 </p>
                 <p>
                   <b>Data: </b>
-                  {result.data.msg}
                 </p>
+
+                <JSONPretty id="json-pretty" data={result.data}></JSONPretty>
               </div>
             ))}
           </div>

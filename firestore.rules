@@ -1,7 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /test-results/{itemId} {
+    match /dev-test-results/{itemId} {
+      allow read: if true
+      allow write: if false;
+    }
+
+    match /staging-test-results/{itemId} {
       allow read: if true
       allow write: if false;
     }

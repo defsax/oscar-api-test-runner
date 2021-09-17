@@ -1,4 +1,5 @@
 import { React, useCallback, useEffect, useState } from "react";
+import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
 import axios from "axios";
@@ -95,7 +96,8 @@ export default function ApiItem(props) {
             <p>Method: {api.method}</p>
             <p>URL: {server.endpointURL + api.url}</p>
             <p>Status: {JSON.stringify(response.status)}</p>
-            <p>Data: {JSON.stringify(response.data)}</p>
+            <p>Data: </p>
+            <JSONPretty id="json-pretty" data={response.data}></JSONPretty>
           </div>
         </div>
       ) : null}
