@@ -34,7 +34,6 @@ export default function Menu(props) {
         </div>
       </div>
       <hr />
-
       {toggle ? (
         devResults.length ? (
           devResults.map((test) => {
@@ -50,7 +49,6 @@ export default function Menu(props) {
           />
         )
       ) : null}
-
       {!toggle ? (
         stagingResults.length ? (
           stagingResults.map((test) => {

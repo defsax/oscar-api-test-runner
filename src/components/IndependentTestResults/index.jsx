@@ -139,8 +139,8 @@ export default function IndependentResults(props) {
       if (expandRefs.current.length < apis.length) {
         expandRefs.current.push(callback.expandContract);
       }
-      console.log("callback registered.");
-      console.log("testRefs length:", testRefs.current.length);
+      // console.log("callback registered.");
+      // console.log("testRefs length:", testRefs.current.length);
     },
     [testRefs, expandRefs]
   );
@@ -177,7 +177,7 @@ export default function IndependentResults(props) {
         <div className={"flex-right"}>
           {/* The Test All button calls each registered function:  */}
           <button
-            className={"button test-button"}
+            className={"button test-all-button"}
             onClick={() => {
               console.log("Test refs length:", testRefs.current.length);
 

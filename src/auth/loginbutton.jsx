@@ -20,6 +20,8 @@ export default function LoginButton(props) {
     //   console.log('Image URL: ' + profile.getImageUrl());
     //   console.log('Email: ' + profile.getEmail());
     // }
+    session.removeSession();
+    setToken("");
 
     const currentUser = response.getBasicProfile().getGivenName();
     console.log("successful login", currentUser);
@@ -56,7 +58,9 @@ export default function LoginButton(props) {
           data: { token: response.tokenId, providerNo },
         })
           .then((response) => {
+            console.log("Token approved.");
             setToken(response.data.profile.jwt);
+            console.log(response);
             session.setSession({ token: response.data.profile.jwt });
           })
           .catch((err) => {
