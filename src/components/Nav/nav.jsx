@@ -10,6 +10,8 @@ import "./css/button.css";
 
 const googleClientId =
   "76829730434-l9ujra2di0m69fppvpflfc5hfb3jpvn7.apps.googleusercontent.com";
+// const googleClientId =
+//   "333223101659-ckihbcqtk9p24bprljf4b3a8jm8gufu1.apps.googleusercontent.com";
 
 export default function Nav(props) {
   const { setToken } = props;
