@@ -7,12 +7,11 @@ import {
   getFirestore,
   onSnapshot,
 } from "firebase/firestore";
-
 import Menu from "./menu";
 
 function ScheduledResults() {
-  const [results, setResults] = useState([]);
-
+  const [devResults, setDevResults] = useState([]);
+  const [stagingResults, setStagingResults] = useState([]);
   // Load realtime updates from firebase and put them in state
   // React useEffect so that it sets up this process only once on component load
   useEffect(() => {
@@ -20,24 +19,39 @@ function ScheduledResults() {
     const db = getFirestore();
 
     // Query specific collection and order results
-    const q = query(
-      collection(db, "test-results"),
+    const dev = query(
+      collection(db, "dev-test-results"),
+      orderBy("timestamp", "desc")
+    );
+    const staging = query(
+      collection(db, "staging-test-results"),
       orderBy("timestamp", "desc")
     );
 
     // Re-load collection when data changes, set in state
-    onSnapshot(q, (docs) => {
+    onSnapshot(dev, (docs) => {
       const items = [];
 
       docs.forEach((doc) => {
         items.push(doc.data());
       });
-      setResults(items);
+      setDevResults(items);
+    });
+
+    // Re-load collection when data changes, set in state
+    onSnapshot(staging, (docs) => {
+      const items = [];
+
+      docs.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setStagingResults(items);
     });
   }, []);
+
   return (
     <div>
-      <Menu results={results} />
+      <Menu devResults={devResults} stagingResults={stagingResults} />
     </div>
   );
 }

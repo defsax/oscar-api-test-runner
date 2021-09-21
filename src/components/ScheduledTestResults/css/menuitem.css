@@ -61,3 +61,7 @@
 .loading-results {
   padding: 0.82rem;
 }
+
+#json-pretty {
+  text-align: left;
+}

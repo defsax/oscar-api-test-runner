@@ -1,4 +1,5 @@
 import { React, useCallback, useEffect, useState } from "react";
+import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
 import axios from "axios";
@@ -10,11 +11,13 @@ export default function ApiItem(props) {
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showData, setShowData] = useState(false);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
+
     const timer = setTimeout(() => {
       axios({
         method: api.method,
@@ -22,19 +25,21 @@ export default function ApiItem(props) {
         data: api.body,
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       })
         .then((res) => {
           setResponse(res);
-          console.log(res);
+          console.log(res.data);
         })
         .catch((err) => {
           if (err.response) setResponse(err.response);
           else return null;
-          console.log(err);
+          console.log(err.response);
         })
         .then(() => {
           setShowMenu(true);
+          setShowData(true);
           setLoading(false);
         });
     }, delay * 1000);
@@ -83,19 +88,36 @@ export default function ApiItem(props) {
 
       {showMenu ? (
         <div className="test-options">
-          <button
-            onClick={() => {
-              setResponse([]);
-              queryAPI();
-            }}
-          >
-            Test
-          </button>
-          <div>
+          <div className="flex-results-left">
             <p>Method: {api.method}</p>
             <p>URL: {server.endpointURL + api.url}</p>
             <p>Status: {JSON.stringify(response.status)}</p>
-            <p>Data: {JSON.stringify(response.data)}</p>
+
+            <p>Data: </p>
+
+            {showData ? (
+              <JSONPretty id="json-pretty" data={response.data}></JSONPretty>
+            ) : null}
+          </div>
+          <div className="flex-results-right">
+            <button
+              onClick={() => {
+                setResponse([]);
+                queryAPI();
+              }}
+              className={"button test-button"}
+            >
+              Test
+            </button>
+
+            <button
+              className={"collapse-data-button"}
+              onClick={() => {
+                showData ? setShowData(false) : setShowData(true);
+              }}
+            >
+              {showData ? <p>▲</p> : <p>▼</p>}
+            </button>
           </div>
         </div>
       ) : null}

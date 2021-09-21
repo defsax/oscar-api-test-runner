@@ -1,7 +1,5 @@
 import { React, useEffect } from "react";
 import { Link } from "react-router-dom";
-// import { getAuth, signOut } from "firebase/auth";
-// import GoogleLogin from "react-google-login";
 import useSession from "react-session-hook";
 
 import Login from "../../auth/login";
@@ -10,7 +8,10 @@ import Logout from "../../auth/logout";
 import "./css/nav.css";
 import "./css/button.css";
 
-const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const googleClientId =
+  "76829730434-l9ujra2di0m69fppvpflfc5hfb3jpvn7.apps.googleusercontent.com";
+// const googleClientId =
+//   "333223101659-ckihbcqtk9p24bprljf4b3a8jm8gufu1.apps.googleusercontent.com";
 
 export default function Nav(props) {
   const { setToken } = props;
@@ -33,7 +34,8 @@ export default function Nav(props) {
           <h1>Scheduled Tests</h1>
         </Link>
       </div>
-      {session.isAuthenticated ? (
+
+      {session.storage.get().token !== undefined ? (
         <div className="float-right">
           <h1>{session.profile.email}</h1>
           <Logout setToken={setToken} clientId={googleClientId} />
