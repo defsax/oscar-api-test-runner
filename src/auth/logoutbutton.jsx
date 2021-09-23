@@ -1,17 +1,11 @@
 import { useContext } from "react";
 import { GoogleLogout } from "react-google-login";
-import useSession from "react-session-hook";
-
 import { AuthContext } from "../App";
 
 export default function LogoutButton(props) {
-  const { dispatch } = useContext(AuthContext);
+  const { state, dispatch } = useContext(AuthContext);
 
-  const session = useSession();
-  const { clientId, setToken } = props;
   const logout = function () {
-    session.removeSession();
-    setToken("");
     dispatch({ type: "LOGOUT" });
   };
   const logoutFail = function (err) {
@@ -20,7 +14,7 @@ export default function LogoutButton(props) {
 
   return (
     <GoogleLogout
-      clientId={clientId}
+      clientId={state.clientId}
       render={(renderProps) => (
         <button
           onClick={renderProps.onClick}

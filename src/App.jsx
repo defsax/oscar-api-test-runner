@@ -1,13 +1,5 @@
-import {
-  React,
-  useMemo,
-  useState,
-  createContext,
-  useReducer,
-  useEffect,
-} from "react";
+import { React, useMemo, createContext, useReducer, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-// import { UseSessionProvider } from "react-session-hook";
 
 import ScheduledResults from "./components/ScheduledTestResults";
 import IndependentResults from "./components/IndependentTestResults";
@@ -65,8 +57,6 @@ const reducer = (state, action) => {
 };
 
 function App() {
-  const [token, setToken] = useState("");
-
   const [state, dispatch] = useReducer(reducer, {
     dev: { isAuthenticated: false, token: null },
     staging: { isAuthenticated: false, token: null },
@@ -84,25 +74,17 @@ function App() {
     const user = localStorage.getItem("user");
     const devJWT = localStorage.getItem("dev-token");
     const stagingJWT = localStorage.getItem("staging-token");
-    console.log(devJWT);
-    console.log(stagingJWT);
+
     dispatch({ type: "REFRESH", payload: { email: user, devJWT, stagingJWT } });
   }, []);
 
   return (
     <AuthContext.Provider value={contextValue}>
       <Router>
-        {/* <UseSessionProvider> */}
-        <Nav setToken={setToken} />
-
-        {/* </UseSessionProvider> */}
+        <Nav />
         <Switch>
           <Route exact path="/scheduled" render={() => <ScheduledResults />} />
-          <Route
-            exact
-            path="/"
-            render={() => <IndependentResults token={token} />}
-          />
+          <Route exact path="/" render={() => <IndependentResults />} />
         </Switch>
       </Router>
     </AuthContext.Provider>

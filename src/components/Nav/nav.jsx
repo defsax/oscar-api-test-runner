@@ -1,33 +1,13 @@
 import { React, useContext } from "react";
 import { Link } from "react-router-dom";
-// import useSession from "react-session-hook";
-
-import LoginMenu from "../../auth/loginmenu";
 import { AuthContext } from "../../App";
+import LoginMenu from "../../auth/loginmenu";
 
 import "./css/nav.css";
 import "./css/button.css";
 
-const googleClientId =
-  "76829730434-l9ujra2di0m69fppvpflfc5hfb3jpvn7.apps.googleusercontent.com";
-// const googleClientId =
-//   "333223101659-ckihbcqtk9p24bprljf4b3a8jm8gufu1.apps.googleusercontent.com";
-
-export default function Nav(props) {
-  const { setToken } = props;
-  // const session = useSession();
+export default function Nav() {
   const { state } = useContext(AuthContext);
-
-  // useEffect(() => {
-  // console.log("nav login", session.isAuthenticated);
-  // console.log("token:", session.storage.get().token);
-  // console.log("session:", session);
-  //   setToken(session.storage.get().token);
-  // }, [session, setToken]);
-
-  // useEffect(() => {
-  //   console.log(state);
-  // }, [state]);
 
   return (
     <nav>
@@ -50,7 +30,7 @@ export default function Nav(props) {
             {state.staging.isAuthenticated ? "staging" : null})
           </h4>
         ) : null}
-        <LoginMenu setToken={setToken} clientId={googleClientId} />
+        <LoginMenu />
       </div>
     </nav>
   );

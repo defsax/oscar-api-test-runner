@@ -1,4 +1,12 @@
-import { React, useCallback, useRef, useState, useEffect } from "react";
+import {
+  React,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
+import { AuthContext } from "../../App";
 import ApiItem from "./apiitem";
 import "./css/button.css";
 import "./css/menu.css";
@@ -112,19 +120,42 @@ const apiVersion = [
 ];
 
 export default function IndependentResults(props) {
-  const { token } = props;
+  const { state } = useContext(AuthContext);
+
+  // const { token } = props;
+  // switch here to change from dev to staging
+  const [server, setServer] = useState(apiVersion[0]);
+  const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState(false);
-
-  // switch here to change from dev to staging
-  const [server, setServer] = useState(apiVersion[1]);
-  const [toggle, setToggle] = useState(false);
+  const [token, setToken] = useState(state.dev.token);
 
   // Create arrays of useRefs
   const testRefs = useRef([]);
   const expandRefs = useRef([]);
 
+  // useEffect(() => {
+  //   // Clear refs when user logs out
+  //   if (!token) {
+  //     testRefs.current = [];
+  //     console.log("callbacks cleared.");
+  //   }
+  //   setError(false);
+  // }, [token]);
+
   useEffect(() => {
+    // console.log(state.dev.token);
+    // console.log(state.staging.token);
+    // apiVersion[0].jwt = state.dev.token;
+    // apiVersion[1].jwt = state.staging.token;
+    // console.log(apiVersion[0]);
+    // console.log(apiVersion[1]);
+    if (toggle) setToken(state.dev.token);
+    else setToken(state.staging.token);
+  }, [state, toggle]);
+
+  useEffect(() => {
+    console.log(token);
     // Clear refs when user logs out
     if (!token) {
       testRefs.current = [];
@@ -149,13 +180,16 @@ export default function IndependentResults(props) {
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
-      {error ? <h3 className={"error"}>{"Please log in to test."}</h3> : null}
+      {error ? (
+        <h3 className={"error"}>{"Please log in to test all."}</h3>
+      ) : null}
       <div className={"flex-row"}>
         <div className={"flex-left"}>
           <button
             className={"button server-button dev-button"}
             onClick={() => {
               setServer(apiVersion[0]);
+              // setToken(state.dev.token);
               setToggle(!toggle);
               testRefs.current = [];
             }}
@@ -163,10 +197,12 @@ export default function IndependentResults(props) {
           >
             dev
           </button>
+
           <button
             className={"button server-button staging-button"}
             onClick={() => {
               setServer(apiVersion[1]);
+              // setToken(state.staging.token);
               setToggle(!toggle);
               testRefs.current = [];
             }}
@@ -175,6 +211,7 @@ export default function IndependentResults(props) {
             staging
           </button>
         </div>
+
         <div className={"flex-right"}>
           {/* The Test All button calls each registered function:  */}
           <button

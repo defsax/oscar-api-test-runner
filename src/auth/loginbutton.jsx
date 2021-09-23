@@ -1,16 +1,14 @@
 import axios from "axios";
 import { useContext } from "react";
 import GoogleLogin from "react-google-login";
-import useSession from "react-session-hook";
 import { AuthContext } from "../App";
 
 import "../components/Nav/css/nav.css";
 
 export default function LoginButton(props) {
-  const { clientId, setToken, server, providerNo } = props;
+  const { server, providerNo } = props;
 
-  const { dispatch } = useContext(AuthContext);
-  const session = useSession();
+  const { state, dispatch } = useContext(AuthContext);
 
   const gLoginSuccess = function (response) {
     // 'ID: ' + profile.getId()
@@ -20,12 +18,8 @@ export default function LoginButton(props) {
     // 'Image URL: ' + profile.getImageUrl()
     // 'Email: ' + profile.getEmail()
 
-    session.removeSession();
-    setToken("");
-
     const currentUser = response.getBasicProfile().getGivenName();
     console.log("successful login", currentUser);
-    // console.log(response.tokenId);
 
     axios({
       method: "post",
@@ -39,9 +33,7 @@ export default function LoginButton(props) {
       .then((response) => {
         console.log("Token approved.");
         console.log(response);
-        // setToken(response.data.profile.jwt);
-        // session.setSession({ token: response.data.profile.jwt });
-        console.log(server.search("dev"));
+
         if (server.search("dev") !== -1)
           dispatch({ type: "DEVLOGIN", payload: response.data.profile });
         else dispatch({ type: "STAGINGLOGIN", payload: response.data.profile });
@@ -58,7 +50,7 @@ export default function LoginButton(props) {
 
   return (
     <GoogleLogin
-      clientId={clientId}
+      clientId={state.clientId}
       render={(renderProps) => (
         <button
           onClick={renderProps.onClick}
