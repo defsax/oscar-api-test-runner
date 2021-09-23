@@ -1,6 +1,6 @@
-import { React, useContext, useEffect } from "react";
+import { React, useContext } from "react";
 import { Link } from "react-router-dom";
-import useSession from "react-session-hook";
+// import useSession from "react-session-hook";
 
 import LoginMenu from "../../auth/loginmenu";
 import { AuthContext } from "../../App";
@@ -15,19 +15,19 @@ const googleClientId =
 
 export default function Nav(props) {
   const { setToken } = props;
-  const session = useSession();
+  // const session = useSession();
   const { state } = useContext(AuthContext);
 
-  useEffect(() => {
-    // console.log("nav login", session.isAuthenticated);
-    // console.log("token:", session.storage.get().token);
-    // console.log("session:", session);
-    setToken(session.storage.get().token);
-  }, [session, setToken]);
+  // useEffect(() => {
+  // console.log("nav login", session.isAuthenticated);
+  // console.log("token:", session.storage.get().token);
+  // console.log("session:", session);
+  //   setToken(session.storage.get().token);
+  // }, [session, setToken]);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
+  // useEffect(() => {
+  //   console.log(state);
+  // }, [state]);
 
   return (
     <nav>

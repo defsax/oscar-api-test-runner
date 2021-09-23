@@ -2,11 +2,25 @@
   padding: 0.5rem;
   margin: 1rem 0;
   border: none;
-  background-color: cornflowerblue;
-  /* height: 100%; */
+  background-color: rgb(121, 204, 141);
+
   color: white;
   font-weight: bold;
 }
 .login-button:hover {
-  cursor: pointer;
+  background-color: rgb(89, 177, 110);
+}
+
+.logout-button {
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border: none;
+  background-color: rgb(196, 98, 98);
+
+  color: white;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: rgb(196, 89, 89);
 }

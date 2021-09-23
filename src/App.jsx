@@ -71,6 +71,8 @@ function App() {
     dev: { isAuthenticated: false, token: null },
     staging: { isAuthenticated: false, token: null },
     user: null,
+    clientId:
+      "76829730434-l9ujra2di0m69fppvpflfc5hfb3jpvn7.apps.googleusercontent.com",
   });
 
   const contextValue = useMemo(() => {

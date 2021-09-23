@@ -4,6 +4,9 @@
   display: none;
   right: 0;
   padding: 1rem 2rem 3rem 2rem;
+  min-width: 257px;
+  min-height: 203px;
+  box-sizing: border-box;
 }
 
 .login-menu form input {
@@ -11,9 +14,14 @@
   border: 0;
 }
 
-.login-menu form h2 {
+.login-menu h2 {
   color: white;
   font-weight: bold;
+}
+.login-menu h4 {
+  color: black;
+  font-weight: bold;
+  padding: 0;
 }
 
 .login-menu form input:focus {
@@ -58,6 +66,4 @@
 
 .bottom-bar button:hover {
   background-color: rgb(84, 136, 231);
-  color: black;
-  cursor: pointer;
 }

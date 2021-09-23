@@ -10,7 +10,6 @@
 }
 .test-button:hover {
   background-color: rgb(89, 177, 110);
-  cursor: pointer;
 }
 
 .test-all-button {
@@ -19,7 +18,6 @@
 }
 .test-all-button:hover {
   background-color: rgb(89, 177, 110);
-  cursor: pointer;
 }
 .arrow-button {
   border: none;
@@ -30,7 +28,6 @@
 }
 .arrow-button:hover {
   color: rgba(0, 0, 0, 0.61);
-  cursor: pointer;
 }
 
 .server-button {
@@ -38,7 +35,6 @@
 }
 .server-button:hover {
   background-color: rgb(197, 197, 197);
-  cursor: pointer;
 }
 .server-button:disabled {
   background-color: rgb(226, 226, 226);
@@ -70,6 +66,5 @@
 }
 
 .collapse-data-button:hover {
-  cursor: pointer;
   background-color: rgb(197, 197, 197);
 }

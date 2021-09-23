@@ -14,8 +14,6 @@ export default function LoginMenu(props) {
   ];
   const { state } = useContext(AuthContext);
 
-  console.log(state.dev.isAuthenticated);
-
   const [selected, setSelected] = useState({
     dev: true,
     staging: false,
