@@ -8,8 +8,10 @@ const apis = [
   { method: "get", url: "/api/v1/status" },
 
   // OSCAR REST APIS
-  { method: "get", url: "/api/v1/oscarrest/providers" },
-  { method: "get", url: "/api/v1/oscarrest/notes/1" },
+  // { method: "get", url: "/api/v1/oscarrest/providers" },
+  // { method: "get", url: "/api/v1/oscarrest/notes/1" },
+  // { method: "get", url: "/api/v1/oscarrest/patients" },
+  // { method: "get", url: "/api/v1/oscarrest/auth" },
   {
     method: "post",
     url: "/api/v1/oscar/prescriptions",
@@ -48,8 +50,6 @@ const apis = [
       },
     ],
   },
-  { method: "get", url: "/api/v1/oscarrest/patients" },
-  { method: "get", url: "/api/v1/oscarrest/auth" },
 
   // PATIENTS
   { method: "get", url: "/api/v1/oscar/patients" },
@@ -99,14 +99,15 @@ const apiVersion = [
   {
     apitype: "dev",
     endpointURL: "https://kennedy-dev1.gojitech.systems",
-  },
-  {
-    apitype: "staging",
-    endpointURL: "https://kennedy-dev2.gojitech.systems",
+    suffix:
+      "?siteURL=" +
+      encodeURIComponent("https://goji-oscar1.gojitech.systems") +
+      "&appVersion=dev",
   },
   {
     apitype: "staging",
     endpointURL: "https://kennedy-staging1.gojitech.systems",
+    suffix: "",
   },
 ];
 
@@ -116,7 +117,7 @@ export default function IndependentResults(props) {
   const [error, setError] = useState(false);
 
   // switch here to change from dev to staging
-  const [server, setServer] = useState(apiVersion[2]);
+  const [server, setServer] = useState(apiVersion[1]);
   const [toggle, setToggle] = useState(false);
 
   // Create arrays of useRefs
@@ -165,7 +166,7 @@ export default function IndependentResults(props) {
           <button
             className={"button server-button staging-button"}
             onClick={() => {
-              setServer(apiVersion[2]);
+              setServer(apiVersion[1]);
               setToggle(!toggle);
               testRefs.current = [];
             }}

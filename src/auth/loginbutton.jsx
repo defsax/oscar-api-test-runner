@@ -1,16 +1,18 @@
 import axios from "axios";
-// import { useEffect } from "react";
+import { useContext } from "react";
 import GoogleLogin from "react-google-login";
 import useSession from "react-session-hook";
+import { AuthContext } from "../App";
 
 import "../components/Nav/css/nav.css";
 
 export default function LoginButton(props) {
-  const { clientId, setToken, server } = props;
+  const { clientId, setToken, server, providerNo } = props;
 
+  const { dispatch } = useContext(AuthContext);
   const session = useSession();
 
-  const loginSuccess = function (response) {
+  const gLoginSuccess = function (response) {
     // 'ID: ' + profile.getId()
     // 'Full Name: ' + profile.getName()
     // 'Given Name: ' + profile.getGivenName()
@@ -23,56 +25,34 @@ export default function LoginButton(props) {
 
     const currentUser = response.getBasicProfile().getGivenName();
     console.log("successful login", currentUser);
+    // console.log(response.tokenId);
 
-    const createSession = new Promise((resolve, reject) => {
-      axios
-        .get(server + "/api/v1/oscarrest/providers")
-        .then((res) => {
-          const data = res.data.result;
-          console.log("Success fetching providers.");
-
-          // Extract providerNo for current user
-          const providerNo = data.find((provider) => {
-            return provider.firstName.toLowerCase() === currentUser;
-          }).providerNo;
-
-          resolve(providerNo);
-        })
-        .catch((err) => {
-          console.log("Error fetching providers:", err);
-          reject(err);
-        });
-    });
-
-    createSession
-      .then((providerNo) => {
-        axios({
-          method: "post",
-          url: server + "/api/v1/login",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${response.tokenId}`,
-          },
-          data: { token: response.tokenId, providerNo },
-        })
-          .then((response) => {
-            console.log("Token approved.");
-            setToken(response.data.profile.jwt);
-            console.log(response);
-            session.setSession({ token: response.data.profile.jwt });
-          })
-          .catch((err) => {
-            console.error("token failed approval.", err);
-            return;
-          });
+    axios({
+      method: "post",
+      url: server,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${response.tokenId}`,
+      },
+      data: { token: response.tokenId, providerNo },
+    })
+      .then((response) => {
+        console.log("Token approved.");
+        console.log(response);
+        // setToken(response.data.profile.jwt);
+        // session.setSession({ token: response.data.profile.jwt });
+        console.log(server.search("dev"));
+        if (server.search("dev") !== -1)
+          dispatch({ type: "DEVLOGIN", payload: response.data.profile });
+        else dispatch({ type: "STAGINGLOGIN", payload: response.data.profile });
       })
       .catch((err) => {
-        console.log("error verifying token", err);
+        console.error("token failed approval.", err);
         return;
       });
   };
 
-  const loginFail = function (error) {
+  const gLoginFail = function (error) {
     console.log("Login failed", error);
   };
 
@@ -85,12 +65,12 @@ export default function LoginButton(props) {
           disabled={renderProps.disabled}
           className="link-item login-button"
         >
-          <h1>Login</h1>
+          Submit
         </button>
       )}
       buttonText="Login"
-      onSuccess={loginSuccess}
-      onFailure={loginFail}
+      onSuccess={gLoginSuccess}
+      onFailure={gLoginFail}
       cookiePolicy={"single_host_origin"}
     />
   );

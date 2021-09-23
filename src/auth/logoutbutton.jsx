@@ -1,7 +1,7 @@
 import { GoogleLogout } from "react-google-login";
 import useSession from "react-session-hook";
 
-export default function Logout(props) {
+export default function LogoutButton(props) {
   const session = useSession();
   const { clientId, setToken } = props;
   const logout = function () {

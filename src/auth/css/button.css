@@ -1,0 +1,17 @@
+.menu-button {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+  height: 100%;
+}
+.menu-button:hover {
+  background-color: rgb(84, 136, 231);
+}
+
+.button-selected {
+  background-color: rgb(84, 136, 231);
+}
+
+.button-unselected {
+  background-color: rgba(84, 136, 231, 0);
+}

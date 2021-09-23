@@ -17,11 +17,12 @@ export default function ApiItem(props) {
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
+    console.log(token);
 
     const timer = setTimeout(() => {
       axios({
         method: api.method,
-        url: server.endpointURL + api.url,
+        url: server.endpointURL + api.url + server.suffix,
         data: api.body,
         headers: {
           Authorization: `Bearer ${token}`,
