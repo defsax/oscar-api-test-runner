@@ -1,23 +1,37 @@
-import { React, useCallback, useEffect, useState } from "react";
+import {
+  React,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
+import { AuthContext } from "../../App";
 import axios from "axios";
 import StatusBox from "../statusbox";
 import "./css/listitem.css";
 
-export default function ApiItem(props) {
-  const { api, callBack, token, delay, server } = props;
+export default function ApiListItem(props) {
+  const { api, testCallBack, expandCallBack, delay, server } = props;
+  const { state } = useContext(AuthContext);
+  const stateRef = useRef(state);
+
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
 
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
-    console.log(token);
 
     const timer = setTimeout(() => {
       axios({
@@ -25,7 +39,7 @@ export default function ApiItem(props) {
         url: server.endpointURL + api.url + server.suffix,
         data: api.body,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${stateRef.current.dev.token}`,
           Accept: "application/json",
         },
       })
@@ -45,16 +59,17 @@ export default function ApiItem(props) {
         });
     }, delay * 1000);
     return () => clearTimeout(timer);
-  }, [api, token, delay, server]);
+  }, [api, delay, server]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
   useEffect(() => {
-    // Only register callback if component has a token
-    if (token) callBack({ queryAPI, expandContract });
-  }, [callBack, queryAPI, expandContract, token]);
+    // Always register callbacks
+    expandCallBack(expandContract);
+    testCallBack(queryAPI);
+  }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
 
   return (
     <div className="list-item">
