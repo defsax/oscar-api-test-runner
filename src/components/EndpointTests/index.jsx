@@ -82,23 +82,23 @@ const apis = [
   { method: "get", url: "/api/v1/oscar/patients/1" },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/14/allergies",
+    url: "/api/v1/oscar/patients/1/allergies",
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/14/measurements",
+    url: "/api/v1/oscar/patients/1/measurements",
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/14/documents",
+    url: "/api/v1/oscar/patients/1/documents",
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/14/forms",
+    url: "/api/v1/oscar/patients/1/forms",
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/14/labResults",
+    url: "/api/v1/oscar/patients/1/labResults",
   },
 ];
 
