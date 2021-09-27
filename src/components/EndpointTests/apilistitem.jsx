@@ -48,9 +48,18 @@ export default function ApiListItem(props) {
           console.log(res.data);
         })
         .catch((err) => {
-          if (err.response) setResponse(err.response);
-          else return null;
-          console.log(err.response);
+          if (err.response) {
+            console.log(err.response);
+
+            setResponse(err.response);
+          } else if (err.request) {
+            console.log(err.request);
+          } else {
+            console.log("Error", err.message);
+          }
+          console.log(err.config);
+
+          return null;
         })
         .then(() => {
           setShowMenu(true);
@@ -107,6 +116,13 @@ export default function ApiListItem(props) {
           <div className="flex-results-left">
             <p>Method: {api.method}</p>
             <p>URL: {server.endpointURL + api.url}</p>
+            {api.body ? (
+              <div>
+                <p>Body:</p>
+                <JSONPretty id="json-pretty" data={api.body}></JSONPretty>
+              </div>
+            ) : null}
+
             <p>Status: {JSON.stringify(response.status)}</p>
 
             <p>Data: </p>
