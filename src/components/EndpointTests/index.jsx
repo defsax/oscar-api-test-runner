@@ -24,49 +24,59 @@ const apis = [
   {
     method: "post",
     url: "/api/v1/oscar/prescriptions",
-    body: {
-      demographicNo: 0,
-      drugs: [
-        {
-          drugId: 0,
-          providerNo: 0,
-          brandName: "string",
-          takeMin: 0,
-          takeMax: 0,
-          rxDate: "2021-07-08T16:05:49.404Z",
-          endDate: "2021-07-08T16:05:49.404Z",
-          frequency: "",
-          duration: 0,
-          durationUnit: "",
-          route: "",
-          method: "",
-          prn: false,
-          repeats: 0,
-          quantity: 0,
-          instructions: "string",
-          additionalInstructions: "",
-          archived: false,
-          archivedReason: "",
-          archivedDate: null,
-          strength: 0,
-          strengthUnit: "",
-          externalProvider: "",
-          longTerm: true,
-          noSubstitutions: true,
-        },
-      ],
-    },
+    body: [
+      {
+        demographicNo: 1,
+        drugs: [
+          {
+            drugId: 2,
+            providerNo: 1,
+            brandName: "string",
+            takeMin: 1,
+            takeMax: 2,
+            rxDate: "2021-07-08T16:05:49.404Z",
+            endDate: "2021-07-08T16:05:49.404Z",
+            frequency: "",
+            duration: 0,
+            durationUnit: "days",
+            route: "",
+            method: "",
+            prn: false,
+            repeats: 0,
+            quantity: 0,
+            instructions: "string",
+            additionalInstructions: "",
+            archived: false,
+            archivedReason: "",
+            archivedDate: null,
+            strength: 0,
+            strengthUnit: "",
+            externalProvider: "",
+            longTerm: true,
+            noSubstitutions: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    method: "get",
+    url: "/api/v1/oscar/prescriptions",
   },
 
   // PATIENTS
-  { method: "get", url: "/api/v1/oscar/patients" },
   {
+    /*
+      /demographics
+      Add a new patient demographic record to the system.
+    */
     method: "post",
     url: "/api/v1/oscar/patients",
     body: {
       firstName: "James",
       lastName: "Alex",
-      email: "james.alex@gmail.com",
+      // email: "james@alex.com",
+      email: "jamesalex@gmail.com",
       sex: "M",
       dateOfBirth: "1978-12-31T00:00:00.000Z",
       address: {
@@ -78,9 +88,27 @@ const apis = [
       },
     },
   },
-  { method: "get", url: "/api/v1/oscar/patients/all" },
-  { method: "get", url: "/api/v1/oscar/patients/1" },
   {
+    /*
+      /demographics
+      Retrieves all patient demographics. In case limit or offset parameters are set to null or zero, the entire result set is returned.
+    */
+    method: "get",
+    url: "/api/v1/oscar/patients/all",
+  },
+
+  {
+    /*
+      /demographics
+      Retrieves 1 patient.
+    */
+    method: "get",
+    url: "/api/v1/oscar/patients/1",
+  },
+  {
+    /* 
+      /allergies/active 
+    */
     method: "get",
     url: "/api/v1/oscar/patients/1/allergies",
   },
@@ -100,6 +128,9 @@ const apis = [
     method: "get",
     url: "/api/v1/oscar/patients/1/labResults",
   },
+
+  // DEMOGRAPHICS
+  // { method: "get", url: "/api/v1/oscar/patients/:demographicNo/allergies" },
 ];
 
 const apiVersion = [
