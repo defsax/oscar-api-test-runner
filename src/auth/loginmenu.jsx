@@ -5,21 +5,36 @@ import "./css/button.css";
 import "./css/menu.css";
 
 export default function LoginMenu() {
-  const loginURL = [
-    "https://kennedy-dev1.gojitech.systems/api/v1/login?siteURL=" +
+  const server = [
+    "https://kennedy-dev1.gojitech.systems",
+    "https://kennedy-staging1.gojitech.systems",
+  ];
+  const suffix = [
+    "?siteURL=" +
       encodeURIComponent("https://goji-oscar1.gojitech.systems") +
       "&appVersion=dev",
-    "https://kennedy-staging1.gojitech.systems/api/v1/login",
+    "",
   ];
   const { state } = useContext(AuthContext);
 
   const [selected, setSelected] = useState({
     dev: true,
     staging: false,
-    server: loginURL[0],
+    server: server[0],
+    suffix: suffix[0],
   });
-  const [devProvNo, setDevProvNo] = useState("");
-  const [stagingProvNo, setStagingProvNo] = useState("");
+  const [devSignIn, setDevSignIn] = useState({
+    providerNo: "",
+    name: "",
+    pass: "",
+    pin: "",
+  });
+  const [stagingSignIn, setStagingSignIn] = useState({
+    providerNo: "",
+    name: "",
+    pass: "",
+    pin: "",
+  });
 
   let devButtonClass = selected.dev
     ? ".bottom-bar button button-selected"
@@ -36,17 +51,17 @@ export default function LoginMenu() {
         {selected.dev === true ? (
           <LoginBox
             key={"dev"}
-            provNo={devProvNo}
-            setProvNo={setDevProvNo}
-            server={selected.server}
+            signIn={devSignIn}
+            setSignIn={setDevSignIn}
+            url={{ server: selected.server, suffix: selected.suffix }}
             isAuthenticated={state.dev.isAuthenticated}
           />
         ) : (
           <LoginBox
             key={"staging"}
-            provNo={stagingProvNo}
-            setProvNo={setStagingProvNo}
-            server={selected.server}
+            signIn={stagingSignIn}
+            setSignIn={setStagingSignIn}
+            url={{ server: selected.server, suffix: selected.suffix }}
             isAuthenticated={state.staging.isAuthenticated}
           />
         )}
@@ -54,7 +69,12 @@ export default function LoginMenu() {
           <button
             className={devButtonClass}
             onClick={() => {
-              setSelected({ dev: true, staging: false, server: loginURL[0] });
+              setSelected({
+                dev: true,
+                staging: false,
+                server: server[0],
+                suffix: suffix[0],
+              });
             }}
           >
             dev
@@ -65,7 +85,8 @@ export default function LoginMenu() {
               setSelected({
                 dev: false,
                 staging: true,
-                server: loginURL[1],
+                server: server[1],
+                suffix: suffix[1],
               });
             }}
           >

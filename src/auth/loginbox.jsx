@@ -2,14 +2,18 @@ import LoginButton from "./loginbutton";
 import LogoutButton from "./logoutbutton";
 
 export default function LoginBox(props) {
-  const { server, provNo, setProvNo, isAuthenticated } = props;
+  const { url, signIn, setSignIn, isAuthenticated } = props;
   let currentServer = "";
 
-  if (server.search("dev") !== -1) {
+  if (url.server.search("dev") !== -1) {
     currentServer = "dev";
   } else {
     currentServer = "staging";
   }
+
+  const clearInput = function () {
+    setSignIn({});
+  };
 
   if (isAuthenticated === false) {
     return (
@@ -19,14 +23,38 @@ export default function LoginBox(props) {
           <input
             type="text"
             onChange={(e) => {
-              setProvNo(e.target.value);
+              setSignIn({ ...signIn, name: e.target.value });
             }}
-            value={provNo}
+            value={signIn.name || ""}
+            placeholder="Name"
+          />
+          <input
+            type="password"
+            onChange={(e) => {
+              setSignIn({ ...signIn, pass: e.target.value });
+            }}
+            value={signIn.pass || ""}
+            placeholder="Password"
+          />
+          <input
+            type="password"
+            onChange={(e) => {
+              setSignIn({ ...signIn, pin: e.target.value });
+            }}
+            value={signIn.pin || ""}
+            placeholder="PIN"
+          />
+          <input
+            type="text"
+            onChange={(e) => {
+              setSignIn({ ...signIn, providerNo: e.target.value });
+            }}
+            value={signIn.providerNo || ""}
             placeholder="ProviderNo"
           />
-        </form>
 
-        <LoginButton server={server} providerNo={provNo} />
+          <LoginButton url={url} credentials={signIn} clearInput={clearInput} />
+        </form>
       </div>
     );
   } else {

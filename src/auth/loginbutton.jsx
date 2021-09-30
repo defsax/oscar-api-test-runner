@@ -5,12 +5,63 @@ import { AuthContext } from "../App";
 
 import "../components/Nav/css/nav.css";
 
-export default function LoginButton(props) {
-  const { server, providerNo } = props;
+const getAuthToken = async function (url, providerNo, tokenId) {
+  try {
+    const response = await axios({
+      method: "post",
+      url: url.server + "/api/v1/login" + url.suffix,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${tokenId}`,
+      },
+      data: { token: tokenId, providerNo },
+    });
 
+    console.log("Token approved.");
+    console.log(response);
+
+    // if (url.server.search("dev") !== -1)
+    //   dispatch({ type: "DEVLOGIN", payload: response.data.profile });
+    // else dispatch({ type: "STAGINGLOGIN", payload: response.data.profile });
+
+    return response.data.profile;
+    // return response;
+  } catch (err) {
+    console.error("Token failed approval.", err);
+    return err;
+  }
+};
+
+const loginOscar = async function (url, token, credentials) {
+  try {
+    const response = await axios({
+      method: "post",
+      url: url.server + "/api/v1/oscar/login" + url.suffix,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        userName: credentials.name,
+        password: credentials.pass,
+        pin: credentials.pin,
+      },
+    });
+
+    console.log("Successful oscar login.");
+    console.log(response);
+    return true;
+  } catch (err) {
+    console.error("Oscar login failed.", err);
+    return false;
+  }
+};
+
+export default function LoginButton(props) {
+  const { url, credentials, clearInput } = props;
   const { state, dispatch } = useContext(AuthContext);
 
-  const gLoginSuccess = function (response) {
+  const gLoginSuccess = async function (response) {
     // 'ID: ' + profile.getId()
     // 'Full Name: ' + profile.getName()
     // 'Given Name: ' + profile.getGivenName()
@@ -19,29 +70,22 @@ export default function LoginButton(props) {
     // 'Email: ' + profile.getEmail()
 
     const currentUser = response.getBasicProfile().getGivenName();
-    console.log("successful login", currentUser);
+    console.log("Successful google login", currentUser);
 
-    axios({
-      method: "post",
-      url: server,
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${response.tokenId}`,
-      },
-      data: { token: response.tokenId, providerNo },
-    })
-      .then((response) => {
-        console.log("Token approved.");
-        console.log(response);
-
-        if (server.search("dev") !== -1)
-          dispatch({ type: "DEVLOGIN", payload: response.data.profile });
-        else dispatch({ type: "STAGINGLOGIN", payload: response.data.profile });
-      })
-      .catch((err) => {
-        console.error("token failed approval.", err);
-        return;
-      });
+    const profile = await getAuthToken(
+      url,
+      credentials.providerNo,
+      response.tokenId
+    );
+    if (profile) {
+      const success = await loginOscar(url, profile.jwt, credentials);
+      if (success) {
+        clearInput();
+        if (url.server.search("dev") !== -1)
+          dispatch({ type: "DEVLOGIN", payload: profile });
+        else dispatch({ type: "STAGINGLOGIN", payload: profile });
+      }
+    }
   };
 
   const gLoginFail = function (error) {
