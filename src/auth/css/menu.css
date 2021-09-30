@@ -14,6 +14,11 @@
   border: 0;
   margin: 0.5rem 0;
 }
+.login-menu form div {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+}
 
 .login-menu h2 {
   color: white;

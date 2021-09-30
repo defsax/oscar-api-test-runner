@@ -5,7 +5,7 @@ import { AuthContext } from "../App";
 
 import "../components/Nav/css/nav.css";
 
-const getAuthToken = async function (url, providerNo, tokenId) {
+const getAuthToken = async function (url, providerNo, tokenId, setError) {
   try {
     const response = await axios({
       method: "post",
@@ -17,22 +17,21 @@ const getAuthToken = async function (url, providerNo, tokenId) {
       data: { token: tokenId, providerNo },
     });
 
+    if (response.data.msg === "Wrong providerNo") {
+      throw new Error("Wrong providerNo");
+    }
+
     console.log("Token approved.");
     console.log(response);
 
-    // if (url.server.search("dev") !== -1)
-    //   dispatch({ type: "DEVLOGIN", payload: response.data.profile });
-    // else dispatch({ type: "STAGINGLOGIN", payload: response.data.profile });
-
     return response.data.profile;
-    // return response;
   } catch (err) {
-    console.error("Token failed approval.", err);
-    return err;
+    console.error("Token failed approval.", err.message);
+    setError("Token failed approval: " + err.message);
   }
 };
 
-const loginOscar = async function (url, token, credentials) {
+const loginOscar = async function (url, token, credentials, setError) {
   try {
     const response = await axios({
       method: "post",
@@ -52,33 +51,28 @@ const loginOscar = async function (url, token, credentials) {
     console.log(response);
     return true;
   } catch (err) {
-    console.error("Oscar login failed.", err);
+    console.error("Oscar login failed.", err.response);
+    setError(err.response.data.msg);
     return false;
   }
 };
 
 export default function LoginButton(props) {
-  const { url, credentials, clearInput } = props;
+  const { url, credentials, clearInput, setLoading, setError } = props;
   const { state, dispatch } = useContext(AuthContext);
 
   const gLoginSuccess = async function (response) {
-    // 'ID: ' + profile.getId()
-    // 'Full Name: ' + profile.getName()
-    // 'Given Name: ' + profile.getGivenName()
-    // 'Family Name: ' + profile.getFamilyName()
-    // 'Image URL: ' + profile.getImageUrl()
-    // 'Email: ' + profile.getEmail()
-
     const currentUser = response.getBasicProfile().getGivenName();
     console.log("Successful google login", currentUser);
 
     const profile = await getAuthToken(
       url,
       credentials.providerNo,
-      response.tokenId
+      response.tokenId,
+      setError
     );
     if (profile) {
-      const success = await loginOscar(url, profile.jwt, credentials);
+      const success = await loginOscar(url, profile.jwt, credentials, setError);
       if (success) {
         clearInput();
         if (url.server.search("dev") !== -1)
@@ -86,10 +80,12 @@ export default function LoginButton(props) {
         else dispatch({ type: "STAGINGLOGIN", payload: profile });
       }
     }
+    setLoading(false);
   };
 
   const gLoginFail = function (error) {
     console.log("Login failed", error);
+    setError(error);
   };
 
   return (
@@ -97,13 +93,18 @@ export default function LoginButton(props) {
       clientId={state.clientId}
       render={(renderProps) => (
         <button
-          onClick={renderProps.onClick}
+          onClick={() => {
+            renderProps.onClick();
+            // console.log("ONCLICK");
+            setLoading(true);
+          }}
           disabled={renderProps.disabled}
           className="link-item login-button"
         >
           Submit
         </button>
       )}
+      disabled={false}
       buttonText="Login"
       onSuccess={gLoginSuccess}
       onFailure={gLoginFail}

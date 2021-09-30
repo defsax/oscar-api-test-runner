@@ -1,7 +1,11 @@
+import { useState } from "react";
 import LoginButton from "./loginbutton";
 import LogoutButton from "./logoutbutton";
+import Loader from "react-loader-spinner";
 
 export default function LoginBox(props) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { url, signIn, setSignIn, isAuthenticated } = props;
   let currentServer = "";
 
@@ -52,8 +56,25 @@ export default function LoginBox(props) {
             value={signIn.providerNo || ""}
             placeholder="ProviderNo"
           />
-
-          <LoginButton url={url} credentials={signIn} clearInput={clearInput} />
+          {error ? <div>{error}</div> : null}
+          {loading ? (
+            <div>
+              <Loader
+                type="TailSpin"
+                color="rgb(0, 0, 0)"
+                height={30}
+                width={30}
+              />
+            </div>
+          ) : (
+            <LoginButton
+              url={url}
+              credentials={signIn}
+              clearInput={clearInput}
+              setLoading={setLoading}
+              setError={setError}
+            />
+          )}
         </form>
       </div>
     );
