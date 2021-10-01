@@ -56,7 +56,7 @@ export default function LoginBox(props) {
             value={signIn.providerNo || ""}
             placeholder="ProviderNo"
           />
-          {error ? <div>{error}</div> : null}
+          {error ? <div className={"login-error"}>{error}</div> : null}
           {loading ? (
             <div>
               <Loader

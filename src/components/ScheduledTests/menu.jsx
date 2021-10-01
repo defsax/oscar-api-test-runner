@@ -6,7 +6,7 @@ import "./css/menu.css";
 
 export default function Menu(props) {
   const { devResults, stagingResults } = props;
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
 
   return (
     <div className="menu">

@@ -95,8 +95,8 @@ export default function LoginButton(props) {
         <button
           onClick={() => {
             renderProps.onClick();
-            // console.log("ONCLICK");
             setLoading(true);
+            setError(null);
           }}
           disabled={renderProps.disabled}
           className="link-item login-button"
