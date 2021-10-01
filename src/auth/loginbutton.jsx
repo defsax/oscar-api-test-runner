@@ -1,96 +1,113 @@
 import axios from "axios";
-// import { useEffect } from "react";
+import { useContext } from "react";
 import GoogleLogin from "react-google-login";
-import useSession from "react-session-hook";
+import { AuthContext } from "../App";
 
 import "../components/Nav/css/nav.css";
 
-export default function LoginButton(props) {
-  const { clientId, setToken, server } = props;
-
-  const session = useSession();
-
-  const loginSuccess = function (response) {
-    // 'ID: ' + profile.getId()
-    // 'Full Name: ' + profile.getName()
-    // 'Given Name: ' + profile.getGivenName()
-    // 'Family Name: ' + profile.getFamilyName()
-    // 'Image URL: ' + profile.getImageUrl()
-    // 'Email: ' + profile.getEmail()
-
-    session.removeSession();
-    setToken("");
-
-    const currentUser = response.getBasicProfile().getGivenName();
-    console.log("successful login", currentUser);
-
-    const createSession = new Promise((resolve, reject) => {
-      axios
-        .get(server + "/api/v1/oscarrest/providers")
-        .then((res) => {
-          const data = res.data.result;
-          console.log("Success fetching providers.");
-
-          // Extract providerNo for current user
-          const providerNo = data.find((provider) => {
-            return provider.firstName.toLowerCase() === currentUser;
-          }).providerNo;
-
-          resolve(providerNo);
-        })
-        .catch((err) => {
-          console.log("Error fetching providers:", err);
-          reject(err);
-        });
+const getAuthToken = async function (url, providerNo, tokenId, setError) {
+  try {
+    const response = await axios({
+      method: "post",
+      url: url.server + "/api/v1/login" + url.suffix,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${tokenId}`,
+      },
+      data: { token: tokenId, providerNo },
     });
 
-    createSession
-      .then((providerNo) => {
-        axios({
-          method: "post",
-          url: server + "/api/v1/login",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${response.tokenId}`,
-          },
-          data: { token: response.tokenId, providerNo },
-        })
-          .then((response) => {
-            console.log("Token approved.");
-            setToken(response.data.profile.jwt);
-            console.log(response);
-            session.setSession({ token: response.data.profile.jwt });
-          })
-          .catch((err) => {
-            console.error("token failed approval.", err);
-            return;
-          });
-      })
-      .catch((err) => {
-        console.log("error verifying token", err);
-        return;
-      });
+    if (response.data.msg === "Wrong providerNo") {
+      throw new Error("Wrong providerNo");
+    }
+
+    console.log("Token approved.");
+    console.log(response);
+
+    return response.data.profile;
+  } catch (err) {
+    console.error("Token failed approval.", err.message);
+    setError("Token failed approval: " + err.message);
+  }
+};
+
+const loginOscar = async function (url, token, credentials, setError) {
+  try {
+    const response = await axios({
+      method: "post",
+      url: url.server + "/api/v1/oscar/login" + url.suffix,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      data: {
+        userName: credentials.name,
+        password: credentials.pass,
+        pin: credentials.pin,
+      },
+    });
+
+    console.log("Successful oscar login.");
+    console.log(response);
+    return true;
+  } catch (err) {
+    console.error("Oscar login failed.", err.response);
+    setError(err.response.data.msg);
+    return false;
+  }
+};
+
+export default function LoginButton(props) {
+  const { url, credentials, clearInput, setLoading, setError } = props;
+  const { state, dispatch } = useContext(AuthContext);
+
+  const gLoginSuccess = async function (response) {
+    const currentUser = response.getBasicProfile().getGivenName();
+    console.log("Successful google login", currentUser);
+
+    const profile = await getAuthToken(
+      url,
+      credentials.providerNo,
+      response.tokenId,
+      setError
+    );
+    if (profile) {
+      const success = await loginOscar(url, profile.jwt, credentials, setError);
+      if (success) {
+        clearInput();
+        if (url.server.search("dev") !== -1)
+          dispatch({ type: "DEVLOGIN", payload: profile });
+        else dispatch({ type: "STAGINGLOGIN", payload: profile });
+      }
+    }
+    setLoading(false);
   };
 
-  const loginFail = function (error) {
+  const gLoginFail = function (error) {
     console.log("Login failed", error);
+    setError(error);
   };
 
   return (
     <GoogleLogin
-      clientId={clientId}
+      clientId={state.clientId}
       render={(renderProps) => (
         <button
-          onClick={renderProps.onClick}
+          onClick={() => {
+            renderProps.onClick();
+            setLoading(true);
+            setError(null);
+          }}
           disabled={renderProps.disabled}
           className="link-item login-button"
         >
-          <h1>Login</h1>
+          Submit
         </button>
       )}
+      disabled={false}
       buttonText="Login"
-      onSuccess={loginSuccess}
-      onFailure={loginFail}
+      onSuccess={gLoginSuccess}
+      onFailure={gLoginFail}
       cookiePolicy={"single_host_origin"}
     />
   );

@@ -1,17 +1,32 @@
-import { React, useCallback, useEffect, useState } from "react";
+import {
+  React,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
+import { AuthContext } from "../../App";
 import axios from "axios";
 import StatusBox from "../statusbox";
 import "./css/listitem.css";
 
-export default function ApiItem(props) {
-  const { api, callBack, token, delay, server } = props;
+export default function ApiListItem(props) {
+  const { api, testCallBack, expandCallBack, delay, server } = props;
+  const { state } = useContext(AuthContext);
+  const stateRef = useRef(state);
+
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
@@ -21,10 +36,10 @@ export default function ApiItem(props) {
     const timer = setTimeout(() => {
       axios({
         method: api.method,
-        url: server.endpointURL + api.url,
+        url: server.endpointURL + api.url + server.suffix,
         data: api.body,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${stateRef.current.dev.token}`,
           Accept: "application/json",
         },
       })
@@ -33,9 +48,18 @@ export default function ApiItem(props) {
           console.log(res.data);
         })
         .catch((err) => {
-          if (err.response) setResponse(err.response);
-          else return null;
-          console.log(err.response);
+          if (err.response) {
+            console.log(err.response);
+
+            setResponse(err.response);
+          } else if (err.request) {
+            console.log(err.request);
+          } else {
+            console.log("Error", err.message);
+          }
+          console.log(err.config);
+
+          return null;
         })
         .then(() => {
           setShowMenu(true);
@@ -44,16 +68,17 @@ export default function ApiItem(props) {
         });
     }, delay * 1000);
     return () => clearTimeout(timer);
-  }, [api, token, delay, server]);
+  }, [api, delay, server]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
   useEffect(() => {
-    // Only register callback if component has a token
-    if (token) callBack({ queryAPI, expandContract });
-  }, [callBack, queryAPI, expandContract, token]);
+    // Always register callbacks
+    expandCallBack(expandContract);
+    testCallBack(queryAPI);
+  }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
 
   return (
     <div className="list-item">
@@ -91,6 +116,13 @@ export default function ApiItem(props) {
           <div className="flex-results-left">
             <p>Method: {api.method}</p>
             <p>URL: {server.endpointURL + api.url}</p>
+            {api.body ? (
+              <div>
+                <p>Body:</p>
+                <JSONPretty id="json-pretty" data={api.body}></JSONPretty>
+              </div>
+            ) : null}
+
             <p>Status: {JSON.stringify(response.status)}</p>
 
             <p>Data: </p>

@@ -9,7 +9,12 @@ nav {
 
 nav h1 {
   color: azure;
-  margin: 1rem;
+  padding: 1rem;
+}
+nav h4 {
+  color: azure;
+  padding: 1rem;
+  align-self: center;
 }
 
 .link-item {
