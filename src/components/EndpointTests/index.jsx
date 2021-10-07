@@ -37,7 +37,7 @@ const apis = [
       url: "/api/v1/oscar/prescriptions",
       body: [
         {
-          demographicNo: 41, // JESSE PINKMAN
+          demographicNo: 9, // DEMING / WALTER
           drugs: [
             {
               drugId: 34419,
