@@ -1,3 +1,4 @@
+// import { queryEqual } from "@firebase/firestore";
 import { useCallback, useRef } from "react";
 import ApiListItem from "./apilistitem";
 
@@ -25,11 +26,13 @@ export default function ApiList(props) {
     });
   });
 
-  // Called when user presses test button from index.jsx
+  // Called when user presses test all button from index.jsx
   testCallback(() => {
     // Calls all registered test functions from apilistitem.jsx
-    testRefs.current.forEach((test) => {
-      test();
+    testRefs.current.forEach(async (test) => {
+      console.log("before");
+      await test();
+      console.log("after");
     });
   });
 
@@ -39,7 +42,6 @@ export default function ApiList(props) {
         return (
           <ApiListItem
             key={i}
-            delay={i}
             api={api}
             expandCallBack={setExpandCallback}
             testCallBack={setTestCallback}
@@ -47,18 +49,6 @@ export default function ApiList(props) {
           />
         );
       })}
-      {/* {apis.map((api, i) => {
-        return (
-          <ApiListItem
-            key={i}
-            delay={i}
-            api={api}
-            expandCallBack={setExpandCallback}
-            testCallBack={setTestCallback}
-            server={server}
-          />
-        );
-      })} */}
     </div>
   );
 }

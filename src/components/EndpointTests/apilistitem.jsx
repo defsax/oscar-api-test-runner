@@ -10,12 +10,12 @@ import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
 import { AuthContext } from "../../App";
-import axios from "axios";
 import StatusBox from "../statusbox";
+import axiosQueue from "../../helpers/axios";
 import "./css/listitem.css";
 
 export default function ApiListItem(props) {
-  const { api, testCallBack, expandCallBack, delay, server } = props;
+  const { api, testCallBack, expandCallBack, server } = props;
   const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
 
@@ -33,42 +33,42 @@ export default function ApiListItem(props) {
   const queryAPI = useCallback(() => {
     setLoading(true);
 
-    const timer = setTimeout(() => {
-      axios({
-        method: api.method,
-        url: server.endpointURL + api.url + server.suffix,
-        data: api.body,
-        headers: {
-          Authorization: `Bearer ${stateRef.current.dev.token}`,
-          Accept: "application/json",
-        },
+    axiosQueue({
+      method: api.method,
+      url: server.endpointURL + api.url + server.suffix,
+      data: api.body,
+      headers: {
+        Authorization: `Bearer ${stateRef.current.dev.token}`,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        setResponse(res);
+        console.log(res.data);
       })
-        .then((res) => {
-          setResponse(res);
-          console.log(res.data);
-        })
-        .catch((err) => {
-          if (err.response) {
-            console.log(err.response);
+      .catch((err) => {
+        if (err.response) {
+          setResponse(err.response);
+          console.log(err.response);
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
+          console.log("Error", err.message);
+        }
+        console.log(err.config);
 
-            setResponse(err.response);
-          } else if (err.request) {
-            console.log(err.request);
-          } else {
-            console.log("Error", err.message);
-          }
-          console.log(err.config);
+        return null;
+      })
+      .then(() => {
+        setShowMenu(true);
+        setShowData(true);
+        setLoading(false);
 
-          return null;
-        })
-        .then(() => {
-          setShowMenu(true);
-          setShowData(true);
-          setLoading(false);
+        return new Promise((resolve) => {
+          resolve();
         });
-    }, delay * 1000);
-    return () => clearTimeout(timer);
-  }, [api, delay, server]);
+      });
+  }, [api, server]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);

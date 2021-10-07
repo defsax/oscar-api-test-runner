@@ -8,6 +8,8 @@ import {
 } from "react";
 import { AuthContext } from "../../App";
 import ApiList from "./apilist";
+import shuffle from "../../helpers/shuffle";
+
 import "./css/button.css";
 import "./css/menu.css";
 
@@ -136,7 +138,8 @@ const apis = [
 const apiVersion = [
   {
     apitype: "dev",
-    endpointURL: "https://kennedy-dev1.gojitech.systems",
+    endpointURL: "http://localhost:5000",
+    // endpointURL: "https://kennedy-dev1.gojitech.systems",
     suffix:
       "?siteURL=" +
       encodeURIComponent("https://goji-oscar1.gojitech.systems") +
@@ -162,6 +165,11 @@ export default function EndpointTestMenu() {
   const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [token, setToken] = useState(0);
+  const [shuffledAPIs, setShuffleAPIs] = useState([]);
+
+  useEffect(() => {
+    setShuffleAPIs(shuffle(apis));
+  }, []);
 
   // If selected server is dev, set token to dev token
   // Otherwise, set to staging
@@ -235,20 +243,20 @@ export default function EndpointTestMenu() {
       {toggle ? (
         <ApiList
           key={0}
-          apis={apis}
+          apis={shuffledAPIs}
+          token={token}
           server={server}
           expandCallback={setExpandCallback}
           testCallback={setTestCallback}
-          token={token}
         />
       ) : (
         <ApiList
           key={1}
-          apis={apis}
+          apis={shuffledAPIs}
+          token={token}
           server={server}
           expandCallback={setExpandCallback}
           testCallback={setTestCallback}
-          token={token}
         />
       )}
     </div>

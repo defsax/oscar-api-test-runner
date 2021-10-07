@@ -85,7 +85,7 @@ export default function LoginButton(props) {
 
   const gLoginFail = function (error) {
     console.log("Login failed", error);
-    setError(error);
+    setError(error.details);
   };
 
   return (
