@@ -7,6 +7,7 @@ import {
   useContext,
 } from "react";
 import { AuthContext } from "../../App";
+import { v4 as uuidv4 } from "uuid";
 import ApiList from "./apilist";
 import shuffle from "../../helpers/shuffle";
 
@@ -23,44 +24,53 @@ const apis = [
   // { method: "get", url: "/api/v1/oscarrest/notes/1" },
   // { method: "get", url: "/api/v1/oscarrest/patients" },
   // { method: "get", url: "/api/v1/oscarrest/auth" },
-  {
-    method: "post",
-    url: "/api/v1/oscar/prescriptions",
-    body: [
-      {
-        demographicNo: 1,
-        drugs: [
-          {
-            drugId: 2,
-            providerNo: 1,
-            brandName: "string",
-            takeMin: 1,
-            takeMax: 2,
-            rxDate: "2021-07-08T16:05:49.404Z",
-            endDate: "2021-07-08T16:05:49.404Z",
-            frequency: "",
-            duration: 0,
-            durationUnit: "days",
-            route: "",
-            method: "",
-            prn: false,
-            repeats: 0,
-            quantity: 0,
-            instructions: "string",
-            additionalInstructions: "",
-            archived: false,
-            archivedReason: "",
-            archivedDate: null,
-            strength: 0,
-            strengthUnit: "",
-            externalProvider: "",
-            longTerm: true,
-            noSubstitutions: true,
-          },
-        ],
-      },
-    ],
-  },
+  [
+    {
+      /* 
+        /allergies/active 
+      */
+      method: "get",
+      url: "/api/v1/oscar/patients/1/allergies",
+    },
+    {
+      method: "post",
+      url: "/api/v1/oscar/prescriptions",
+      body: [
+        {
+          demographicNo: 41, // JESSE PINKMAN
+          drugs: [
+            {
+              drugId: 34419,
+              brandName: "AMOXICILLIN CAPSULES BP 500MG",
+              providerNo: 217,
+              takeMin: 0,
+              takeMax: 0,
+              rxDate: "2021-10-07T00:00:00.000Z",
+              frequency: "day",
+              duration: 3,
+              durationUnit: "weeks",
+              route: "string",
+              method: "string",
+              prn: true,
+              repeats: 0,
+              quantity: 42,
+              instructions: "Take 2 pills every day for 3 weeks",
+              additionalInstructions: "",
+              archived: true,
+              archivedReason: "",
+              archivedDate: null,
+              strength: 0,
+              strengthUnit: "string",
+              externalProvider: "",
+              longTerm: true,
+              noSubstitutions: true,
+              endDate: "2021-10-28T00:00:00.000Z",
+            },
+          ],
+        },
+      ],
+    },
+  ],
   {
     method: "get",
     url: "/api/v1/oscar/prescriptions",
@@ -75,10 +85,12 @@ const apis = [
     method: "post",
     url: "/api/v1/oscar/patients",
     body: {
-      firstName: "James",
-      lastName: "Alex",
-      // email: "james@alex.com",
-      email: "jamesalex@gmail.com",
+      firstName: "Test",
+      lastName: "Patient",
+      email: "test.patient." + uuidv4() + "@gmail.com",
+      // firstName: "JAMES",
+      // lastName: "ALEX",
+      // email: "james.ale1x@gmail.com",
       sex: "M",
       dateOfBirth: "1978-12-31T00:00:00.000Z",
       address: {
@@ -107,13 +119,7 @@ const apis = [
     method: "get",
     url: "/api/v1/oscar/patients/1",
   },
-  {
-    /* 
-      /allergies/active 
-    */
-    method: "get",
-    url: "/api/v1/oscar/patients/1/allergies",
-  },
+
   {
     method: "get",
     url: "/api/v1/oscar/patients/1/measurements",
@@ -138,8 +144,8 @@ const apis = [
 const apiVersion = [
   {
     apitype: "dev",
-    endpointURL: "http://localhost:5000",
-    // endpointURL: "https://kennedy-dev1.gojitech.systems",
+    // endpointURL: "http://localhost:5000",
+    endpointURL: "https://kennedy-dev1.gojitech.systems",
     suffix:
       "?siteURL=" +
       encodeURIComponent("https://goji-oscar1.gojitech.systems") +
@@ -168,7 +174,7 @@ export default function EndpointTestMenu() {
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
-    setShuffleAPIs(shuffle(apis));
+    setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   // If selected server is dev, set token to dev token

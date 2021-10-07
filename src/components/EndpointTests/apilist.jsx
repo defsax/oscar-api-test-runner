@@ -30,9 +30,7 @@ export default function ApiList(props) {
   testCallback(() => {
     // Calls all registered test functions from apilistitem.jsx
     testRefs.current.forEach(async (test) => {
-      console.log("before");
       await test();
-      console.log("after");
     });
   });
 
