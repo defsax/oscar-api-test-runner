@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  // useMemo,
   useRef,
   useState,
 } from "react";
@@ -18,20 +19,37 @@ export default function ApiListItem(props) {
   const { api, testCallBack, expandCallBack, server } = props;
   const { state, dispatch } = useContext(AuthContext);
   const stateRef = useRef(state);
-  const dispatchRef = useRef(state);
+  const dispatchRef = useRef(dispatch);
+  // const apiRef = useRef(api);
 
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
 
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  // useEffect(() => {
+  //   apiRef.current = api;
+  // }, [api]);
 
   useEffect(() => {
     dispatchRef.current = dispatch;
   }, [dispatch]);
+
+  useEffect(() => {
+    stateRef.current = state;
+
+    const x = stateRef.current.apis.find(
+      (stateAPI) => stateAPI.id === api.id
+    ).result;
+
+    if (x !== undefined) setResponse(x);
+  }, [state, api]);
+
+  // const updateResults = useMemo(() => {
+  //   // console.log("useMemo");
+  //   // console.log("loading", loading);
+  //   return loading;
+  // }, [loading]);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
@@ -50,7 +68,7 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        setResponse(res);
+        // setResponse(res);
         console.log(res.data);
         return res;
       })
@@ -68,7 +86,8 @@ export default function ApiListItem(props) {
         return err.response;
       })
       .then((res) => {
-        console.log(res);
+        // setResponse(res);
+
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
@@ -76,10 +95,10 @@ export default function ApiListItem(props) {
           type: "ADDRESULT",
           payload: {
             id: api.id,
-            // url: url,
             result: res,
           },
         });
+        // console.log("updateResults", updateResults);
 
         return new Promise((resolve) => {
           resolve();
@@ -96,6 +115,8 @@ export default function ApiListItem(props) {
     expandCallBack(expandContract);
     testCallBack(queryAPI);
   }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
+
+  console.log("Api list item render", api.id);
 
   return (
     <div className="list-item">

@@ -18,6 +18,7 @@ export const apis = [
       id: 2,
       method: "get",
       url: "/api/v1/oscar/patients/1/allergies",
+      result: {},
     },
     {
       id: 3,
@@ -57,12 +58,14 @@ export const apis = [
           ],
         },
       ],
+      result: {},
     },
   ],
   {
     id: 4,
     method: "get",
     url: "/api/v1/oscar/prescriptions",
+    result: {},
   },
 
   // PATIENTS - Create, retrieve, get all
@@ -91,6 +94,7 @@ export const apis = [
           address: "92 Auburn Ave",
         },
       },
+      result: {},
     },
     {
       /*
@@ -100,6 +104,7 @@ export const apis = [
       id: 6,
       method: "get",
       url: "/api/v1/oscar/patients/1",
+      result: {},
     },
     {
       /*
@@ -109,27 +114,32 @@ export const apis = [
       id: 7,
       method: "get",
       url: "/api/v1/oscar/patients/all",
+      result: {},
     },
   ],
   {
     id: 8,
     method: "get",
     url: "/api/v1/oscar/patients/1/measurements",
+    result: {},
   },
   {
     id: 9,
     method: "get",
     url: "/api/v1/oscar/patients/1/documents",
+    result: {},
   },
   {
     id: 10,
     method: "get",
     url: "/api/v1/oscar/patients/1/forms",
+    result: {},
   },
   {
     id: 11,
     method: "get",
     url: "/api/v1/oscar/patients/1/labResults",
+    result: {},
   },
 
   // DEMOGRAPHICS

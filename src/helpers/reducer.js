@@ -37,14 +37,16 @@ export const reducer = (state, action) => {
     case "ADDRESULT":
       const results = state.apis.map((api) => {
         if (api.id === action.payload.id) {
-          console.log("working");
-          console.log(api.url);
-          return { ...api, results: action.payload.result };
+          // console.log("working");
+          // console.log(api.url);
+          // console.log(action.payload.result);
+          return { ...api, result: action.payload.result };
         }
 
         return api;
       });
-      console.log(action.payload);
+      // console.log(action.payload);
+      // console.log(results);
       return { ...state, apis: results };
 
     case "LOGOUT":

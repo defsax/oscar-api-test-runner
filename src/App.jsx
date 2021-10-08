@@ -34,6 +34,7 @@ function App() {
   }, [state, dispatch]);
 
   useEffect(() => {
+    // setResponse(res);
     const user = localStorage.getItem("user");
     const devJWT = localStorage.getItem("dev-token");
     const stagingJWT = localStorage.getItem("staging-token");
