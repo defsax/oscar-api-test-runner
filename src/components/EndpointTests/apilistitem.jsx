@@ -16,8 +16,9 @@ import "./css/listitem.css";
 
 export default function ApiListItem(props) {
   const { api, testCallBack, expandCallBack, server } = props;
-  const { state } = useContext(AuthContext);
+  const { state, dispatch } = useContext(AuthContext);
   const stateRef = useRef(state);
+  const dispatchRef = useRef(state);
 
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,14 +29,20 @@ export default function ApiListItem(props) {
     stateRef.current = state;
   }, [state]);
 
+  useEffect(() => {
+    dispatchRef.current = dispatch;
+  }, [dispatch]);
+
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
 
+    const url = server.endpointURL + api.url + server.suffix;
+
     axiosQueue({
       method: api.method,
-      url: server.endpointURL + api.url + server.suffix,
+      url: url,
       data: api.body,
       headers: {
         Authorization: `Bearer ${stateRef.current.dev.token}`,
@@ -45,6 +52,7 @@ export default function ApiListItem(props) {
       .then((res) => {
         setResponse(res);
         console.log(res.data);
+        return res;
       })
       .catch((err) => {
         if (err.response) {
@@ -57,12 +65,21 @@ export default function ApiListItem(props) {
         }
         console.log(err.config);
 
-        return null;
+        return err.response;
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
+        dispatchRef.current({
+          type: "ADDRESULT",
+          payload: {
+            id: api.id,
+            // url: url,
+            result: res,
+          },
+        });
 
         return new Promise((resolve) => {
           resolve();

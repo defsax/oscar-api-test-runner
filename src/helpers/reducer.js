@@ -1,7 +1,6 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
-      // console.log("Login dev dispatch action", action.payload.email);
       localStorage.setItem("user", action.payload.email);
       localStorage.setItem("dev-token", action.payload.jwt);
 
@@ -12,7 +11,6 @@ export const reducer = (state, action) => {
       };
 
     case "STAGINGLOGIN":
-      // console.log("Login staging dispatch action", action.payload.email);
       localStorage.setItem("user", action.payload.email);
       localStorage.setItem("staging-token", action.payload.jwt);
       return {
@@ -22,7 +20,6 @@ export const reducer = (state, action) => {
       };
 
     case "REFRESH":
-      // console.log("REFRESH type. payload:", action.payload);
       let devAuth = false;
       let stagingAuth = false;
       if (action.payload.devJWT) devAuth = true;
@@ -33,6 +30,22 @@ export const reducer = (state, action) => {
         dev: { isAuthenticated: devAuth, token: action.payload.devJWT },
         staging: { isAuthenticated: stagingAuth, token: action.payload.jwt },
       };
+
+    case "ADDAPIS":
+      return { ...state, apis: action.payload.apis };
+
+    case "ADDRESULT":
+      const results = state.apis.map((api) => {
+        if (api.id === action.payload.id) {
+          console.log("working");
+          console.log(api.url);
+          return { ...api, results: action.payload.result };
+        }
+
+        return api;
+      });
+      console.log(action.payload);
+      return { ...state, apis: results };
 
     case "LOGOUT":
       localStorage.clear();
