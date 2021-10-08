@@ -76,50 +76,49 @@ const apis = [
     url: "/api/v1/oscar/prescriptions",
   },
 
-  // PATIENTS
-  {
-    /*
+  // PATIENTS - Create, retrieve, get all
+  [
+    {
+      /*
       /demographics
       Add a new patient demographic record to the system.
     */
-    method: "post",
-    url: "/api/v1/oscar/patients",
-    body: {
-      firstName: "Test",
-      lastName: "Patient",
-      email: "test.patient." + uuidv4() + "@gmail.com",
-      // firstName: "JAMES",
-      // lastName: "ALEX",
-      // email: "james.ale1x@gmail.com",
-      sex: "M",
-      dateOfBirth: "1978-12-31T00:00:00.000Z",
-      address: {
-        province: "ON",
-        method: "post",
-        al: "M6H 2L9",
-        city: "Toronto",
-        address: "92 Auburn Ave",
+      method: "post",
+      url: "/api/v1/oscar/patients",
+      body: {
+        firstName: "Test",
+        lastName: "Patient",
+        email: "test.patient." + uuidv4() + "@gmail.com",
+        // firstName: "JAMES",
+        // lastName: "ALEX",
+        // email: "james.ale1x@gmail.com",
+        sex: "M",
+        dateOfBirth: "1978-12-31T00:00:00.000Z",
+        address: {
+          province: "ON",
+          postal: "M6H 2L9",
+          city: "Toronto",
+          address: "92 Auburn Ave",
+        },
       },
     },
-  },
-  {
-    /*
-      /demographics
-      Retrieves all patient demographics. In case limit or offset parameters are set to null or zero, the entire result set is returned.
-    */
-    method: "get",
-    url: "/api/v1/oscar/patients/all",
-  },
-
-  {
-    /*
+    {
+      /*
       /demographics
       Retrieves 1 patient.
     */
-    method: "get",
-    url: "/api/v1/oscar/patients/1",
-  },
-
+      method: "get",
+      url: "/api/v1/oscar/patients/1",
+    },
+    {
+      /*
+      /demographics
+      Retrieves all patient demographics. In case limit or offset parameters are set to null or zero, the entire result set is returned.
+    */
+      method: "get",
+      url: "/api/v1/oscar/patients/all",
+    },
+  ],
   {
     method: "get",
     url: "/api/v1/oscar/patients/1/measurements",
@@ -170,7 +169,7 @@ export default function EndpointTestMenu() {
   // Toggle between dev & staging
   const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const [token, setToken] = useState(0);
+  // const [token, setToken] = useState(0);
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
@@ -179,10 +178,10 @@ export default function EndpointTestMenu() {
 
   // If selected server is dev, set token to dev token
   // Otherwise, set to staging
-  useEffect(() => {
-    if (server.apitype === "dev") setToken(state.dev.token);
-    else if (server.apitype === "staging") setToken(state.staging.token);
-  }, [server, state]);
+  // useEffect(() => {
+  //   if (server.apitype === "dev") setToken(state.dev.token);
+  //   else if (server.apitype === "staging") setToken(state.staging.token);
+  // }, [server, state]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
@@ -250,7 +249,7 @@ export default function EndpointTestMenu() {
         <ApiList
           key={0}
           apis={shuffledAPIs}
-          token={token}
+          // token={token}
           server={server}
           expandCallback={setExpandCallback}
           testCallback={setTestCallback}
@@ -259,7 +258,7 @@ export default function EndpointTestMenu() {
         <ApiList
           key={1}
           apis={shuffledAPIs}
-          token={token}
+          // token={token}
           server={server}
           expandCallback={setExpandCallback}
           testCallback={setTestCallback}
