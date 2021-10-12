@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import ScheduledResults from "./components/ScheduledTests";
 import EndpointTestMenu from "./components/EndpointTests";
+import UserFlowMenu from "./components/UserFlowTests";
+import StressMenu from "./components/StressTests";
 import { reducer } from "./helpers/reducer";
 import Nav from "./components/Nav/nav";
 
@@ -47,8 +49,10 @@ function App() {
       <Router>
         <Nav />
         <Switch>
-          <Route exact path="/scheduled" render={() => <ScheduledResults />} />
           <Route exact path="/" render={() => <EndpointTestMenu />} />
+          <Route exact path="/scheduled" render={() => <ScheduledResults />} />
+          <Route exact path="/userflow" render={() => <UserFlowMenu />} />
+          <Route exact path="/stress" render={() => <StressMenu />} />
         </Switch>
       </Router>
     </AuthContext.Provider>

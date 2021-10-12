@@ -13,10 +13,10 @@ export default function TestMenu() {
         <Link to="/scheduled" className="link-item">
           <h1>Schedule</h1>
         </Link>
-        <Link to="/" className="link-item">
+        <Link to="/userflow" className="link-item">
           <h1>User Flow</h1>
         </Link>
-        <Link to="/scheduled" className="link-item">
+        <Link to="/stress" className="link-item">
           <h1>Stress</h1>
         </Link>
       </div>

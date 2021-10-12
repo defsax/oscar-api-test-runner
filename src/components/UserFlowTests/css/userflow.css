@@ -1,0 +1,11 @@
+.option-menu {
+  display: flex;
+}
+
+.flow-options {
+  display: none;
+  position: absolute;
+  background-color: rgb(214, 214, 214);
+  padding: 0rem 1rem;
+  /* right: 0; */
+}
