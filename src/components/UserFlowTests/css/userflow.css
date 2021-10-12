@@ -35,3 +35,7 @@
 .flow-select {
   min-width: 100px;
 }
+
+.flow-item {
+  margin: 1rem;
+}
