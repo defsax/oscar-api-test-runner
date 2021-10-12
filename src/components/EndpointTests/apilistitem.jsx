@@ -17,9 +17,9 @@ import "./css/listitem.css";
 
 export default function ApiListItem(props) {
   const { api, testCallBack, expandCallBack, server } = props;
-  const { state, dispatch } = useContext(AuthContext);
+  const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
-  const dispatchRef = useRef(dispatch);
+  // const dispatchRef = useRef(dispatch);
   // const apiRef = useRef(api);
 
   const [response, setResponse] = useState([]);
@@ -31,19 +31,19 @@ export default function ApiListItem(props) {
   //   apiRef.current = api;
   // }, [api]);
 
-  useEffect(() => {
-    dispatchRef.current = dispatch;
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatchRef.current = dispatch;
+  // }, [dispatch]);
 
-  useEffect(() => {
-    stateRef.current = state;
+  // useEffect(() => {
+  //   stateRef.current = state;
 
-    const x = stateRef.current.apis.find(
-      (stateAPI) => stateAPI.id === api.id
-    ).result;
+  //   const x = stateRef.current.apis.find(
+  //     (stateAPI) => stateAPI.id === api.id
+  //   ).result;
 
-    if (x !== undefined) setResponse(x);
-  }, [state, api]);
+  //   if (x !== undefined) setResponse(x);
+  // }, [state, api]);
 
   // const updateResults = useMemo(() => {
   //   // console.log("useMemo");
@@ -68,13 +68,13 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        // setResponse(res);
+        console.log(`Success calling ${api.url}`);
         console.log(res.data);
         return res;
       })
       .catch((err) => {
+        console.log(`Failed calling ${api.url}`);
         if (err.response) {
-          setResponse(err.response);
           console.log(err.response);
         } else if (err.request) {
           console.log(err.request);
@@ -86,18 +86,17 @@ export default function ApiListItem(props) {
         return err.response;
       })
       .then((res) => {
-        // setResponse(res);
-
+        setResponse(res);
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
-        dispatchRef.current({
-          type: "ADDRESULT",
-          payload: {
-            id: api.id,
-            result: res,
-          },
-        });
+        // dispatchRef.current({
+        //   type: "ADDRESULT",
+        //   payload: {
+        //     id: api.id,
+        //     result: res,
+        //   },
+        // });
         // console.log("updateResults", updateResults);
 
         return new Promise((resolve) => {
@@ -116,7 +115,7 @@ export default function ApiListItem(props) {
     testCallBack(queryAPI);
   }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
 
-  console.log("Api list item render", api.id);
+  console.log("Api list item render");
 
   return (
     <div className="list-item">

@@ -6,8 +6,8 @@ import EndpointTestMenu from "./components/EndpointTests";
 import { reducer } from "./helpers/reducer";
 import Nav from "./components/Nav/nav";
 
-import { apis } from "./static/apilist";
-import shuffle from "./helpers/shuffle";
+// import { apis } from "./static/apilist";
+// import shuffle from "./helpers/shuffle";
 
 export const AuthContext = createContext("");
 
@@ -18,7 +18,7 @@ function App() {
     user: null,
     clientId:
       "76829730434-l9ujra2di0m69fppvpflfc5hfb3jpvn7.apps.googleusercontent.com",
-    apis: shuffle(apis).flat(),
+    // apis: shuffle(apis).flat(),
   });
 
   // useEffect(() => {

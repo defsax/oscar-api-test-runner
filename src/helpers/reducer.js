@@ -31,23 +31,18 @@ export const reducer = (state, action) => {
         staging: { isAuthenticated: stagingAuth, token: action.payload.jwt },
       };
 
-    case "ADDAPIS":
-      return { ...state, apis: action.payload.apis };
+    // case "ADDAPIS":
+    //   return { ...state, apis: action.payload.apis };
 
-    case "ADDRESULT":
-      const results = state.apis.map((api) => {
-        if (api.id === action.payload.id) {
-          // console.log("working");
-          // console.log(api.url);
-          // console.log(action.payload.result);
-          return { ...api, result: action.payload.result };
-        }
+    // case "ADDRESULT":
+    //   const results = state.apis.map((api) => {
+    //     if (api.id === action.payload.id) {
+    //       return { ...api, result: action.payload.result };
+    //     }
 
-        return api;
-      });
-      // console.log(action.payload);
-      // console.log(results);
-      return { ...state, apis: results };
+    //     return api;
+    //   });
+    //   return { ...state, apis: results };
 
     case "LOGOUT":
       localStorage.clear();

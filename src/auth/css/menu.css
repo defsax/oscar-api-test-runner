@@ -40,17 +40,17 @@
   outline: none;
 }
 
-.dropdown:hover .login-menu {
+.menu-dropdown:hover .login-menu {
   display: block;
 }
 
-.dropdown {
+.menu-dropdown {
   /* background-color: rgb(84, 136, 231); */
   position: relative;
   display: inline-block;
 }
 
-.dropdown:hover h1 {
+.menu-dropdown:hover h1 {
   background-color: rgb(84, 136, 231);
   cursor: pointer;
 }
