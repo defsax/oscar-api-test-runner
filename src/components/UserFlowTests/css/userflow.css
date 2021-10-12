@@ -1,11 +1,37 @@
 .option-menu {
   display: flex;
+  justify-content: flex-end;
+}
+
+.flow-arrow-button {
+  border: none;
+  background-color: rgb(214, 214, 214);
+
+  border-radius: 0px 8px 8px 0px;
+  height: 100%;
+  width: 100%;
 }
 
 .flow-options {
   display: none;
   position: absolute;
   background-color: rgb(214, 214, 214);
-  padding: 0rem 1rem;
+  flex-direction: column;
+  min-width: inherit;
+  /* padding: 0rem 1rem; */
   /* right: 0; */
+}
+
+.flow-options button {
+  padding: 0.5rem;
+  border: none;
+  text-align: end;
+}
+
+.flow-options button:hover {
+  background-color: rgb(214, 214, 214);
+}
+
+.flow-select {
+  min-width: 100px;
 }

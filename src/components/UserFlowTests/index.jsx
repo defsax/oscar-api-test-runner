@@ -1,19 +1,27 @@
 import { React, useEffect, useState } from "react";
+import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 
 import "./css/userflow.css";
+import UserFlowList from "./userflowlist";
 
 export default function UserFlowMenu() {
   // Toggle between dev & staging
   const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [styles, setStyles] = useState({});
+  const [flow, setFlow] = useState({
+    flow: "prescription",
+    apis: PrescriptionFlow.flat(),
+  });
 
   useEffect(() => {
     console.log(expanded);
     // setStyles({ display: "none" });
   }, [expanded]);
 
-  console.log("user flow render");
+  // console.log(PrescriptionFlow);
+
+  // console.log("user flow render");
   return (
     <div className="menu">
       <h1>Oscar API User Flow Testing</h1>
@@ -55,30 +63,62 @@ export default function UserFlowMenu() {
             Test
           </button>
 
-          <div>
+          <div className={"flow-select"}>
             <button
-              className={"arrow-button"}
+              className={"flow-arrow-button"}
               onClick={() => {
                 expanded ? setExpanded(false) : setExpanded(true);
                 expanded
                   ? setStyles({ display: "none" })
-                  : setStyles({ display: "block" });
+                  : setStyles({ display: "flex" });
               }}
             >
               <div className={"option-menu"}>
-                <p>prescription</p>
+                <p>{flow.flow}</p>
                 {expanded ? <p>▲</p> : <p>▼</p>}
               </div>
             </button>
             <div style={styles} className={"flow-options"}>
-              <p>prescription</p>
-              <p>patient</p>
-              <p>other</p>
+              {flow.flow !== "prescription" ? (
+                <button
+                  onClick={() => {
+                    setFlow({
+                      flow: "prescription",
+                      apis: PrescriptionFlow,
+                    });
+                    expanded ? setExpanded(false) : setExpanded(true);
+                    expanded
+                      ? setStyles({ display: "none" })
+                      : setStyles({ display: "flex" });
+                  }}
+                >
+                  prescription
+                </button>
+              ) : null}
+
+              {flow.flow !== "patient" ? (
+                <button
+                  onClick={() => {
+                    setFlow({
+                      flow: "patient",
+                      apis: PatientFlow,
+                    });
+                    expanded ? setExpanded(false) : setExpanded(true);
+                    expanded
+                      ? setStyles({ display: "none" })
+                      : setStyles({ display: "flex" });
+                  }}
+                >
+                  patient
+                </button>
+              ) : null}
+              <button>other</button>
             </div>
           </div>
         </div>
       </div>
       <hr />
+      <UserFlowList apis={flow.apis} />
     </div>
   );
 }
