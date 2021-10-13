@@ -149,14 +149,15 @@ export const PatientFlow = [
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/allergies",
+    url: "/api/v1/oscar/patients/all",
+    suffix: "",
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients",
-    suffix: "/all",
+    url: "/api/v1/oscar/patients/",
+    suffix: "/allergies",
   },
+
   {
     method: "get",
     url: "/api/v1/oscar/patients/",

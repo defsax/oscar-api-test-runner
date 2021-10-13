@@ -90,15 +90,6 @@ export default function ApiListItem(props) {
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
-        // dispatchRef.current({
-        //   type: "ADDRESULT",
-        //   payload: {
-        //     id: api.id,
-        //     result: res,
-        //   },
-        // });
-        // console.log("updateResults", updateResults);
-
         return new Promise((resolve) => {
           resolve();
         });
