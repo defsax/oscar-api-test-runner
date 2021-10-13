@@ -1,9 +1,11 @@
-import { React, useCallback, useRef, useState } from "react";
+import { React, useCallback, useEffect, useRef, useState } from "react";
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
 import UserFlowListItem from "./userflowlistitem";
 
 import "./css/userflow.css";
+// import axios from "axios";
+// import ApiListItem from "../EndpointTests/apilistitem";
 
 export default function UserFlowMenu() {
   // Toggle between dev & staging
@@ -12,11 +14,16 @@ export default function UserFlowMenu() {
   const [expandAll, setExpandAll] = useState(false);
   const [styles, setStyles] = useState({});
   const [server, setServer] = useState(apiVersion[0]);
+  const [id, setId] = useState(0);
 
   const [flow, setFlow] = useState({
     flow: "prescription",
-    apis: PrescriptionFlow.flat(),
+    apis: PrescriptionFlow,
   });
+
+  useEffect(() => {
+    console.log(flow);
+  }, [flow]);
 
   const expandRefs = useRef([]);
   const setExpandCallback = useCallback((callback) => {
@@ -46,6 +53,8 @@ export default function UserFlowMenu() {
         expandCallback={setExpandCallback}
         testCallback={setTestCallback}
         server={server}
+        id={id}
+        setId={setId}
       />
     );
   };
@@ -91,7 +100,7 @@ export default function UserFlowMenu() {
               setStyles({ display: "none" });
 
               testRefs.current.forEach(async (test) => {
-                await test();
+                await test(id);
               });
             }}
           >
@@ -161,8 +170,20 @@ export default function UserFlowMenu() {
       </div>
       <hr />
 
-      {flow.flow === "prescription" ? flow.apis.map(renderFlowItem) : null}
-      {flow.flow === "patient" ? flow.apis.map(renderFlowItem) : null}
+      {flow.flow === "prescription" ? (
+        <div>
+          <UserFlowListItem
+            api={flow.apis.post}
+            expandCallback={setExpandCallback}
+            testCallback={setTestCallback}
+            server={server}
+            id={id}
+            setId={setId}
+          />
+          {flow.apis.apiList.map(renderFlowItem)}
+        </div>
+      ) : null}
+      {flow.flow === "patient" ? flow.apis.apiList.map(renderFlowItem) : null}
     </div>
   );
 }

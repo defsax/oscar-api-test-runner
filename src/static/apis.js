@@ -123,8 +123,8 @@ export const apis = [
   },
 ];
 
-export const PatientFlow = [
-  {
+export const PatientFlow = {
+  post: {
     method: "post",
     url: "/api/v1/oscar/patients",
     suffix: "",
@@ -142,46 +142,54 @@ export const PatientFlow = [
       },
     },
   },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "",
-  },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/all",
-    suffix: "",
-  },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/allergies",
-  },
+  apiList: [
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: "",
+      suffix: "",
+    },
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/all",
+      suffix: "",
+    },
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: ":id",
+      suffix: "/allergies",
+    },
 
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/measurements",
-  },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/documents",
-  },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/forms",
-  },
-  {
-    method: "get",
-    url: "/api/v1/oscar/patients/",
-    suffix: "/labResults",
-  },
-];
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: ":id",
+      suffix: "/measurements",
+    },
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: ":id",
+      suffix: "/documents",
+    },
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: ":id",
+      suffix: "/forms",
+    },
+    {
+      method: "get",
+      url: "/api/v1/oscar/patients/",
+      id: ":id",
+      suffix: "/labResults",
+    },
+  ],
+};
 
-export const PrescriptionFlow = [
-  {
+export const PrescriptionFlow = {
+  post: {
     method: "post",
     url: "/api/v1/oscar/prescriptions",
     body: [
@@ -219,9 +227,10 @@ export const PrescriptionFlow = [
       },
     ],
   },
-
-  {
-    method: "get",
-    url: "/api/v1/oscar/prescriptions",
-  },
-];
+  apiList: [
+    {
+      method: "get",
+      url: "/api/v1/oscar/prescriptions",
+    },
+  ],
+};

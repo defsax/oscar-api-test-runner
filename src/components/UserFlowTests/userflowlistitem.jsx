@@ -6,11 +6,13 @@ import axiosQueue from "../../helpers/axios";
 import StatusBox from "../statusbox";
 
 export default function UserFlowListItem(props) {
-  const { api, server, expandCallback, testCallback } = props;
+  const { api, server, expandCallback, testCallback, id, setId } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState({});
+
+  // const [id, setId] = useState(0);
 
   const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
@@ -18,6 +20,10 @@ export default function UserFlowListItem(props) {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  useEffect(() => {
+    console.log("id changed", id);
+  }, [id]);
 
   // useEffect(() => {
   //   return () => {
@@ -34,49 +40,66 @@ export default function UserFlowListItem(props) {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
-  const queryAPI = useCallback(() => {
-    setResponse({});
-    setLoading(true);
+  const queryAPI = useCallback(
+    (idNo) => {
+      // setResponse({});
+      setLoading(true);
+      // console.log(idNo);
 
-    const url = server.endpointURL + api.url + server.suffix;
+      const url = server.endpointURL + api.url + server.suffix;
+      if (api.id) {
+        console.log(api.id);
+      } else {
+        console.log("no api id", api.url + server.suffix);
+      }
+      console.log(id);
 
-    axiosQueue({
-      method: api.method,
-      url: url,
-      data: api.body,
-      headers: {
-        Authorization: `Bearer ${stateRef.current.dev.token}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => {
-        console.log(`Success calling ${api.url}`);
-        console.log(res.data);
-        return res;
+      axiosQueue({
+        method: api.method,
+        url: url,
+        data: api.body,
+        headers: {
+          Authorization: `Bearer ${stateRef.current.dev.token}`,
+          Accept: "application/json",
+        },
       })
-      .catch((err) => {
-        console.log(`Failed calling ${api.url}`);
-        if (err.response) {
-          console.log(err.response);
-        } else if (err.request) {
-          console.log(err.request);
-        } else {
-          console.log("Error", err.message);
-        }
-        console.log(err.config);
+        .then((res) => {
+          console.log(`Success calling ${api.url}`);
+          console.log(res.data);
+          if (
+            api.method === "post" &&
+            res.data.result.demographicNo !== undefined
+          ) {
+            setId(res.data.result.demographicNo);
+          }
 
-        return err.response;
-      })
-      .then((res) => {
-        setResponse(res);
-        setShowMenu(true);
-        setShowData(true);
-        setLoading(false);
-        return new Promise((resolve) => {
-          resolve();
+          return res;
+        })
+        .catch((err) => {
+          console.log(`Failed calling ${api.url}`);
+          if (err.response) {
+            console.log(err.response);
+          } else if (err.request) {
+            console.log(err.request);
+          } else {
+            console.log("Error", err.message);
+          }
+          console.log(err.config);
+
+          return err.response;
+        })
+        .then((res) => {
+          setResponse(res);
+          setShowMenu(true);
+          setShowData(true);
+          setLoading(false);
+          return new Promise((resolve) => {
+            resolve();
+          });
         });
-      });
-  }, [api, server]);
+    },
+    [api, server, id, setId]
+  );
 
   useEffect(() => {
     // Always register callbacks
@@ -120,7 +143,7 @@ export default function UserFlowListItem(props) {
         <div className="test-options">
           <div className="flex-results-left">
             <p>
-              <b>URL:</b> {server.endpointURL + api.url}
+              <b>URL:</b> {server.endpointURL + api.url + server.suffix}
             </p>
             {api.body ? (
               <div>
