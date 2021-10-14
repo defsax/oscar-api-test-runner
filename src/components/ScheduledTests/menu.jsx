@@ -3,6 +3,7 @@ import MenuItem from "./menuitem";
 import Loader from "react-loader-spinner";
 
 import "./css/menu.css";
+import ServerToggle from "../general/servertoggle";
 
 export default function Menu(props) {
   const { devResults, stagingResults } = props;
@@ -12,7 +13,7 @@ export default function Menu(props) {
     <div className="menu">
       <h1>Oscar API Scheduled Test Results</h1>
       <div className={"flex-row"}>
-        <div className={"flex-left"}>
+        {/* <div className={"flex-left"}>
           <button
             className={"button server-button dev-button"}
             onClick={() => {
@@ -31,7 +32,12 @@ export default function Menu(props) {
           >
             staging
           </button>
-        </div>
+        </div> */}
+        <ServerToggle
+          // setServer={setServer}
+          setToggle={setToggle}
+          toggle={toggle}
+        />
       </div>
       <hr />
       {toggle ? (

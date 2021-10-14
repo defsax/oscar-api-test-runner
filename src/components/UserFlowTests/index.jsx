@@ -9,8 +9,8 @@ import {
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
 import axiosQueue from "../../helpers/axios";
-
 import UserFlowListItem from "./userflowlistitem";
+import ServerToggle from "../general/servertoggle";
 
 import "./css/userflow.css";
 import axios from "axios";
@@ -45,10 +45,22 @@ export default function UserFlowMenu() {
   const handleExpand = () => {
     if (expanded) {
       setExpanded(false);
-      setStyles({ display: "none" });
+      setStyles({
+        ...styles,
+        flowOptions: { display: "none" },
+        flowArrowButton: {
+          "border-radius": "0px 8px 8px 0px",
+        },
+      });
     } else {
       setExpanded(true);
-      setStyles({ display: "flex" });
+      setStyles({
+        ...styles,
+        flowOptions: { display: "flex" },
+        flowArrowButton: {
+          "border-radius": "0px 8px 0px 0px",
+        },
+      });
     }
   };
 
@@ -104,9 +116,9 @@ export default function UserFlowMenu() {
         // setShowMenu(true);
         // setShowData(true);
         // setLoading(false);
-        return new Promise((resolve) => {
-          resolve();
-        });
+        // return new Promise((resolve) => {
+        //   resolve();
+        // });
       });
   };
 
@@ -130,7 +142,6 @@ export default function UserFlowMenu() {
       // If testing, for example, patients
       if (postReq.data.result.demographicNo) {
         list.apiList.map(async (api) => {
-          // console.log(api);
           if (api.idRequired) {
             const url =
               server.endpointURL +
@@ -169,40 +180,25 @@ export default function UserFlowMenu() {
       <h1>Oscar API User Flow Testing</h1>
 
       <div className={"flex-row"}>
-        <div className={"flex-left"}>
-          <button
-            className={"button server-button dev-button"}
-            onClick={() => {
-              setServer(apiVersion[0]);
-              setToggle(!toggle);
-              // testRefs.current = [];
-            }}
-            disabled={toggle}
-          >
-            dev
-          </button>
-
-          <button
-            className={"button server-button staging-button"}
-            onClick={() => {
-              setServer(apiVersion[1]);
-              setToggle(!toggle);
-              // testRefs.current = [];
-            }}
-            disabled={!toggle}
-          >
-            staging
-          </button>
-        </div>
+        <ServerToggle
+          setServer={setServer}
+          setToggle={setToggle}
+          toggle={toggle}
+        />
 
         <div className={"flex-right"}>
-          {/* The Test All button calls each registered function:  */}
           <button
             className={"button test-all-button"}
             onClick={() => {
               setExpandAll(true);
               setExpanded(false);
-              setStyles({ display: "none" });
+              setStyles({
+                ...styles,
+                flowOptions: { display: "none" },
+                flowArrowButton: {
+                  "border-radius": "0px 8px 8px 0px",
+                },
+              });
               handleFlow(flow.apis);
             }}
           >
@@ -211,6 +207,7 @@ export default function UserFlowMenu() {
 
           <div className={"flow-select"}>
             <button
+              style={styles.flowArrowButton}
               className={"flow-arrow-button"}
               onClick={() => {
                 handleExpand();
@@ -222,12 +219,10 @@ export default function UserFlowMenu() {
               </div>
             </button>
 
-            <div style={styles} className={"flow-options"}>
+            <div style={styles.flowOptions} className={"flow-options"}>
               {flow.flow !== "prescription" ? (
                 <button
                   onClick={() => {
-                    // testRefs.current = [];
-
                     handleExpand();
                     setFlow({
                       flow: "prescription",
@@ -242,8 +237,6 @@ export default function UserFlowMenu() {
               {flow.flow !== "patient" ? (
                 <button
                   onClick={() => {
-                    // testRefs.current = [];
-
                     handleExpand();
                     setFlow({
                       flow: "patient",
@@ -254,6 +247,12 @@ export default function UserFlowMenu() {
                   patient
                 </button>
               ) : null}
+              <button>notes</button>
+              <button>transcriptions</button>
+              <button>appointments</button>
+              <button>templates</button>
+              <button>soapnotes</button>
+              <button>consults</button>
             </div>
           </div>
           <button
