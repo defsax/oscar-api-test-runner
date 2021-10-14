@@ -62,3 +62,18 @@
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 }
+
+.flow-collapse-data-button {
+  position: sticky;
+  left: 100vw;
+  top: 94vh;
+  width: 100%;
+  transform: translateX(2px);
+  border: none;
+  border-radius: 8px 8px 8px 8px;
+  background-color: rgb(214, 214, 214);
+  font-size: x-large;
+
+  display: flex;
+  justify-content: center;
+}

@@ -125,9 +125,7 @@ export const apis = [
 
 export const PatientFlow = {
   post: {
-    method: "post",
     url: "/api/v1/oscar/patients",
-    suffix: "",
     body: {
       firstName: "Test",
       lastName: "Patient",
@@ -146,43 +144,44 @@ export const PatientFlow = {
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: "",
+      idRequired: false,
       suffix: "",
     },
-    {
-      method: "get",
-      url: "/api/v1/oscar/patients/all",
-      suffix: "",
-    },
+    // {
+    //   method: "get",
+    //   url: "/api/v1/oscar/patients/all",
+    //   idRequired: false,
+    //   suffix: "",
+    // },
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: ":id",
+      idRequired: true,
       suffix: "/allergies",
     },
 
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: ":id",
+      idRequired: true,
       suffix: "/measurements",
     },
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: ":id",
+      idRequired: true,
       suffix: "/documents",
     },
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: ":id",
+      idRequired: true,
       suffix: "/forms",
     },
     {
       method: "get",
       url: "/api/v1/oscar/patients/",
-      id: ":id",
+      idRequired: true,
       suffix: "/labResults",
     },
   ],
@@ -190,7 +189,6 @@ export const PatientFlow = {
 
 export const PrescriptionFlow = {
   post: {
-    method: "post",
     url: "/api/v1/oscar/prescriptions",
     body: [
       {
@@ -231,6 +229,7 @@ export const PrescriptionFlow = {
     {
       method: "get",
       url: "/api/v1/oscar/prescriptions",
+      idRequired: false,
     },
   ],
 };
