@@ -1,5 +1,4 @@
 import { React, useRef, useState, useCallback, useEffect } from "react";
-// import { AuthContext } from "../../App";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
 import shuffle from "../../helpers/shuffle";
