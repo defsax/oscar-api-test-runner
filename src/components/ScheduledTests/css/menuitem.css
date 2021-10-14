@@ -26,6 +26,8 @@
 
 .result-box {
   padding: 1rem;
+  border: 2px solid rgb(214, 214, 214);
+  border-style: none solid solid solid;
 }
 
 .pass-fail-container {

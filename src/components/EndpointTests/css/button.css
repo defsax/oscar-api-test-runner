@@ -22,9 +22,10 @@
 .arrow-button {
   border: none;
   background-color: rgb(214, 214, 214);
-  font-size: x-large;
-  padding: 0 0.5rem;
+  /* font-size: x-large; */
+  /* padding: 0 0.5rem; */
   border-radius: 0px 8px 8px 0px;
+  height: 100%;
 }
 .arrow-button:hover {
   color: rgba(0, 0, 0, 0.61);

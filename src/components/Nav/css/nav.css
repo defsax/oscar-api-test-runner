@@ -13,16 +13,11 @@ nav h1 {
 }
 nav h4 {
   color: azure;
-  padding: 1rem;
-  align-self: center;
+  padding: 1.3rem;
 }
 
 .link-item {
   text-decoration: none;
-}
-
-.link-item:hover {
-  background-color: rgb(84, 136, 231);
 }
 
 .float-left {

@@ -44,7 +44,7 @@ export default function LoginMenu() {
     : ".bottom-bar button button-unselected";
 
   return (
-    <div className={"dropdown"}>
+    <div className={"menu-dropdown"}>
       <h1>☰</h1>
 
       <div className={"login-menu"}>
