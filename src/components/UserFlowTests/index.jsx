@@ -14,7 +14,7 @@ export default function UserFlowMenu() {
   const [expandAll, setExpandAll] = useState(false);
   const [styles, setStyles] = useState({});
   const [server, setServer] = useState(apiVersion[0]);
-  const [id, setId] = useState(0);
+  const [results, setResults] = useState([]);
 
   const [flow, setFlow] = useState({
     flow: "prescription",
@@ -53,11 +53,61 @@ export default function UserFlowMenu() {
         expandCallback={setExpandCallback}
         testCallback={setTestCallback}
         server={server}
-        id={id}
-        setId={setId}
+        setResults={setResults}
       />
     );
   };
+
+  // const queryAPI = () => {
+  //   // setResponse({});
+  //   setLoading(true);
+  //   // console.log(idNo);
+
+  //   const url = server.endpointURL + api.url + server.suffix;
+  //   if (api.id) {
+  //     console.log(api.id);
+  //   } else {
+  //     console.log("no api id", api.url + server.suffix);
+  //   }
+
+  //   axiosQueue({
+  //     method: api.method,
+  //     url: url,
+  //     data: api.body,
+  //     headers: {
+  //       Authorization: `Bearer ${stateRef.current.dev.token}`,
+  //       Accept: "application/json",
+  //     },
+  //   })
+  //     .then((res) => {
+  //       console.log(`Success calling ${api.url}`);
+  //       console.log(res.data);
+
+  //       return res;
+  //     })
+  //     .catch((err) => {
+  //       console.log(`Failed calling ${api.url}`);
+  //       if (err.response) {
+  //         console.log(err.response);
+  //       } else if (err.request) {
+  //         console.log(err.request);
+  //       } else {
+  //         console.log("Error", err.message);
+  //       }
+  //       console.log(err.config);
+
+  //       return err.response;
+  //     })
+  //     .then((res) => {
+  //       setResponse(res);
+  //       setShowMenu(true);
+  //       setShowData(true);
+  //       setLoading(false);
+  //       return new Promise((resolve) => {
+  //         resolve();
+  //       });
+  //     });
+  // };
 
   return (
     <div className="menu">
@@ -100,7 +150,7 @@ export default function UserFlowMenu() {
               setStyles({ display: "none" });
 
               testRefs.current.forEach(async (test) => {
-                await test(id);
+                await test();
               });
             }}
           >
@@ -177,8 +227,6 @@ export default function UserFlowMenu() {
             expandCallback={setExpandCallback}
             testCallback={setTestCallback}
             server={server}
-            id={id}
-            setId={setId}
           />
           {flow.apis.apiList.map(renderFlowItem)}
         </div>

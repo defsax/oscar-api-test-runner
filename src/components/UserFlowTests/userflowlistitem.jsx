@@ -6,7 +6,7 @@ import axiosQueue from "../../helpers/axios";
 import StatusBox from "../statusbox";
 
 export default function UserFlowListItem(props) {
-  const { api, server, expandCallback, testCallback, id, setId } = props;
+  const { api, server, expandCallback, testCallback, setResults } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,9 +21,9 @@ export default function UserFlowListItem(props) {
     stateRef.current = state;
   }, [state]);
 
-  useEffect(() => {
-    console.log("id changed", id);
-  }, [id]);
+  // useEffect(() => {
+  //   console.log("id changed", id);
+  // }, [id]);
 
   // useEffect(() => {
   //   return () => {
@@ -40,66 +40,56 @@ export default function UserFlowListItem(props) {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
-  const queryAPI = useCallback(
-    (idNo) => {
-      // setResponse({});
-      setLoading(true);
-      // console.log(idNo);
+  const queryAPI = useCallback(() => {
+    // setResponse({});
+    setLoading(true);
+    // console.log(idNo);
 
-      const url = server.endpointURL + api.url + server.suffix;
-      if (api.id) {
-        console.log(api.id);
-      } else {
-        console.log("no api id", api.url + server.suffix);
-      }
-      console.log(id);
+    const url = server.endpointURL + api.url + server.suffix;
+    if (api.id) {
+      console.log(api.id);
+    } else {
+      console.log("no api id", api.url + server.suffix);
+    }
 
-      axiosQueue({
-        method: api.method,
-        url: url,
-        data: api.body,
-        headers: {
-          Authorization: `Bearer ${stateRef.current.dev.token}`,
-          Accept: "application/json",
-        },
+    axiosQueue({
+      method: api.method,
+      url: url,
+      data: api.body,
+      headers: {
+        Authorization: `Bearer ${stateRef.current.dev.token}`,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        console.log(`Success calling ${api.url}`);
+        console.log(res.data);
+
+        return res;
       })
-        .then((res) => {
-          console.log(`Success calling ${api.url}`);
-          console.log(res.data);
-          if (
-            api.method === "post" &&
-            res.data.result.demographicNo !== undefined
-          ) {
-            setId(res.data.result.demographicNo);
-          }
+      .catch((err) => {
+        console.log(`Failed calling ${api.url}`);
+        if (err.response) {
+          console.log(err.response);
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
+          console.log("Error", err.message);
+        }
+        console.log(err.config);
 
-          return res;
-        })
-        .catch((err) => {
-          console.log(`Failed calling ${api.url}`);
-          if (err.response) {
-            console.log(err.response);
-          } else if (err.request) {
-            console.log(err.request);
-          } else {
-            console.log("Error", err.message);
-          }
-          console.log(err.config);
-
-          return err.response;
-        })
-        .then((res) => {
-          setResponse(res);
-          setShowMenu(true);
-          setShowData(true);
-          setLoading(false);
-          return new Promise((resolve) => {
-            resolve();
-          });
+        return err.response;
+      })
+      .then((res) => {
+        setResponse(res);
+        setShowMenu(true);
+        setShowData(true);
+        setLoading(false);
+        return new Promise((resolve) => {
+          resolve();
         });
-    },
-    [api, server, id, setId]
-  );
+      });
+  }, [api, server]);
 
   useEffect(() => {
     // Always register callbacks
@@ -164,7 +154,11 @@ export default function UserFlowListItem(props) {
             </p>
 
             {showData ? (
-              <JSONPretty id="json-pretty" data={response.data}></JSONPretty>
+              <JSONPretty
+                id="json-pretty"
+                themeClassName="custom-json-pretty"
+                data={response.data}
+              ></JSONPretty>
             ) : null}
           </div>
           <div className="flex-results-right">
