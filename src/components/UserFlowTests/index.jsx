@@ -8,9 +8,9 @@ import {
 } from "react";
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
-import axiosQueue from "../../helpers/axios";
 import UserFlowListItem from "./userflowlistitem";
 import ServerToggle from "../general/servertoggle";
+import queryAPI from "./helpers/queryapi";
 
 import "./css/userflow.css";
 import axios from "axios";
@@ -76,53 +76,9 @@ export default function UserFlowMenu() {
     );
   };
 
-  const sendReq = async (api, url, displayURL) => {
-    console.log(api);
-    axiosQueue({
-      method: api.method,
-      url: url,
-      data: api.body,
-      headers: {
-        Authorization: `Bearer ${stateRef.current.dev.token}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => {
-        console.log(`Success calling ${url}`);
-        // console.log(res.data);
-
-        return res;
-      })
-      .catch((err) => {
-        console.log(`Failed calling ${url}`);
-        // if (err.response) {
-        //   console.log(err.response);
-        // } else if (err.request) {
-        //   console.log(err.request);
-        // } else {
-        //   console.log("Error", err.message);
-        // }
-        // console.log(err.config);
-
-        return err.response;
-      })
-      .then((res) => {
-        // console.log(res);
-
-        setResults((oldResults) => [
-          ...oldResults,
-          { result: res, url: displayURL },
-        ]);
-        // setShowMenu(true);
-        // setShowData(true);
-        // setLoading(false);
-        // return new Promise((resolve) => {
-        //   resolve();
-        // });
-      });
-  };
-
   const handleFlow = async (list) => {
+    const token = stateRef.current.dev.token;
+
     try {
       const postReq = await axios({
         method: "POST",
@@ -153,25 +109,32 @@ export default function UserFlowMenu() {
             const displayURL =
               api.url + postReq.data.result.demographicNo + api.suffix;
             console.log(url);
-            return await sendReq(api, url, displayURL);
+            return await queryAPI(api, url, displayURL, token, setResults);
           } else {
             const url = server.endpointURL + api.url + server.suffix;
             console.log(url);
             const displayURL = api.url;
-            return await sendReq(api, url, displayURL);
+            return await queryAPI(api, url, displayURL, token, setResults);
           }
         });
       } else {
         list.apiList.map(async (api) => {
-          return await sendReq(
+          return await queryAPI(
             api,
             server.endpointURL + api.url + server.suffix,
-            api.url
+            api.url,
+            token,
+            setResults
           );
         });
       }
     } catch (e) {
       console.error(e);
+      console.log(e.response);
+      setResults((oldResults) => [
+        ...oldResults,
+        { result: e.response, url: "/url" },
+      ]);
     }
   };
 
