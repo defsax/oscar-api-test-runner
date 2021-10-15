@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import JSONPretty from "react-json-pretty";
+// import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 import moment from "moment";
 import "./css/menuitem.css";
@@ -88,7 +88,8 @@ export default function MenuItem(props) {
                   <b>Data: </b>
                 </p>
 
-                <JSONPretty id="json-pretty" data={result.data}></JSONPretty>
+                {/* <JSONPretty id="json-pretty" data={result.data}></JSONPretty> */}
+                <pre>{JSON.stringify(result.data, null, 2)}</pre>
               </div>
             ))}
           </div>

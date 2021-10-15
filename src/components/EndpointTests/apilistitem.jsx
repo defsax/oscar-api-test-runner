@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import JSONPretty from "react-json-pretty";
 import Loader from "react-loader-spinner";
 
 import { AuthContext } from "../../App";
@@ -121,7 +120,9 @@ export default function ApiListItem(props) {
             <h2>
               <b>({server.apitype})</b>
             </h2>
-            <h2 style={{ marginLeft: ".5rem" }}>{api.url}</h2>
+            <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
+              {api.url}
+            </h2>
           </div>
           {loading ? (
             <Loader
@@ -147,7 +148,8 @@ export default function ApiListItem(props) {
             {api.body ? (
               <div>
                 <p>Body:</p>
-                <JSONPretty id="json-pretty" data={api.body}></JSONPretty>
+
+                <pre>{JSON.stringify(api.body, null, 2)}</pre>
               </div>
             ) : null}
 
@@ -156,11 +158,7 @@ export default function ApiListItem(props) {
             <p>Data: </p>
 
             {showData ? (
-              <JSONPretty
-                id="json-pretty"
-                themeClassName="custom-json-pretty"
-                data={response.data}
-              ></JSONPretty>
+              <pre>{JSON.stringify(response.data, null, 2)}</pre>
             ) : null}
           </div>
           <div className="flex-results-right">

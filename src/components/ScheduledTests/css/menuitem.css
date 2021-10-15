@@ -59,6 +59,7 @@
 
 .result-item p {
   text-align: left;
+  word-break: break-word;
 }
 
 .loading-results {

@@ -18,7 +18,7 @@ export default function Nav() {
 
       <div className="float-right">
         {state.user ? (
-          <h4>
+          <h4 className={"user-id"}>
             {state.user} ({state.dev.isAuthenticated ? "dev" : null}
             {state.dev.isAuthenticated && state.staging.isAuthenticated
               ? " / "

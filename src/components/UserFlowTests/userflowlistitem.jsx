@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import JSONPretty from "react-json-pretty";
 import StatusBox from "../statusbox";
 
 export default function UserFlowListItem(props) {
@@ -27,7 +26,10 @@ export default function UserFlowListItem(props) {
         <div className={"button-contents"}>
           <div className={"flex-left"}>
             <h2>
-              <b>({result.config.method})</b> {api}
+              <b>({result.config.method})</b>
+            </h2>
+            <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
+              {api}
             </h2>
           </div>
 
@@ -49,7 +51,8 @@ export default function UserFlowListItem(props) {
                 <p>
                   <b>Body:</b>
                 </p>
-                <JSONPretty id="json-pretty" data={body}></JSONPretty>
+
+                <pre>{JSON.stringify(body, null, 2)}</pre>
               </div>
             ) : null}
 
@@ -58,11 +61,7 @@ export default function UserFlowListItem(props) {
             </p>
 
             {showData ? (
-              <JSONPretty
-                id="json-pretty"
-                themeClassName="custom-json-pretty"
-                data={result.data}
-              ></JSONPretty>
+              <pre>{JSON.stringify(result.data, null, 2)}</pre>
             ) : null}
           </div>
           <div className="flex-results-right">
