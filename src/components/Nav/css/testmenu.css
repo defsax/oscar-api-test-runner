@@ -13,6 +13,7 @@
 
 .test-dropdown {
   display: inline-block;
+  margin: auto;
 }
 
 .test-dropdown:hover h4 {

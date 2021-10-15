@@ -48,6 +48,7 @@
   /* background-color: rgb(84, 136, 231); */
   position: relative;
   display: inline-block;
+  margin: auto;
 }
 
 .menu-dropdown:hover h1 {

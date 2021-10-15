@@ -10,10 +10,12 @@ nav {
 nav h1 {
   color: azure;
   padding: 1rem;
+  margin: auto;
 }
 nav h4 {
   color: azure;
   padding: 1.3rem;
+  margin: auto;
 }
 
 .link-item {
@@ -26,4 +28,33 @@ nav h4 {
 
 .float-right {
   display: flex;
+}
+.user-id {
+  display: block;
+}
+
+@media only screen and (max-width: 700px) {
+  nav {
+    font-size: x-small;
+  }
+  /* .float-left {
+    font-size: x-small;
+  } */
+  .float-left h1 {
+    padding: 0 0 0 1rem;
+  }
+  /* .float-right {
+    font-size: x-small;
+  } */
+  .float-left h1 {
+    padding: 0 0 0 1rem;
+  }
+
+  nav h4 {
+    padding: 1.2rem 0.2rem 1.2rem 0.2rem;
+  }
+
+  .user-id {
+    display: none;
+  }
 }
