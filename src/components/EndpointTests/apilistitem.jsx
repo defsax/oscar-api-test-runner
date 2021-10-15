@@ -156,7 +156,11 @@ export default function ApiListItem(props) {
             <p>Data: </p>
 
             {showData ? (
-              <JSONPretty id="json-pretty" data={response.data}></JSONPretty>
+              <JSONPretty
+                id="json-pretty"
+                themeClassName="custom-json-pretty"
+                data={response.data}
+              ></JSONPretty>
             ) : null}
           </div>
           <div className="flex-results-right">

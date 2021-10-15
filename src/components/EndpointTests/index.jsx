@@ -3,6 +3,7 @@ import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
 import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
+import ServerToggle from "../general/servertoggle";
 
 import "./css/button.css";
 import "./css/menu.css";
@@ -47,29 +48,11 @@ export default function EndpointTestMenu() {
       <h1>Oscar API Endpoint Testing</h1>
 
       <div className={"flex-row"}>
-        <div className={"flex-left"}>
-          <button
-            className={"button server-button dev-button"}
-            onClick={() => {
-              setServer(apiVersion[0]);
-              setToggle(!toggle);
-            }}
-            disabled={toggle}
-          >
-            dev
-          </button>
-
-          <button
-            className={"button server-button staging-button"}
-            onClick={() => {
-              setServer(apiVersion[1]);
-              setToggle(!toggle);
-            }}
-            disabled={!toggle}
-          >
-            staging
-          </button>
-        </div>
+        <ServerToggle
+          setServer={setServer}
+          setToggle={setToggle}
+          toggle={toggle}
+        />
 
         <div className={"flex-right"}>
           {/* The Test All button calls each registered function:  */}

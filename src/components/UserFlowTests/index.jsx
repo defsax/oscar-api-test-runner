@@ -1,11 +1,20 @@
-import { React, useCallback, useEffect, useRef, useState } from "react";
+import {
+  React,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
 import UserFlowListItem from "./userflowlistitem";
+import ServerToggle from "../general/servertoggle";
+import queryAPI from "./helpers/queryapi";
 
 import "./css/userflow.css";
-// import axios from "axios";
-// import ApiListItem from "../EndpointTests/apilistitem";
+import axios from "axios";
+import { AuthContext } from "../../App";
 
 export default function UserFlowMenu() {
   // Toggle between dev & staging
@@ -14,49 +23,119 @@ export default function UserFlowMenu() {
   const [expandAll, setExpandAll] = useState(false);
   const [styles, setStyles] = useState({});
   const [server, setServer] = useState(apiVersion[0]);
-  const [id, setId] = useState(0);
+  const [results, setResults] = useState([]);
+
+  const { state } = useContext(AuthContext);
+  const stateRef = useRef(state);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const [flow, setFlow] = useState({
     flow: "prescription",
     apis: PrescriptionFlow,
   });
 
-  useEffect(() => {
-    console.log(flow);
-  }, [flow]);
-
   const expandRefs = useRef([]);
   const setExpandCallback = useCallback((callback) => {
     expandRefs.current.push(callback);
   }, []);
 
-  const testRefs = useRef([]);
-  const setTestCallback = useCallback((callback) => {
-    testRefs.current.push(callback);
-  }, []);
-
   const handleExpand = () => {
     if (expanded) {
       setExpanded(false);
-      setStyles({ display: "none" });
+      setStyles({
+        ...styles,
+        flowOptions: { display: "none" },
+        flowArrowButton: {
+          "border-radius": "0px 8px 8px 0px",
+        },
+      });
     } else {
       setExpanded(true);
-      setStyles({ display: "flex" });
+      setStyles({
+        ...styles,
+        flowOptions: { display: "flex" },
+        flowArrowButton: {
+          "border-radius": "0px 8px 0px 0px",
+        },
+      });
     }
   };
 
-  const renderFlowItem = (api, i) => {
+  const renderFlowItem = (res, i) => {
     return (
       <UserFlowListItem
         key={i}
-        api={api}
+        result={res.result}
+        api={res.url}
+        body={res.body}
         expandCallback={setExpandCallback}
-        testCallback={setTestCallback}
-        server={server}
-        id={id}
-        setId={setId}
       />
     );
+  };
+
+  const handleFlow = async (list) => {
+    const token = stateRef.current.dev.token;
+
+    try {
+      const postReq = await axios({
+        method: "POST",
+        url: server.endpointURL + list.post.url + server.suffix,
+        data: list.post.body,
+        headers: {
+          Authorization: `Bearer ${stateRef.current.dev.token}`,
+          Accept: "application/json",
+        },
+      });
+      console.log({ postReq, url: list.post.url });
+      setResults((oldResults) => [
+        ...oldResults,
+        { result: postReq, url: list.post.url, body: list.post.body },
+      ]);
+
+      // If testing, for example, patients
+      if (postReq.data.result.demographicNo) {
+        list.apiList.map(async (api) => {
+          if (api.idRequired) {
+            const url =
+              server.endpointURL +
+              api.url +
+              postReq.data.result.demographicNo +
+              api.suffix +
+              server.suffix;
+
+            const displayURL =
+              api.url + postReq.data.result.demographicNo + api.suffix;
+            console.log(url);
+            return await queryAPI(api, url, displayURL, token, setResults);
+          } else {
+            const url = server.endpointURL + api.url + server.suffix;
+            console.log(url);
+            const displayURL = api.url;
+            return await queryAPI(api, url, displayURL, token, setResults);
+          }
+        });
+      } else {
+        list.apiList.map(async (api) => {
+          return await queryAPI(
+            api,
+            server.endpointURL + api.url + server.suffix,
+            api.url,
+            token,
+            setResults
+          );
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      console.log(e.response);
+      setResults((oldResults) => [
+        ...oldResults,
+        { result: e.response, url: "/url" },
+      ]);
+    }
   };
 
   return (
@@ -64,44 +143,26 @@ export default function UserFlowMenu() {
       <h1>Oscar API User Flow Testing</h1>
 
       <div className={"flex-row"}>
-        <div className={"flex-left"}>
-          <button
-            className={"button server-button dev-button"}
-            onClick={() => {
-              setServer(apiVersion[0]);
-              setToggle(!toggle);
-              testRefs.current = [];
-            }}
-            disabled={toggle}
-          >
-            dev
-          </button>
-
-          <button
-            className={"button server-button staging-button"}
-            onClick={() => {
-              setServer(apiVersion[1]);
-              setToggle(!toggle);
-              testRefs.current = [];
-            }}
-            disabled={!toggle}
-          >
-            staging
-          </button>
-        </div>
+        <ServerToggle
+          setServer={setServer}
+          setToggle={setToggle}
+          toggle={toggle}
+        />
 
         <div className={"flex-right"}>
-          {/* The Test All button calls each registered function:  */}
           <button
             className={"button test-all-button"}
             onClick={() => {
               setExpandAll(true);
               setExpanded(false);
-              setStyles({ display: "none" });
-
-              testRefs.current.forEach(async (test) => {
-                await test(id);
+              setStyles({
+                ...styles,
+                flowOptions: { display: "none" },
+                flowArrowButton: {
+                  "border-radius": "0px 8px 8px 0px",
+                },
               });
+              handleFlow(flow.apis);
             }}
           >
             Test
@@ -109,6 +170,7 @@ export default function UserFlowMenu() {
 
           <div className={"flow-select"}>
             <button
+              style={styles.flowArrowButton}
               className={"flow-arrow-button"}
               onClick={() => {
                 handleExpand();
@@ -120,12 +182,10 @@ export default function UserFlowMenu() {
               </div>
             </button>
 
-            <div style={styles} className={"flow-options"}>
+            <div style={styles.flowOptions} className={"flow-options"}>
               {flow.flow !== "prescription" ? (
                 <button
                   onClick={() => {
-                    testRefs.current = [];
-
                     handleExpand();
                     setFlow({
                       flow: "prescription",
@@ -140,8 +200,6 @@ export default function UserFlowMenu() {
               {flow.flow !== "patient" ? (
                 <button
                   onClick={() => {
-                    testRefs.current = [];
-
                     handleExpand();
                     setFlow({
                       flow: "patient",
@@ -152,7 +210,12 @@ export default function UserFlowMenu() {
                   patient
                 </button>
               ) : null}
-              {/* <button>other</button> */}
+              <button>notes</button>
+              <button>transcriptions</button>
+              <button>appointments</button>
+              <button>templates</button>
+              <button>soapnotes</button>
+              <button>consults</button>
             </div>
           </div>
           <button
@@ -170,20 +233,7 @@ export default function UserFlowMenu() {
       </div>
       <hr />
 
-      {flow.flow === "prescription" ? (
-        <div>
-          <UserFlowListItem
-            api={flow.apis.post}
-            expandCallback={setExpandCallback}
-            testCallback={setTestCallback}
-            server={server}
-            id={id}
-            setId={setId}
-          />
-          {flow.apis.apiList.map(renderFlowItem)}
-        </div>
-      ) : null}
-      {flow.flow === "patient" ? flow.apis.apiList.map(renderFlowItem) : null}
+      {results ? results.map(renderFlowItem) : null}
     </div>
   );
 }
