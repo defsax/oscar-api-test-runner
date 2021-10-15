@@ -121,7 +121,9 @@ export default function ApiListItem(props) {
             <h2>
               <b>({server.apitype})</b>
             </h2>
-            <h2 style={{ marginLeft: ".5rem" }}>{api.url}</h2>
+            <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
+              {api.url}
+            </h2>
           </div>
           {loading ? (
             <Loader

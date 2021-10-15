@@ -12,5 +12,5 @@
 
 .flex-results-left {
   flex-grow: 2;
-  overflow-wrap: anywhere;
+  word-break: break-word;
 }
