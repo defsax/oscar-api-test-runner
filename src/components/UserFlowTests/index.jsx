@@ -38,6 +38,10 @@ export default function UserFlowMenu() {
     apis: PrescriptionFlow,
   });
 
+  // useEffect(() => {
+  //   console.log(results);
+  // }, [results]);
+
   const expandRefs = useRef([]);
   const setExpandCallback = useCallback((callback) => {
     expandRefs.current.push(callback);
@@ -70,7 +74,7 @@ export default function UserFlowMenu() {
       <UserFlowListItem
         key={i}
         result={res.result}
-        api={res.url}
+        api={res.api}
         body={res.body}
         expandCallback={setExpandCallback}
       />
@@ -80,62 +84,75 @@ export default function UserFlowMenu() {
   const handleFlow = async (list) => {
     const token = stateRef.current.dev.token;
 
-    if (list.post.func) {
-      list.post.func();
+    if (list.post.refreshId) {
+      list.post.refreshId();
     }
+
+    console.log(list.post);
+    console.log(list.post.getURL(server));
 
     try {
       const postReq = await axios({
         method: "POST",
-        url: server.endpointURL + list.post.url + server.suffix,
+        url: list.post.getURL(server),
         data: list.post.body,
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
-      console.log({ postReq, url: list.post.url });
+
       setResults((oldResults) => [
         ...oldResults,
-        { result: postReq, url: list.post.url, body: list.post.body },
+        { result: postReq, api: list.post.api, body: list.post.body },
       ]);
 
-      // If testing, for example, patients
-      if (postReq.data.result.demographicNo) {
-        list.apiList.map(async (api) => {
-          if (api.idRequired) {
-            const url =
-              server.endpointURL +
-              api.url +
-              postReq.data.result.demographicNo +
-              api.suffix +
-              server.suffix;
+      list.apiList.map(async (api) => {
+        // If there's a demographicNO, set api with #
+        if (api.setAPI) api.setAPI(postReq.data.result.demographicNo);
 
-            const displayURL =
-              api.url + postReq.data.result.demographicNo + api.suffix;
-            console.log(url);
-            return await queryAPI(api, url, displayURL, token, setResults);
-          } else {
-            const url = server.endpointURL + api.url + server.suffix;
-            console.log(url);
-            const displayURL = api.url;
-            return await queryAPI(api, url, displayURL, token, setResults);
-          }
-        });
-      } else {
-        list.apiList.map(async (api) => {
-          return await queryAPI(
-            api,
-            server.endpointURL + api.url + server.suffix,
-            api.url,
-            token,
-            setResults
-          );
-        });
-      }
+        return await queryAPI(api, server, token, setResults);
+      });
+
+      // If testing, for example, patients
+      // if (postReq.data.result.demographicNo) {
+      //   list.apiList.map(async (api) => {
+      //     if (api.idRequired) {
+      //       const url =
+      //         server.endpointURL +
+      //         api.url +
+      //         postReq.data.result.demographicNo +
+      //         api.suffix +
+      //         server.suffix;
+
+      //       const displayURL =
+      //         api.url + postReq.data.result.demographicNo + api.suffix;
+      //       console.log(url);
+      //       return await queryAPI(api, url, displayURL, token, setResults);
+      //     } else {
+      //       const url = server.endpointURL + api.url + server.suffix;
+      //       console.log(url);
+      //       const displayURL = api.url;
+      //       return await queryAPI(api, url, displayURL, token, setResults);
+      //     }
+      //   });
+      // } else {
+      //   // testing prescriptions
+      //   list.apiList.map(async (api) => {
+      //     return await queryAPI(
+      //       api,
+      //       server.endpointURL + api.url + server.suffix + api.suffix,
+      //       api.url,
+      //       token,
+      //       setResults
+      //     );
+      //   });
+      // }
     } catch (e) {
-      console.error(e);
-      console.log(e.response);
+      // console.error(e);
+      // console.log(e.response);
+      console.log("error", e.response);
+
       setResults((oldResults) => [
         ...oldResults,
         { result: e.response, url: "/url" },

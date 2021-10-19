@@ -75,7 +75,6 @@ export const apis = [
         firstName: "Test",
         lastName: "Patient",
         email: "test.patient." + uuidv4() + "@gmail.com",
-
         sex: "M",
         dateOfBirth: "1978-12-31T00:00:00.000Z",
         address: {
@@ -124,9 +123,13 @@ export const apis = [
   },
 ];
 
+const formulateURL = function (server) {
+  return server.endpointURL + this.api + server.suffix;
+};
+
 export const PatientFlow = {
   post: {
-    url: "/api/v1/oscar/patients",
+    api: "/api/v1/oscar/patients",
     body: {
       firstName: "Test",
       lastName: "Patient",
@@ -140,60 +143,68 @@ export const PatientFlow = {
         address: "92 Auburn Ave",
       },
     },
-    func: function () {
+    refreshId: function () {
       this.body.email = "test.patient." + uuidv4() + "@gmail.com";
     },
+
+    getURL: formulateURL,
   },
   apiList: [
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: false,
-      suffix: "",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id;
+      },
+      getURL: formulateURL,
     },
     // {
     //   method: "get",
-    //   url: "/api/v1/oscar/patients/all",
+    //   api: "/api/v1/oscar/patients/all",
     //   idRequired: false,
     //   suffix: "",
     // },
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: true,
-      suffix: "/allergies",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id + "/allergies";
+      },
+      getURL: formulateURL,
     },
 
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: true,
-      suffix: "/measurements",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id + "/measurements";
+      },
+      getURL: formulateURL,
     },
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: true,
-      suffix: "/documents",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id + "/documents";
+      },
+      getURL: formulateURL,
     },
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: true,
-      suffix: "/forms",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id + "/forms";
+      },
+      getURL: formulateURL,
     },
     {
-      method: "get",
-      url: "/api/v1/oscar/patients/",
-      idRequired: true,
-      suffix: "/labResults",
+      api: "",
+      setAPI: function (id) {
+        this.api = "/api/v1/oscar/patients/" + id + "/labResults";
+      },
+      getURL: formulateURL,
     },
   ],
 };
 
 export const PrescriptionFlow = {
   post: {
-    url: "/api/v1/oscar/prescriptions",
+    api: "/api/v1/oscar/prescriptions",
     body: [
       {
         demographicNo: 9, // DEMING / WALTER
@@ -228,12 +239,21 @@ export const PrescriptionFlow = {
         ],
       },
     ],
+
+    getURL: formulateURL,
   },
   apiList: [
     {
-      method: "get",
-      url: "/api/v1/oscar/prescriptions",
-      idRequired: false,
+      api: "/api/v1/oscar/prescriptions",
+
+      getURL: function (server) {
+        return (
+          server.endpointURL +
+          this.api +
+          server.suffix +
+          "&demographicNo=9&providerNo=8"
+        );
+      },
     },
   ],
 };
