@@ -75,9 +75,7 @@ export const apis = [
         firstName: "Test",
         lastName: "Patient",
         email: "test.patient." + uuidv4() + "@gmail.com",
-        // firstName: "JAMES",
-        // lastName: "ALEX",
-        // email: "james.ale1x@gmail.com",
+
         sex: "M",
         dateOfBirth: "1978-12-31T00:00:00.000Z",
         address: {
@@ -86,6 +84,9 @@ export const apis = [
           city: "Toronto",
           address: "92 Auburn Ave",
         },
+      },
+      func: function () {
+        this.body.email = "test.patient." + uuidv4() + "@gmail.com";
       },
     },
     {

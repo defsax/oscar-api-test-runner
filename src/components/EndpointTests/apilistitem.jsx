@@ -57,6 +57,10 @@ export default function ApiListItem(props) {
 
     const url = server.endpointURL + api.url + server.suffix;
 
+    if (api.func) {
+      api.func();
+    }
+
     axiosQueue({
       method: api.method,
       url: url,
@@ -104,8 +108,6 @@ export default function ApiListItem(props) {
     expandCallBack(expandContract);
     testCallBack(queryAPI);
   }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
-
-  console.log("Api list item render");
 
   return (
     <div className="list-item">
