@@ -1,10 +1,9 @@
 import axiosQueue from "../../../helpers/axios";
 
-export default async function queryAPI(api, server, token, setResults) {
-  console.log(api);
+export default async function queryAPI(api, server, token, provNo, setResults) {
   axiosQueue({
     method: "GET",
-    url: api.getURL(server),
+    url: api.getURL(server, provNo),
     data: api.body,
     headers: {
       Authorization: `Bearer ${token}`,
@@ -33,8 +32,6 @@ export default async function queryAPI(api, server, token, setResults) {
       return err.response;
     })
     .then((res) => {
-      console.log("then results: ", res);
-
       setResults((oldResults) => [
         ...oldResults,
         { result: res, api: api.api },

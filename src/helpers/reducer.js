@@ -1,22 +1,33 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
-      localStorage.setItem("user", action.payload.email);
-      localStorage.setItem("dev-token", action.payload.jwt);
+      localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("dev-token", action.payload.profile.jwt);
+      localStorage.setItem("providerNo", action.payload.providerNo);
 
       return {
         ...state,
-        user: action.payload.email,
-        dev: { isAuthenticated: true, token: action.payload.jwt },
+        user: action.payload.profile.email,
+        dev: {
+          isAuthenticated: true,
+          token: action.payload.profile.jwt,
+          provNo: action.payload.providerNo,
+        },
       };
 
     case "STAGINGLOGIN":
-      localStorage.setItem("user", action.payload.email);
-      localStorage.setItem("staging-token", action.payload.jwt);
+      localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("staging-token", action.payload.profile.jwt);
+      localStorage.setItem("providerNo", action.payload.providerNo);
+
       return {
         ...state,
-        user: action.payload.email,
-        staging: { isAuthenticated: true, token: action.payload.jwt },
+        user: action.payload.profile.email,
+        staging: {
+          isAuthenticated: true,
+          token: action.payload.profile.jwt,
+          provNo: action.payload.providerNo,
+        },
       };
 
     case "REFRESH":
@@ -27,8 +38,16 @@ export const reducer = (state, action) => {
       return {
         ...state,
         user: action.payload.email,
-        dev: { isAuthenticated: devAuth, token: action.payload.devJWT },
-        staging: { isAuthenticated: stagingAuth, token: action.payload.jwt },
+        dev: {
+          isAuthenticated: devAuth,
+          token: action.payload.devJWT,
+          provNo: action.payload.provNo,
+        },
+        staging: {
+          isAuthenticated: stagingAuth,
+          token: action.payload.jwt,
+          provNo: action.payload.provNo,
+        },
       };
 
     // case "ADDAPIS":

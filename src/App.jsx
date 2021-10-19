@@ -28,8 +28,12 @@ function App() {
     const user = localStorage.getItem("user");
     const devJWT = localStorage.getItem("dev-token");
     const stagingJWT = localStorage.getItem("staging-token");
+    const provNo = localStorage.getItem("providerNo");
 
-    dispatch({ type: "REFRESH", payload: { email: user, devJWT, stagingJWT } });
+    dispatch({
+      type: "REFRESH",
+      payload: { email: user, devJWT, stagingJWT, provNo },
+    });
   }, []);
 
   return (

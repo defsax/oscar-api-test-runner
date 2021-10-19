@@ -76,8 +76,15 @@ export default function LoginButton(props) {
       if (success) {
         clearInput();
         if (url.server.search("dev") !== -1)
-          dispatch({ type: "DEVLOGIN", payload: profile });
-        else dispatch({ type: "STAGINGLOGIN", payload: profile });
+          dispatch({
+            type: "DEVLOGIN",
+            payload: { profile, providerNo: credentials.providerNo },
+          });
+        else
+          dispatch({
+            type: "STAGINGLOGIN",
+            payload: { profile, providerNo: credentials.providerNo },
+          });
       }
     }
     setLoading(false);

@@ -246,12 +246,13 @@ export const PrescriptionFlow = {
     {
       api: "/api/v1/oscar/prescriptions",
 
-      getURL: function (server) {
+      getURL: function (server, providerNo) {
         return (
           server.endpointURL +
           this.api +
           server.suffix +
-          "&demographicNo=9&providerNo=8"
+          "&demographicNo=9&providerNo=" +
+          providerNo
         );
       },
     },
