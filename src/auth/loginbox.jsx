@@ -39,6 +39,7 @@ export default function LoginBox(props) {
             }}
             value={signIn.pass || ""}
             placeholder="Password"
+            autoComplete="password"
           />
           <input
             type="password"
@@ -47,6 +48,7 @@ export default function LoginBox(props) {
             }}
             value={signIn.pin || ""}
             placeholder="PIN"
+            autoComplete="password"
           />
           <input
             type="text"

@@ -6,6 +6,8 @@ import {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
+
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
 import UserFlowListItem from "./userflowlistitem";
@@ -13,7 +15,6 @@ import ServerToggle from "../general/servertoggle";
 import queryAPI from "./helpers/queryapi";
 
 import "./css/userflow.css";
-import axios from "axios";
 import { AuthContext } from "../../App";
 
 export default function UserFlowMenu() {
@@ -49,7 +50,7 @@ export default function UserFlowMenu() {
         ...styles,
         flowOptions: { display: "none" },
         flowArrowButton: {
-          "border-radius": "0px 8px 8px 0px",
+          borderRadius: "0px 8px 8px 0px",
         },
       });
     } else {
@@ -58,7 +59,7 @@ export default function UserFlowMenu() {
         ...styles,
         flowOptions: { display: "flex" },
         flowArrowButton: {
-          "border-radius": "0px 8px 0px 0px",
+          borderRadius: "0px 8px 0px 0px",
         },
       });
     }
@@ -79,13 +80,17 @@ export default function UserFlowMenu() {
   const handleFlow = async (list) => {
     const token = stateRef.current.dev.token;
 
+    if (list.post.func) {
+      list.post.func();
+    }
+
     try {
       const postReq = await axios({
         method: "POST",
         url: server.endpointURL + list.post.url + server.suffix,
         data: list.post.body,
         headers: {
-          Authorization: `Bearer ${stateRef.current.dev.token}`,
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
@@ -159,7 +164,7 @@ export default function UserFlowMenu() {
                 ...styles,
                 flowOptions: { display: "none" },
                 flowArrowButton: {
-                  "border-radius": "0px 8px 8px 0px",
+                  borderRadius: "0px 8px 8px 0px",
                 },
               });
               handleFlow(flow.apis);
