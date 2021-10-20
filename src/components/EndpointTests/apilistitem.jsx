@@ -29,15 +29,13 @@ export default function ApiListItem(props) {
   const queryAPI = useCallback(() => {
     setLoading(true);
 
-    const url = server.endpointURL + api.url + server.suffix;
-
     if (api.func) {
       api.func();
     }
 
     axiosQueue({
       method: api.method,
-      url: url,
+      url: api.getURL(server, stateRef.current.dev.provNo),
       data: api.body,
       headers: {
         Authorization: `Bearer ${stateRef.current.dev.token}`,
@@ -45,11 +43,11 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        console.log(`Success calling ${api.url}`);
+        console.log(`Success calling ${api.api}`);
         return res;
       })
       .catch((err) => {
-        console.log(`Failed calling ${api.url}`);
+        console.log(`Failed calling ${api.api}`);
         return err.response;
       })
       .then((res) => {
@@ -87,7 +85,7 @@ export default function ApiListItem(props) {
               <b>({server.apitype})</b>
             </h2>
             <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
-              {api.url}
+              {api.api}
             </h2>
           </div>
           {loading ? (
@@ -110,7 +108,7 @@ export default function ApiListItem(props) {
         <div className="test-options">
           <div className="flex-results-left">
             <p>Method: {api.method}</p>
-            <p>URL: {server.endpointURL + api.url}</p>
+            <p>URL: {server.endpointURL + api.api}</p>
             {api.body ? (
               <div>
                 <p>Body:</p>

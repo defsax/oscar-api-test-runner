@@ -1,26 +1,30 @@
 import { v4 as uuidv4 } from "uuid";
 
+const formulateURL = function (server) {
+  return server.endpointURL + this.api + server.suffix;
+};
+
 export const apis = [
   // OTHER
-  { method: "get", url: "/api/v1/oscar/providers/me" },
-  { method: "get", url: "/api/v1/status" },
+  {
+    method: "get",
+    api: "/api/v1/oscar/providers/me",
+    getURL: formulateURL,
+  },
+  { method: "get", api: "/api/v1/status", getURL: formulateURL },
 
-  // OSCAR REST APIS
-  // { method: "get", url: "/api/v1/oscarrest/providers" },
-  // { method: "get", url: "/api/v1/oscarrest/notes/1" },
-  // { method: "get", url: "/api/v1/oscarrest/patients" },
-  // { method: "get", url: "/api/v1/oscarrest/auth" },
   [
     {
       /* 
           /allergies/active 
         */
       method: "get",
-      url: "/api/v1/oscar/patients/1/allergies",
+      api: "/api/v1/oscar/patients/1/allergies",
+      getURL: formulateURL,
     },
     {
       method: "post",
-      url: "/api/v1/oscar/prescriptions",
+      api: "/api/v1/oscar/prescriptions",
       body: [
         {
           demographicNo: 1,
@@ -75,11 +79,21 @@ export const apis = [
           },
         },
       ],
+      getURL: formulateURL,
     },
   ],
   {
     method: "get",
-    url: "/api/v1/oscar/prescriptions",
+    api: "/api/v1/oscar/prescriptions",
+    getURL: function (server, providerNo) {
+      return (
+        server.endpointURL +
+        this.api +
+        server.suffix +
+        "&demographicNo=1&providerNo=" +
+        providerNo
+      );
+    },
   },
 
   // PATIENTS - Create, retrieve, get all
@@ -90,7 +104,7 @@ export const apis = [
         Add a new patient demographic record to the system.
       */
       method: "post",
-      url: "/api/v1/oscar/patients",
+      api: "/api/v1/oscar/patients",
       body: {
         firstName: "Test",
         lastName: "Patient",
@@ -107,6 +121,7 @@ export const apis = [
       func: function () {
         this.body.email = "test.patient." + uuidv4() + "@gmail.com";
       },
+      getURL: formulateURL,
     },
     {
       /*
@@ -114,7 +129,8 @@ export const apis = [
         Retrieves 1 patient.
       */
       method: "get",
-      url: "/api/v1/oscar/patients/1",
+      api: "/api/v1/oscar/patients/1",
+      getURL: formulateURL,
     },
     {
       /*
@@ -122,30 +138,31 @@ export const apis = [
         Retrieves all patient demographics. In case limit or offset parameters are set to null or zero, the entire result set is returned.
       */
       method: "get",
-      url: "/api/v1/oscar/patients/all",
+      api: "/api/v1/oscar/patients/all",
+      getURL: formulateURL,
     },
   ],
   {
     method: "get",
-    url: "/api/v1/oscar/patients/1/measurements",
+    api: "/api/v1/oscar/patients/1/measurements",
+    getURL: formulateURL,
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/1/documents",
+    api: "/api/v1/oscar/patients/1/documents",
+    getURL: formulateURL,
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/1/forms",
+    api: "/api/v1/oscar/patients/1/forms",
+    getURL: formulateURL,
   },
   {
     method: "get",
-    url: "/api/v1/oscar/patients/1/labResults",
+    api: "/api/v1/oscar/patients/1/labResults",
+    getURL: formulateURL,
   },
 ];
-
-const formulateURL = function (server) {
-  return server.endpointURL + this.api + server.suffix;
-};
 
 export const PatientFlow = {
   post: {
