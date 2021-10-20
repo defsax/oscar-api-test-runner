@@ -86,13 +86,16 @@ export const apis = [
     method: "get",
     api: "/api/v1/oscar/prescriptions",
     getURL: function (server, providerNo) {
-      return (
-        server.endpointURL +
-        this.api +
-        server.suffix +
-        "&demographicNo=1&providerNo=" +
-        providerNo
-      );
+      console.log(server);
+      if (server.endpointURL.search("dev") !== -1)
+        return (
+          server.endpointURL +
+          this.api +
+          server.suffix +
+          "&demographicNo=1&providerNo=" +
+          providerNo
+        );
+      else return server.endpointURL + this.api + server.suffix;
     },
   },
 

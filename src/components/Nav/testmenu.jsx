@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./css/nav.css";
 
 export default function TestMenu() {
+  console.log(window.location.pathname);
   return (
     <div className={"test-dropdown"}>
       <h4>Tests ▼</h4>
