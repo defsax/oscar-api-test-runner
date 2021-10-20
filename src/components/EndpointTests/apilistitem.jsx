@@ -18,37 +18,11 @@ export default function ApiListItem(props) {
   const { api, testCallBack, expandCallBack, server } = props;
   const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
-  // const dispatchRef = useRef(dispatch);
-  // const apiRef = useRef(api);
 
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
-
-  // useEffect(() => {
-  //   apiRef.current = api;
-  // }, [api]);
-
-  // useEffect(() => {
-  //   dispatchRef.current = dispatch;
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   stateRef.current = state;
-
-  //   const x = stateRef.current.apis.find(
-  //     (stateAPI) => stateAPI.id === api.id
-  //   ).result;
-
-  //   if (x !== undefined) setResponse(x);
-  // }, [state, api]);
-
-  // const updateResults = useMemo(() => {
-  //   // console.log("useMemo");
-  //   // console.log("loading", loading);
-  //   return loading;
-  // }, [loading]);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
@@ -72,20 +46,10 @@ export default function ApiListItem(props) {
     })
       .then((res) => {
         console.log(`Success calling ${api.url}`);
-        console.log(res.data);
         return res;
       })
       .catch((err) => {
         console.log(`Failed calling ${api.url}`);
-        if (err.response) {
-          console.log(err.response);
-        } else if (err.request) {
-          console.log(err.request);
-        } else {
-          console.log("Error", err.message);
-        }
-        console.log(err.config);
-
         return err.response;
       })
       .then((res) => {

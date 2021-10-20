@@ -85,11 +85,12 @@ export default function UserFlowMenu() {
     const token = stateRef.current.dev.token;
     const provNo = stateRef.current.dev.provNo;
     let currentAPI = list.post.api;
-    console.log(currentAPI);
 
     if (list.post.refreshId) {
       list.post.refreshId();
     }
+    // If the submission requires a specific providerNo
+    if (list.post.setProviderNo) list.post.setProviderNo(provNo);
 
     try {
       const postReq = await axios({

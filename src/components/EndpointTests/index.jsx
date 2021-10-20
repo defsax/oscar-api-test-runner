@@ -42,7 +42,6 @@ export default function EndpointTestMenu() {
     expandButtonRef.current = callback;
   }, []);
 
-  console.log("index render");
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>

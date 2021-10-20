@@ -8,7 +8,6 @@ export default function StressMenu() {
   const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
 
-  console.log("index render");
   return (
     <div className="menu">
       <h1>Oscar API Stress Testing</h1>

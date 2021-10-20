@@ -15,8 +15,6 @@ export default function UserFlowListItem(props) {
     expandCallback(expandContract);
   }, [expandCallback, expandContract]);
 
-  console.log(api);
-
   return (
     <div className={"flow-item"}>
       <button
