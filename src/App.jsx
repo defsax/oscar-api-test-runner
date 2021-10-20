@@ -30,10 +30,11 @@ function App() {
     const devJWT = localStorage.getItem("dev-token");
     const stagingJWT = localStorage.getItem("staging-token");
     const provNo = localStorage.getItem("providerNo");
+    const userID = localStorage.getItem("id");
 
     dispatch({
       type: "REFRESH",
-      payload: { email: user, devJWT, stagingJWT, provNo },
+      payload: { email: user, devJWT, stagingJWT, provNo, userID },
     });
   }, []);
 

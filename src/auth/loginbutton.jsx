@@ -75,6 +75,7 @@ export default function LoginButton(props) {
       const success = await loginOscar(url, profile.jwt, credentials, setError);
       if (success) {
         clearInput();
+        console.log(profile);
         if (url.server.search("dev") !== -1)
           dispatch({
             type: "DEVLOGIN",

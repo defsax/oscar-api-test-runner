@@ -35,7 +35,7 @@ export default function ApiListItem(props) {
 
     axiosQueue({
       method: api.method,
-      url: api.getURL(server, stateRef.current.dev.provNo),
+      url: api.getURL(server, stateRef.current.dev),
       data: api.body,
       headers: {
         Authorization: `Bearer ${stateRef.current.dev.token}`,
@@ -107,8 +107,16 @@ export default function ApiListItem(props) {
       {showMenu ? (
         <div className="test-options">
           <div className="flex-results-left">
-            <p>Method: {api.method}</p>
-            <p>URL: {server.endpointURL + api.api}</p>
+            <p>
+              <b>Method:</b> {api.method}
+            </p>
+            <p>
+              <b>URL: </b>
+              {
+                // server.endpointURL +
+                api.getURL(server, stateRef.current.dev)
+              }
+            </p>
             {api.body ? (
               <div>
                 <p>Body:</p>
@@ -117,10 +125,13 @@ export default function ApiListItem(props) {
               </div>
             ) : null}
 
-            <p>Status: {JSON.stringify(response.status)}</p>
+            <p>
+              <b>Status:</b> {JSON.stringify(response.status)}
+            </p>
 
-            <p>Data: </p>
-
+            <p>
+              <b>Data:</b>{" "}
+            </p>
             {showData ? (
               <pre>{JSON.stringify(response.data, null, 2)}</pre>
             ) : null}

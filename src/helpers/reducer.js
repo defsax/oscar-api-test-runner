@@ -1,6 +1,8 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
+      console.log(action.payload.profile.userID);
+      localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
       localStorage.setItem("dev-token", action.payload.profile.jwt);
       localStorage.setItem("providerNo", action.payload.providerNo);
@@ -11,11 +13,13 @@ export const reducer = (state, action) => {
         dev: {
           isAuthenticated: true,
           token: action.payload.profile.jwt,
+          id: action.payload.profile.userID,
           provNo: action.payload.providerNo,
         },
       };
 
     case "STAGINGLOGIN":
+      localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
       localStorage.setItem("staging-token", action.payload.profile.jwt);
       localStorage.setItem("providerNo", action.payload.providerNo);
@@ -26,6 +30,7 @@ export const reducer = (state, action) => {
         staging: {
           isAuthenticated: true,
           token: action.payload.profile.jwt,
+          id: action.payload.profile.userID,
           provNo: action.payload.providerNo,
         },
       };
@@ -41,34 +46,28 @@ export const reducer = (state, action) => {
         dev: {
           isAuthenticated: devAuth,
           token: action.payload.devJWT,
+          id: action.payload.userID,
           provNo: action.payload.provNo,
         },
         staging: {
           isAuthenticated: stagingAuth,
           token: action.payload.jwt,
+          id: action.payload.userID,
           provNo: action.payload.provNo,
         },
       };
-
-    // case "ADDAPIS":
-    //   return { ...state, apis: action.payload.apis };
-
-    // case "ADDRESULT":
-    //   const results = state.apis.map((api) => {
-    //     if (api.id === action.payload.id) {
-    //       return { ...api, result: action.payload.result };
-    //     }
-
-    //     return api;
-    //   });
-    //   return { ...state, apis: results };
 
     case "LOGOUT":
       localStorage.clear();
       return {
         ...state,
-        dev: { isAuthenticated: false, token: null },
-        staging: { isAuthenticated: false, token: null },
+        dev: { isAuthenticated: false, token: null, id: null, provNo: null },
+        staging: {
+          isAuthenticated: false,
+          token: null,
+          id: null,
+          provNo: null,
+        },
         user: null,
       };
     default:

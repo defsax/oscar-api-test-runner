@@ -4,165 +4,277 @@ const formulateURL = function (server) {
   return server.endpointURL + this.api + server.suffix;
 };
 
+/*
+Goji API URLs
+
+*  /api/v1/sites
+   /api/v1/login
+   /api/v1/oscar/login
+*  /api/v1/check/{id}
+*  /api/v1/oscar/providers/me
+*  /api/v1/oscar/providers/timeslots
+*  /api/v1/getSpeechkey
+*  /api/v1/oscar/prescriptions (POST)
+*  /api/v1/oscar/prescriptions (GET ALL)
+*  /api/v1/oscar/drugs/search 
+*  /api/v1/oscar/patients (POST)
+*  /api/v1/oscar/patients (SEARCH BY KEYWORD)
+*  /api/v1/oscar/patients/all
+*  /api/v1/oscar/patients/{demographicNo}
+*  /api/v1/oscar/patients/{demographicNo}/fullSummary/ALLERGIES
+*  /api/v1/oscar/patients/{demographicNo}/fullSummary/FAMILYHISTORY
+*  /api/v1/oscar/patients/{demographicNo}/fullSummary/RISK_FACTORS
+*  /api/v1/oscar/patients/{demographicNo}/documents
+*  /api/v1/oscar/patients/{demographicNo}/forms
+   /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
+*  /api/v1/oscar/patients/{demographicNo}/formOptions
+*  /api/v1/oscar/patients/{demographicNo}/labResults
+   /api/v1/transcriptions
+   /api/v1/transcriptions/{id}
+   /api/v1/transcriptions/{id}
+   /api/v1/record
+   /api/v1/test/inputtext
+   /api/v1/oscar/notes
+   /api/v1/oscar/notes
+   /api/v1/oscar/notest/noteId
+   /api/v1/oscar/appointments
+   /api/v1/oscar/appointments
+   /api/v1/oscar/appointments/{demographicNo}/history
+   /api/v1/oscar/appointments/{id}
+   /api/v1/oscar/appointments/{id}
+   /api/v1/oscar/appointments/reasons
+   /api/v1/oscar/appointments/types 
+   /api/v1/oscar/appointments/statuses
+   /api/v1/templates
+   /api/v1/templates
+   /api/v1/template/id/{id}
+   /api/v1/template/id/{id}
+   /api/v1/template/name/{templatename }
+   /api/v1/template/name/{templatename }
+   /api/v1/template/{id}
+   /api/v1/oscar/forms/allEncounterForms
+   /api/v1/oscar/forms/selectedEncounterForms
+   /api/v1/oscar/forms/formGroups
+   /api/v1/oscar/forms/favouriteFormGroup
+   /api/v1/oscar/forms/groupNames
+   /api/v1/oscar/consults/requests
+   /api/v1/oscar/consults/requests
+   /api/v1/oscar/consults/requests/{id}
+   /api/v1/oscar/consults/requests/{id}
+   /api/v1/oscar/consults/professionalSpecialist/{id}
+   /api/v1/oscar/consults/referAttachments
+   /api/v1/oscar/consults/requestAttachments
+   /api/v1/oscar/consults/getReferralPathwaysByService
+   /api/v1/oscar/consults/eSendRequest
+   /api/v1/oscar/ticklers
+   /api/v1/oscar/ticklers
+   /api/v1/oscar/ticklers/mine
+   /api/v1/oscar/ticklers/{id}/complete
+   /api/v1/oscar/ticklers/{id}/update
+   /api/v1/oscar/ticklers/{id}/update
+
+*/
+
 export const apis = [
   // OTHER
+
+  { method: "get", api: "/api/v1/status", getURL: formulateURL },
+  { method: "get", api: "/api/v1/sites", getURL: formulateURL },
+  {
+    method: "get",
+    api: "/api/v1/check/",
+    getURL: function (server, userInfo) {
+      return server.endpointURL + this.api + userInfo.id + server.suffix;
+    },
+  },
+
+  // PROVIDERS
+  {
+    method: "get",
+    api: "/api/v1/oscar/providers/timeslots",
+    getURL: formulateURL,
+  },
   {
     method: "get",
     api: "/api/v1/oscar/providers/me",
     getURL: formulateURL,
   },
-  { method: "get", api: "/api/v1/status", getURL: formulateURL },
 
-  [
-    {
-      /* 
-          /allergies/active 
-        */
-      method: "get",
-      api: "/api/v1/oscar/patients/1/allergies",
-      getURL: formulateURL,
+  { method: "get", api: "/api/v1/getSpeechkey", getURL: formulateURL },
+
+  // DRUGS
+  {
+    method: "get",
+    api: "/api/v1/oscar/drugs/search",
+    getURL: function (server) {
+      return (
+        server.endpointURL + this.api + server.suffix + "&keyword=AMOXICILLIN"
+      );
     },
-    {
-      method: "post",
-      api: "/api/v1/oscar/prescriptions",
-      body: [
-        {
-          demographicNo: 1,
-          drugs: [
-            {
-              drugId: 3946,
-              brandName: "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG",
-              providerNo: 0,
-              takeMin: 1,
-              takeMax: 2,
-              rxDate: "2021-10-13T00:00:00.000Z",
-              frequency: "day",
-              duration: 14,
-              durationUnit: "days",
-              route: "",
-              method: "",
-              prn: false,
-              repeats: 0,
-              quantity: 14,
-              instructions:
-                "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG Take 1 tablet every day for 14 days",
-              additionalInstructions:
-                "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG",
-              archived: false,
-              archivedReason: "",
-              archivedDate: null,
-              strength: 500,
-              strengthUnit: "MG",
-              externalProvider: "",
-              longTerm: false,
-              noSubstitutions: true,
-              endDate: "2021-10-27T00:00:00.000Z",
-            },
-          ],
-          patientName: {
-            id: "d0d19870-7322-40a3-b36c-243d5b309a7a",
-            demographicNo: 1,
-            firstName: "GIRI",
-            lastName: "AMARAKONE",
-            email: "gamarakone@gmail.com",
-            dateOfBirth: "1974-04-06",
-            sex: "M",
-            phone: "416-848-1781",
-            alternativePhone: "647-625-3094",
-            address: {
-              city: "Toronto",
-              postal: "M1C3R9",
-              address: "60 Grantown Ave, Scarborough, ON, Canada",
-              province: "ON",
-            },
-            officialLanguage: "English",
+  },
+
+  // PRESCRIPTIONS
+  {
+    method: "post",
+    api: "/api/v1/oscar/prescriptions",
+    body: [
+      {
+        demographicNo: 121,
+        drugs: [
+          {
+            drugId: 3946,
+            brandName: "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG",
+            providerNo: 0,
+            takeMin: 1,
+            takeMax: 2,
+            rxDate: "2021-10-13T00:00:00.000Z",
+            frequency: "day",
+            duration: 14,
+            durationUnit: "days",
+            route: "",
+            method: "",
+            prn: false,
+            repeats: 0,
+            quantity: 14,
+            instructions:
+              "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG Take 1 tablet every day for 14 days",
+            additionalInstructions:
+              "EXTRA STRENGTH TYLENOL BACK PAIN 500MG/400MG",
+            archived: false,
+            archivedReason: "",
+            archivedDate: null,
+            strength: 500,
+            strengthUnit: "MG",
+            externalProvider: "",
+            longTerm: false,
+            noSubstitutions: true,
+            endDate: "2021-10-27T00:00:00.000Z",
           },
+        ],
+        patientName: {
+          id: "97efee8a-eea0-47f5-9de1-3fdfc67d4c97",
+          demographicNo: 121,
+          firstName: "STARDUST",
+          lastName: "BLUE",
+          email: "stardust@yandex.com",
+          dateOfBirth: "1994-10-18",
+          sex: "M",
+          address: {
+            city: "Toronto",
+            postal: "M6B 4M4",
+            address: "1001 Roselawn Ave York",
+            province: "ON",
+          },
+
+          phone: "416-848-1781",
+          alternativePhone: "647-625-3094",
+          officialLanguage: "English",
         },
-      ],
-      getURL: formulateURL,
-    },
-  ],
+      },
+    ],
+    getURL: formulateURL,
+  },
   {
     method: "get",
     api: "/api/v1/oscar/prescriptions",
-    getURL: function (server, providerNo) {
-      console.log(server);
+    getURL: function (server, userInfo) {
       if (server.endpointURL.search("dev") !== -1)
         return (
           server.endpointURL +
           this.api +
           server.suffix +
-          "&demographicNo=1&providerNo=" +
-          providerNo
+          "&demographicNo=121&providerNo=" +
+          userInfo.provNo
         );
       else return server.endpointURL + this.api + server.suffix;
     },
   },
 
-  // PATIENTS - Create, retrieve, get all
-  [
-    {
-      /*
-        /demographics
-        Add a new patient demographic record to the system.
-      */
-      method: "post",
-      api: "/api/v1/oscar/patients",
-      body: {
-        firstName: "Test",
-        lastName: "Patient",
-        email: "test.patient." + uuidv4() + "@gmail.com",
-        sex: "M",
-        dateOfBirth: "1978-12-31T00:00:00.000Z",
-        address: {
-          province: "ON",
-          postal: "M6H 2L9",
-          city: "Toronto",
-          address: "92 Auburn Ave",
-        },
+  // PATIENTS
+  {
+    method: "post",
+    api: "/api/v1/oscar/patients",
+    body: {
+      firstName: "Test",
+      lastName: "Patient",
+      email: "test.patient." + uuidv4() + "@gmail.com",
+      sex: "M",
+      dateOfBirth: "1978-12-31T00:00:00.000Z",
+      address: {
+        province: "ON",
+        postal: "M6H 2L9",
+        city: "Toronto",
+        address: "92 Auburn Ave",
       },
-      func: function () {
-        this.body.email = "test.patient." + uuidv4() + "@gmail.com";
-      },
-      getURL: formulateURL,
     },
-    {
-      /*
-        /demographics
-        Retrieves 1 patient.
-      */
-      method: "get",
-      api: "/api/v1/oscar/patients/1",
-      getURL: formulateURL,
+    func: function () {
+      this.body.email = "test.patient." + uuidv4() + "@gmail.com";
     },
-    {
-      /*
-        /demographics
-        Retrieves all patient demographics. In case limit or offset parameters are set to null or zero, the entire result set is returned.
-      */
-      method: "get",
-      api: "/api/v1/oscar/patients/all",
-      getURL: formulateURL,
-    },
-  ],
-  {
-    method: "get",
-    api: "/api/v1/oscar/patients/1/measurements",
     getURL: formulateURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/1/documents",
+    api: "/api/v1/oscar/patients",
+    getURL: function (server) {
+      return (
+        server.endpointURL + this.api + server.suffix + "&keyword=STARDUST"
+      );
+    },
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/all",
     getURL: formulateURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/1/forms",
+    api: "/api/v1/oscar/patients/121",
+    getURL: formulateURL,
+  },
+
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/fullSummary/ALLERGIES",
     getURL: formulateURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/1/labResults",
+    api: "/api/v1/oscar/patients/121/fullSummary/FAMILYHISTORY",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/fullSummary/RISK_FACTORS",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/measurements",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/documents",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/forms",
+    getURL: formulateURL,
+  },
+  // {
+  //   method: "get",
+  //   api: "/api/v1/oscar/patients/121/completedEncounterForms",
+  //   getURL: formulateURL,
+  // },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/formOptions",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/labResults",
     getURL: formulateURL,
   },
 ];
@@ -247,7 +359,7 @@ export const PrescriptionFlow = {
     api: "/api/v1/oscar/prescriptions",
     body: [
       {
-        demographicNo: 1,
+        demographicNo: 121,
         drugs: [
           {
             drugId: 3946,
@@ -280,21 +392,22 @@ export const PrescriptionFlow = {
           },
         ],
         patientName: {
-          id: "d0d19870-7322-40a3-b36c-243d5b309a7a",
-          demographicNo: 1,
-          firstName: "GIRI",
-          lastName: "AMARAKONE",
-          email: "gamarakone@gmail.com",
-          dateOfBirth: "1974-04-06",
+          id: "97efee8a-eea0-47f5-9de1-3fdfc67d4c97",
+          demographicNo: 121,
+          firstName: "STARDUST",
+          lastName: "BLUE",
+          email: "stardust@yandex.com",
+          dateOfBirth: "1994-10-18",
           sex: "M",
-          phone: "416-848-1781",
-          alternativePhone: "647-625-3094",
           address: {
             city: "Toronto",
-            postal: "M1C3R9",
-            address: "60 Grantown Ave, Scarborough, ON, Canada",
+            postal: "M6B 4M4",
+            address: "1001 Roselawn Ave York",
             province: "ON",
           },
+
+          phone: "416-848-1781",
+          alternativePhone: "647-625-3094",
           officialLanguage: "English",
         },
       },
@@ -314,7 +427,7 @@ export const PrescriptionFlow = {
           server.endpointURL +
           this.api +
           server.suffix +
-          "&demographicNo=1&providerNo=" +
+          "&demographicNo=121&providerNo=" +
           providerNo
         );
       },
