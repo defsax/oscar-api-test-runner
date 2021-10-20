@@ -1,0 +1,13 @@
+.no-match-box {
+  margin: auto;
+  text-align: center;
+}
+
+.no-match-box h1 {
+  font-size: 5rem;
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}

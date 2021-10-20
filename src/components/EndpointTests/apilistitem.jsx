@@ -18,48 +18,24 @@ export default function ApiListItem(props) {
   const { api, testCallBack, expandCallBack, server } = props;
   const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
-  // const dispatchRef = useRef(dispatch);
-  // const apiRef = useRef(api);
 
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
 
-  // useEffect(() => {
-  //   apiRef.current = api;
-  // }, [api]);
-
-  // useEffect(() => {
-  //   dispatchRef.current = dispatch;
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   stateRef.current = state;
-
-  //   const x = stateRef.current.apis.find(
-  //     (stateAPI) => stateAPI.id === api.id
-  //   ).result;
-
-  //   if (x !== undefined) setResponse(x);
-  // }, [state, api]);
-
-  // const updateResults = useMemo(() => {
-  //   // console.log("useMemo");
-  //   // console.log("loading", loading);
-  //   return loading;
-  // }, [loading]);
-
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
 
-    const url = server.endpointURL + api.url + server.suffix;
+    if (api.func) {
+      api.func();
+    }
 
     axiosQueue({
       method: api.method,
-      url: url,
+      url: api.getURL(server, stateRef.current.dev),
       data: api.body,
       headers: {
         Authorization: `Bearer ${stateRef.current.dev.token}`,
@@ -67,21 +43,11 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        console.log(`Success calling ${api.url}`);
-        console.log(res.data);
+        console.log(`Success calling ${api.api}`);
         return res;
       })
       .catch((err) => {
-        console.log(`Failed calling ${api.url}`);
-        if (err.response) {
-          console.log(err.response);
-        } else if (err.request) {
-          console.log(err.request);
-        } else {
-          console.log("Error", err.message);
-        }
-        console.log(err.config);
-
+        console.log(`Failed calling ${api.api}`);
         return err.response;
       })
       .then((res) => {
@@ -105,8 +71,6 @@ export default function ApiListItem(props) {
     testCallBack(queryAPI);
   }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
 
-  console.log("Api list item render");
-
   return (
     <div className="list-item">
       <button
@@ -121,7 +85,7 @@ export default function ApiListItem(props) {
               <b>({server.apitype})</b>
             </h2>
             <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
-              {api.url}
+              {api.api}
             </h2>
           </div>
           {loading ? (
@@ -143,8 +107,16 @@ export default function ApiListItem(props) {
       {showMenu ? (
         <div className="test-options">
           <div className="flex-results-left">
-            <p>Method: {api.method}</p>
-            <p>URL: {server.endpointURL + api.url}</p>
+            <p>
+              <b>Method:</b> {api.method}
+            </p>
+            <p>
+              <b>URL: </b>
+              {
+                // server.endpointURL +
+                api.getURL(server, stateRef.current.dev)
+              }
+            </p>
             {api.body ? (
               <div>
                 <p>Body:</p>
@@ -153,10 +125,13 @@ export default function ApiListItem(props) {
               </div>
             ) : null}
 
-            <p>Status: {JSON.stringify(response.status)}</p>
+            <p>
+              <b>Status:</b> {JSON.stringify(response.status)}
+            </p>
 
-            <p>Data: </p>
-
+            <p>
+              <b>Data:</b>{" "}
+            </p>
             {showData ? (
               <pre>{JSON.stringify(response.data, null, 2)}</pre>
             ) : null}

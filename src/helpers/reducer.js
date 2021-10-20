@@ -1,22 +1,38 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
-      localStorage.setItem("user", action.payload.email);
-      localStorage.setItem("dev-token", action.payload.jwt);
+      console.log(action.payload.profile.userID);
+      localStorage.setItem("id", action.payload.profile.userID);
+      localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("dev-token", action.payload.profile.jwt);
+      localStorage.setItem("providerNo", action.payload.providerNo);
 
       return {
         ...state,
-        user: action.payload.email,
-        dev: { isAuthenticated: true, token: action.payload.jwt },
+        user: action.payload.profile.email,
+        dev: {
+          isAuthenticated: true,
+          token: action.payload.profile.jwt,
+          id: action.payload.profile.userID,
+          provNo: action.payload.providerNo,
+        },
       };
 
     case "STAGINGLOGIN":
-      localStorage.setItem("user", action.payload.email);
-      localStorage.setItem("staging-token", action.payload.jwt);
+      localStorage.setItem("id", action.payload.profile.userID);
+      localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("staging-token", action.payload.profile.jwt);
+      localStorage.setItem("providerNo", action.payload.providerNo);
+
       return {
         ...state,
-        user: action.payload.email,
-        staging: { isAuthenticated: true, token: action.payload.jwt },
+        user: action.payload.profile.email,
+        staging: {
+          isAuthenticated: true,
+          token: action.payload.profile.jwt,
+          id: action.payload.profile.userID,
+          provNo: action.payload.providerNo,
+        },
       };
 
     case "REFRESH":
@@ -27,29 +43,31 @@ export const reducer = (state, action) => {
       return {
         ...state,
         user: action.payload.email,
-        dev: { isAuthenticated: devAuth, token: action.payload.devJWT },
-        staging: { isAuthenticated: stagingAuth, token: action.payload.jwt },
+        dev: {
+          isAuthenticated: devAuth,
+          token: action.payload.devJWT,
+          id: action.payload.userID,
+          provNo: action.payload.provNo,
+        },
+        staging: {
+          isAuthenticated: stagingAuth,
+          token: action.payload.jwt,
+          id: action.payload.userID,
+          provNo: action.payload.provNo,
+        },
       };
-
-    // case "ADDAPIS":
-    //   return { ...state, apis: action.payload.apis };
-
-    // case "ADDRESULT":
-    //   const results = state.apis.map((api) => {
-    //     if (api.id === action.payload.id) {
-    //       return { ...api, result: action.payload.result };
-    //     }
-
-    //     return api;
-    //   });
-    //   return { ...state, apis: results };
 
     case "LOGOUT":
       localStorage.clear();
       return {
         ...state,
-        dev: { isAuthenticated: false, token: null },
-        staging: { isAuthenticated: false, token: null },
+        dev: { isAuthenticated: false, token: null, id: null, provNo: null },
+        staging: {
+          isAuthenticated: false,
+          token: null,
+          id: null,
+          provNo: null,
+        },
         user: null,
       };
     default:

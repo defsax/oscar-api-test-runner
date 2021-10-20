@@ -5,8 +5,9 @@ import ScheduledResults from "./components/ScheduledTests";
 import EndpointTestMenu from "./components/EndpointTests";
 import UserFlowMenu from "./components/UserFlowTests";
 import StressMenu from "./components/StressTests";
-import { reducer } from "./helpers/reducer";
 import Nav from "./components/Nav/nav";
+import NoMatch from "./components/404";
+import { reducer } from "./helpers/reducer";
 
 export const AuthContext = createContext("");
 
@@ -28,8 +29,13 @@ function App() {
     const user = localStorage.getItem("user");
     const devJWT = localStorage.getItem("dev-token");
     const stagingJWT = localStorage.getItem("staging-token");
+    const provNo = localStorage.getItem("providerNo");
+    const userID = localStorage.getItem("id");
 
-    dispatch({ type: "REFRESH", payload: { email: user, devJWT, stagingJWT } });
+    dispatch({
+      type: "REFRESH",
+      payload: { email: user, devJWT, stagingJWT, provNo, userID },
+    });
   }, []);
 
   return (
@@ -37,10 +43,15 @@ function App() {
       <Router>
         <Nav />
         <Switch>
-          <Route exact path="/" render={() => <EndpointTestMenu />} />
+          <Route exact path="/">
+            <EndpointTestMenu />
+          </Route>
           <Route exact path="/scheduled" render={() => <ScheduledResults />} />
           <Route exact path="/userflow" render={() => <UserFlowMenu />} />
           <Route exact path="/stress" render={() => <StressMenu />} />
+          <Route path="*">
+            <NoMatch />
+          </Route>
         </Switch>
       </Router>
     </AuthContext.Provider>

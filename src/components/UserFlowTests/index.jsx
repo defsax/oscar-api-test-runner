@@ -6,6 +6,8 @@ import {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
+
 import { PatientFlow, PrescriptionFlow } from "../../static/apis";
 import { apiVersion } from "../../static/serverlist";
 import UserFlowListItem from "./userflowlistitem";
@@ -13,7 +15,6 @@ import ServerToggle from "../general/servertoggle";
 import queryAPI from "./helpers/queryapi";
 
 import "./css/userflow.css";
-import axios from "axios";
 import { AuthContext } from "../../App";
 
 export default function UserFlowMenu() {
@@ -37,6 +38,10 @@ export default function UserFlowMenu() {
     apis: PrescriptionFlow,
   });
 
+  // useEffect(() => {
+  //   console.log(results);
+  // }, [results]);
+
   const expandRefs = useRef([]);
   const setExpandCallback = useCallback((callback) => {
     expandRefs.current.push(callback);
@@ -49,7 +54,7 @@ export default function UserFlowMenu() {
         ...styles,
         flowOptions: { display: "none" },
         flowArrowButton: {
-          "border-radius": "0px 8px 8px 0px",
+          borderRadius: "0px 8px 8px 0px",
         },
       });
     } else {
@@ -58,7 +63,7 @@ export default function UserFlowMenu() {
         ...styles,
         flowOptions: { display: "flex" },
         flowArrowButton: {
-          "border-radius": "0px 8px 0px 0px",
+          borderRadius: "0px 8px 0px 0px",
         },
       });
     }
@@ -69,7 +74,7 @@ export default function UserFlowMenu() {
       <UserFlowListItem
         key={i}
         result={res.result}
-        api={res.url}
+        api={res.api}
         body={res.body}
         expandCallback={setExpandCallback}
       />
@@ -78,62 +83,47 @@ export default function UserFlowMenu() {
 
   const handleFlow = async (list) => {
     const token = stateRef.current.dev.token;
+    const provNo = stateRef.current.dev.provNo;
+    let currentAPI = list.post.api;
+
+    if (list.post.refreshId) {
+      list.post.refreshId();
+    }
+    // If the submission requires a specific providerNo
+    if (list.post.setProviderNo) list.post.setProviderNo(provNo);
 
     try {
       const postReq = await axios({
         method: "POST",
-        url: server.endpointURL + list.post.url + server.suffix,
+        url: list.post.getURL(server),
         data: list.post.body,
         headers: {
-          Authorization: `Bearer ${stateRef.current.dev.token}`,
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
-      console.log({ postReq, url: list.post.url });
+
       setResults((oldResults) => [
         ...oldResults,
-        { result: postReq, url: list.post.url, body: list.post.body },
+        { result: postReq, api: list.post.api, body: list.post.body },
       ]);
 
-      // If testing, for example, patients
-      if (postReq.data.result.demographicNo) {
-        list.apiList.map(async (api) => {
-          if (api.idRequired) {
-            const url =
-              server.endpointURL +
-              api.url +
-              postReq.data.result.demographicNo +
-              api.suffix +
-              server.suffix;
+      list.apiList.map(async (api) => {
+        currentAPI = api.api;
 
-            const displayURL =
-              api.url + postReq.data.result.demographicNo + api.suffix;
-            console.log(url);
-            return await queryAPI(api, url, displayURL, token, setResults);
-          } else {
-            const url = server.endpointURL + api.url + server.suffix;
-            console.log(url);
-            const displayURL = api.url;
-            return await queryAPI(api, url, displayURL, token, setResults);
-          }
-        });
-      } else {
-        list.apiList.map(async (api) => {
-          return await queryAPI(
-            api,
-            server.endpointURL + api.url + server.suffix,
-            api.url,
-            token,
-            setResults
-          );
-        });
-      }
+        // If there's a demographicNO, set api with #
+        if (api.setAPI) api.setAPI(postReq.data.result.demographicNo);
+
+        return await queryAPI(api, server, token, provNo, setResults);
+      });
     } catch (e) {
-      console.error(e);
-      console.log(e.response);
+      // console.error(e);
+      // console.log(e.response);
+      console.log("error", e.response);
+
       setResults((oldResults) => [
         ...oldResults,
-        { result: e.response, url: "/url" },
+        { result: e.response, api: currentAPI },
       ]);
     }
   };
@@ -159,7 +149,7 @@ export default function UserFlowMenu() {
                 ...styles,
                 flowOptions: { display: "none" },
                 flowArrowButton: {
-                  "border-radius": "0px 8px 8px 0px",
+                  borderRadius: "0px 8px 8px 0px",
                 },
               });
               handleFlow(flow.apis);
