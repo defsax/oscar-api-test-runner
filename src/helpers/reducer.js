@@ -4,7 +4,7 @@ export const reducer = (state, action) => {
       localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
       localStorage.setItem("dev-token", action.payload.profile.jwt);
-      localStorage.setItem("providerNo", action.payload.providerNo);
+      localStorage.setItem("providerNo", action.payload.profile.providerNo);
 
       return {
         ...state,
@@ -21,7 +21,7 @@ export const reducer = (state, action) => {
       localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
       localStorage.setItem("staging-token", action.payload.profile.jwt);
-      localStorage.setItem("providerNo", action.payload.providerNo);
+      localStorage.setItem("providerNo", action.payload.profile.providerNo);
 
       return {
         ...state,

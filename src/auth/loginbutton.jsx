@@ -76,12 +76,12 @@ export default function LoginButton(props) {
         if (url.server.search("dev") !== -1)
           dispatch({
             type: "DEVLOGIN",
-            payload: { profile, providerNo: credentials.providerNo },
+            payload: { profile },
           });
         else
           dispatch({
             type: "STAGINGLOGIN",
-            payload: { profile, providerNo: credentials.providerNo },
+            payload: { profile },
           });
       }
     }

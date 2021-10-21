@@ -19,6 +19,10 @@ export default function ApiListItem(props) {
   const { state } = useContext(AuthContext);
   const stateRef = useRef(state);
 
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);

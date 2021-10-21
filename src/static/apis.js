@@ -29,9 +29,9 @@ Goji API URLs
    /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
 *  /api/v1/oscar/patients/{demographicNo}/formOptions
 *  /api/v1/oscar/patients/{demographicNo}/labResults
-   /api/v1/transcriptions
-   /api/v1/transcriptions/{id}
-   /api/v1/transcriptions/{id}
+*  /api/v1/transcriptions       (GET ALL)
+*  /api/v1/transcriptions/{id}  (GET ONE)
+   /api/v1/transcriptions/{id}  (DELETE ONE)
    /api/v1/record
    /api/v1/test/inputtext
    /api/v1/oscar/notes
@@ -276,6 +276,31 @@ export const apis = [
     method: "get",
     api: "/api/v1/oscar/patients/121/labResults",
     getURL: formulateURL,
+  },
+
+  // TRANSCRIPTIONS
+  {
+    method: "get",
+    api: "/api/v1/transcriptions",
+    getURL: formulateURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/transcriptions/b89f3610-d992-4930-9b32-55df242a33d7",
+    getURL: formulateURL,
+  },
+
+  {
+    method: "post",
+    api: "/api/v1/record",
+    body: {
+      base64Content: "string",
+      userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
+    },
+    getURL: function (server, userInfo) {
+      this.body.userID = userInfo.id;
+      return server.endpointURL + this.api + server.suffix;
+    },
   },
 ];
 
