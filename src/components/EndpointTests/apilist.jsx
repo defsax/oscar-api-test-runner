@@ -27,10 +27,11 @@ export default function ApiList(props) {
   });
 
   // Called when user presses test all button from index.jsx
-  testCallback(() => {
+  testCallback((setResults) => {
     // Calls all registered test functions from apilistitem.jsx
     testRefs.current.forEach(async (test) => {
-      await test();
+      const result = await test();
+      setResults((prevResults) => [...prevResults, result]);
     });
   });
 

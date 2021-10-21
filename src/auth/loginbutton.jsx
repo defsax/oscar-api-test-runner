@@ -22,7 +22,6 @@ const getAuthToken = async function (url, providerNo, tokenId, setError) {
     }
 
     console.log("Token approved.");
-    console.log(response);
 
     return response.data.profile;
   } catch (err) {
@@ -33,7 +32,7 @@ const getAuthToken = async function (url, providerNo, tokenId, setError) {
 
 const loginOscar = async function (url, token, credentials, setError) {
   try {
-    const response = await axios({
+    await axios({
       method: "post",
       url: url.server + "/api/v1/oscar/login" + url.suffix,
       headers: {
@@ -48,7 +47,6 @@ const loginOscar = async function (url, token, credentials, setError) {
     });
 
     console.log("Successful oscar login.");
-    console.log(response);
     return true;
   } catch (err) {
     console.error("Oscar login failed.", err.response);
@@ -75,7 +73,6 @@ export default function LoginButton(props) {
       const success = await loginOscar(url, profile.jwt, credentials, setError);
       if (success) {
         clearInput();
-        console.log(profile);
         if (url.server.search("dev") !== -1)
           dispatch({
             type: "DEVLOGIN",

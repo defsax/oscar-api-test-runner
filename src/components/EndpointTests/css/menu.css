@@ -20,6 +20,19 @@
   justify-content: left;
 }
 
+.flex-right h3 {
+  margin: auto 0.5rem;
+}
+
+.stat-box {
+  display: flex;
+  border-radius: 8px 0px 0px 0px;
+  padding: 0 1rem 0 0.7rem;
+  transform: translateX(10px);
+  z-index: -1;
+  background-color: rgb(214, 214, 214);
+}
+
 .error {
   color: rgb(173, 13, 13);
   background-color: rgb(218, 121, 140);

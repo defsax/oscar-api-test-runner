@@ -33,7 +33,7 @@ export default function ApiListItem(props) {
       api.func();
     }
 
-    axiosQueue({
+    return axiosQueue({
       method: api.method,
       url: api.getURL(server, stateRef.current.dev),
       data: api.body,
@@ -55,9 +55,7 @@ export default function ApiListItem(props) {
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
-        return new Promise((resolve) => {
-          resolve();
-        });
+        return res;
       });
   }, [api, server]);
 

@@ -20,7 +20,7 @@ export default function EndpointTestMenu() {
   // Toggle between dev & staging
   const [toggle, setToggle] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  // const [token, setToken] = useState(0);
+  const [results, setResults] = useState([]);
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
@@ -42,6 +42,15 @@ export default function EndpointTestMenu() {
     expandButtonRef.current = callback;
   }, []);
 
+  const calcPasses = function () {
+    let passes = 0;
+
+    results.forEach((result) => {
+      if (result.status < 400) passes++;
+    });
+
+    return passes;
+  };
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
@@ -55,11 +64,21 @@ export default function EndpointTestMenu() {
 
         <div className={"flex-right"}>
           {/* The Test All button calls each registered function:  */}
+          {results.length > 0 ? (
+            <div className={"stat-box"}>
+              <h3>{((calcPasses() / results.length) * 100).toFixed(2)}%</h3>
+
+              <h3>
+                {calcPasses()} / {results.length}
+              </h3>
+            </div>
+          ) : null}
           <button
             className={"button test-all-button"}
             onClick={() => {
               setExpanded(true);
-              testButtonRef.current();
+              setResults([]);
+              testButtonRef.current(setResults);
             }}
           >
             Test All

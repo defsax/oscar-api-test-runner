@@ -1,7 +1,6 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
-      console.log(action.payload.profile.userID);
       localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
       localStorage.setItem("dev-token", action.payload.profile.jwt);
