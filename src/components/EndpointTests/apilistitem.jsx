@@ -12,6 +12,7 @@ import Loader from "react-loader-spinner";
 import { AuthContext } from "../../App";
 import StatusBox from "../statusbox";
 import axiosQueue from "../../helpers/axios";
+import Method from "../general/method";
 import "./css/listitem.css";
 
 export default function ApiListItem(props) {
@@ -90,19 +91,25 @@ export default function ApiListItem(props) {
               {api.api}
             </h2>
           </div>
-          {loading ? (
-            <Loader
-              className="loading-results"
-              type="Bars"
-              color="rgb(0, 0, 0)"
-              height={15}
-              width={15}
-            />
-          ) : (
-            <div className="pass-fail-container">
-              <StatusBox response={response} />
-            </div>
-          )}
+          <div className="flex-right">
+            <h2>
+              <Method method={api.method} />
+            </h2>
+            {response.status !== undefined ? (
+              <div className="pass-fail-container">
+                <StatusBox response={response} />
+              </div>
+            ) : null}
+            {loading ? (
+              <Loader
+                className="loading-endpoint-results"
+                type="Bars"
+                color="rgb(0, 0, 0)"
+                height={15}
+                width={15}
+              />
+            ) : null}
+          </div>
         </div>
       </button>
 

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
+import Method from "../general/method";
 import StatusBox from "../statusbox";
 
 export default function UserFlowListItem(props) {
-  const { expandCallback, result, api, body } = props;
+  const { expandCallback, result, api, body, method, server } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(true);
 
@@ -26,15 +27,21 @@ export default function UserFlowListItem(props) {
         <div className={"button-contents"}>
           <div className={"flex-left"}>
             <h2>
-              <b>({result.config.method})</b>
+              <b>({server})</b>
             </h2>
             <h2 style={{ wordBreak: "break-word", marginLeft: ".5rem" }}>
               {api}
             </h2>
           </div>
-
-          <div className="pass-fail-container">
-            <StatusBox response={result} />
+          <div className={"flex-right"}>
+            <h2>
+              <Method method={method} />
+            </h2>
+            {result.status !== undefined ? (
+              <div className="pass-fail-container">
+                <StatusBox response={result} />
+              </div>
+            ) : null}
           </div>
         </div>
       </button>

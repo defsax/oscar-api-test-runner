@@ -8,14 +8,20 @@ import {
 } from "react";
 import axios from "axios";
 
-import { PatientFlow, PrescriptionFlow } from "../../static/apis";
+import {
+  PatientFlow,
+  PrescriptionFlow,
+  NoteFlow,
+  AppointmentFlow,
+  TemplateFlow,
+} from "../../static/apiflows";
 import { apiVersion } from "../../static/serverlist";
 import UserFlowListItem from "./userflowlistitem";
 import ServerToggle from "../general/servertoggle";
 import queryAPI from "./helpers/queryapi";
+import { AuthContext } from "../../App";
 
 import "./css/userflow.css";
-import { AuthContext } from "../../App";
 
 export default function UserFlowMenu() {
   // Toggle between dev & staging
@@ -47,6 +53,26 @@ export default function UserFlowMenu() {
     expandRefs.current.push(callback);
   }, []);
 
+  const FlowOption = (props) => {
+    const { option, choice } = props;
+    if (flow.flow !== option) {
+      return (
+        <button
+          onClick={() => {
+            handleExpand();
+            setFlow({
+              flow: option,
+              apis: choice,
+            });
+          }}
+        >
+          {option}
+        </button>
+      );
+    }
+    return null;
+  };
+
   const handleExpand = () => {
     if (expanded) {
       setExpanded(false);
@@ -75,7 +101,9 @@ export default function UserFlowMenu() {
         key={i}
         result={res.result}
         api={res.api}
+        method={res.method}
         body={res.body}
+        server={res.server}
         expandCallback={setExpandCallback}
       />
     );
@@ -102,17 +130,32 @@ export default function UserFlowMenu() {
           Accept: "application/json",
         },
       });
+      console.log(server);
 
       setResults((oldResults) => [
         ...oldResults,
-        { result: postReq, api: list.post.api, body: list.post.body },
+        {
+          result: postReq,
+          api: list.post.api,
+          body: list.post.body,
+          method: "post",
+          server: server.apitype,
+        },
       ]);
 
       list.apiList.map(async (api) => {
         currentAPI = api.api;
 
-        // If there's a demographicNO, set api with #
-        if (api.setAPI) api.setAPI(postReq.data.result.demographicNo);
+        // If there's a setID function, set api with #
+        if (api.setPatientId)
+          api.setPatientId(postReq.data.result.demographicNo);
+        if (api.setNoteId) api.setNoteId(postReq.data.result.noteId);
+        if (api.setAppointmentId) api.setAppointmentId(postReq.data.result.id);
+        if (api.setTemplateIdName)
+          api.setTemplateIdName(
+            postReq.data.result.id,
+            postReq.data.result.templateName
+          );
 
         return await queryAPI(api, server, token, provNo, setResults);
       });
@@ -123,7 +166,13 @@ export default function UserFlowMenu() {
 
       setResults((oldResults) => [
         ...oldResults,
-        { result: e.response, api: currentAPI },
+        {
+          result: e.response,
+          api: currentAPI,
+          body: list.post.body,
+          method: "post",
+          server: server.apitype,
+        },
       ]);
     }
   };
@@ -173,37 +222,12 @@ export default function UserFlowMenu() {
             </button>
 
             <div style={styles.flowOptions} className={"flow-options"}>
-              {flow.flow !== "prescription" ? (
-                <button
-                  onClick={() => {
-                    handleExpand();
-                    setFlow({
-                      flow: "prescription",
-                      apis: PrescriptionFlow,
-                    });
-                  }}
-                >
-                  prescription
-                </button>
-              ) : null}
-
-              {flow.flow !== "patient" ? (
-                <button
-                  onClick={() => {
-                    handleExpand();
-                    setFlow({
-                      flow: "patient",
-                      apis: PatientFlow,
-                    });
-                  }}
-                >
-                  patient
-                </button>
-              ) : null}
-              <button>notes</button>
+              <FlowOption option={"prescription"} choice={PrescriptionFlow} />
+              <FlowOption option={"patient"} choice={PatientFlow} />
+              <FlowOption option={"notes"} choice={NoteFlow} />
+              <FlowOption option={"appointments"} choice={AppointmentFlow} />
+              <FlowOption option={"templates"} choice={TemplateFlow} />
               <button>transcriptions</button>
-              <button>appointments</button>
-              <button>templates</button>
               <button>soapnotes</button>
               <button>consults</button>
             </div>
