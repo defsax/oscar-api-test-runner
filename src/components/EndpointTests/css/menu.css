@@ -44,3 +44,9 @@
 hr {
   margin: 1rem;
 }
+
+.loading-endpoint-results {
+  margin: auto;
+  padding-left: 1rem;
+  transform: translateY(2px);
+}

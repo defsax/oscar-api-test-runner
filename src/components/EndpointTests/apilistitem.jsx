@@ -28,6 +28,28 @@ export default function ApiListItem(props) {
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
 
+  const setMethod = () => {
+    let style = { color: "black" };
+    switch (api.method) {
+      case "get":
+        style.color = "rgba(57, 108, 255, 1)";
+        break;
+      case "post":
+        style.color = "green";
+        break;
+      case "put":
+        style.color = "rgba(232, 119, 0, 1)";
+        break;
+      case "delete":
+        style.color = "red";
+        break;
+      default:
+        style.color = "black";
+        break;
+    }
+    return <span style={style}>{api.method}</span>;
+  };
+
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
@@ -90,19 +112,25 @@ export default function ApiListItem(props) {
               {api.api}
             </h2>
           </div>
-          {loading ? (
-            <Loader
-              className="loading-results"
-              type="Bars"
-              color="rgb(0, 0, 0)"
-              height={15}
-              width={15}
-            />
-          ) : (
-            <div className="pass-fail-container">
-              <StatusBox response={response} />
-            </div>
-          )}
+          <div className="flex-right">
+            <h2>
+              <b>{setMethod()}</b>
+            </h2>
+            {response.status !== undefined ? (
+              <div className="pass-fail-container">
+                <StatusBox response={response} />
+              </div>
+            ) : null}
+            {loading ? (
+              <Loader
+                className="loading-endpoint-results"
+                type="Bars"
+                color="rgb(0, 0, 0)"
+                height={15}
+                width={15}
+              />
+            ) : null}
+          </div>
         </div>
       </button>
 
