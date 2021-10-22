@@ -43,6 +43,9 @@ export default function ApiListItem(props) {
       case "delete":
         style.color = "red";
         break;
+      case "patch":
+        style.color = "purple";
+        break;
       default:
         style.color = "black";
         break;
