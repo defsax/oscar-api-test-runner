@@ -351,6 +351,15 @@ export const TemplateFlow = {
       getURL: formulateURL,
     },
     {
+      method: "post",
+      api: "/api/v1/templates",
+      body: {
+        templateName: "test",
+        templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+      },
+      getURL: formulateURL,
+    },
+    {
       method: "delete",
       api: "/api/v1/template/name/test",
       getURL: formulateURL,
