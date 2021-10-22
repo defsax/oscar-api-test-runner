@@ -32,8 +32,6 @@ export default async function queryAPI(api, server, token, provNo, setResults) {
       return err.response;
     })
     .then((res) => {
-      console.log(res);
-      console.log(server);
       setResults((oldResults) => [
         ...oldResults,
         {

@@ -44,9 +44,9 @@ export default function UserFlowMenu() {
     apis: PrescriptionFlow,
   });
 
-  useEffect(() => {
-    console.log(results);
-  }, [results]);
+  // useEffect(() => {
+  //   console.log(results);
+  // }, [results]);
 
   const expandRefs = useRef([]);
   const setExpandCallback = useCallback((callback) => {

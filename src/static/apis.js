@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { base64Content } from "./testrecord";
+// import { base64Content } from "./testrecord";
 
 const formulateURL = function (server) {
   return server.endpointURL + this.api + server.suffix;
@@ -263,11 +263,11 @@ export const apis = [
     api: "/api/v1/oscar/patients/121/forms",
     getURL: formulateURL,
   },
-  // {
-  //   method: "get",
-  //   api: "/api/v1/oscar/patients/121/completedEncounterForms",
-  //   getURL: formulateURL,
-  // },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/121/completedEncounterForms",
+    getURL: formulateURL,
+  },
   {
     method: "get",
     api: "/api/v1/oscar/patients/121/formOptions",
@@ -289,11 +289,11 @@ export const apis = [
     api: "/api/v1/transcriptions/b89f3610-d992-4930-9b32-55df242a33d7",
     getURL: formulateURL,
   },
-  // {
-  //   method: "delete",
-  //   api: "/api/v1/transcriptions/" + uuidv4(),
-  //   getURL: formulateURL,
-  // },
+  {
+    method: "delete",
+    api: "/api/v1/transcriptions/" + uuidv4(),
+    getURL: formulateURL,
+  },
   {
     method: "post",
     api: "/api/v1/record",
