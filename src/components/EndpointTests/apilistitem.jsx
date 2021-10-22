@@ -12,6 +12,7 @@ import Loader from "react-loader-spinner";
 import { AuthContext } from "../../App";
 import StatusBox from "../statusbox";
 import axiosQueue from "../../helpers/axios";
+import Method from "../general/method";
 import "./css/listitem.css";
 
 export default function ApiListItem(props) {
@@ -27,31 +28,6 @@ export default function ApiListItem(props) {
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
-
-  const setMethod = () => {
-    let style = { color: "black" };
-    switch (api.method) {
-      case "get":
-        style.color = "rgba(57, 108, 255, 1)";
-        break;
-      case "post":
-        style.color = "green";
-        break;
-      case "put":
-        style.color = "rgba(232, 119, 0, 1)";
-        break;
-      case "delete":
-        style.color = "red";
-        break;
-      case "patch":
-        style.color = "purple";
-        break;
-      default:
-        style.color = "black";
-        break;
-    }
-    return <span style={style}>{api.method}</span>;
-  };
 
   // use callback so that component doesn't re-render
   // when callback gets registered
@@ -117,7 +93,7 @@ export default function ApiListItem(props) {
           </div>
           <div className="flex-right">
             <h2>
-              <b>{setMethod()}</b>
+              <Method method={api.method} />
             </h2>
             {response.status !== undefined ? (
               <div className="pass-fail-container">

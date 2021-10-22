@@ -2,7 +2,7 @@ import axiosQueue from "../../../helpers/axios";
 
 export default async function queryAPI(api, server, token, provNo, setResults) {
   axiosQueue({
-    method: "GET",
+    method: api.method,
     url: api.getURL(server, provNo),
     data: api.body,
     headers: {
@@ -32,9 +32,17 @@ export default async function queryAPI(api, server, token, provNo, setResults) {
       return err.response;
     })
     .then((res) => {
+      console.log(res);
+      console.log(server);
       setResults((oldResults) => [
         ...oldResults,
-        { result: res, api: api.api },
+        {
+          result: res,
+          api: api.api,
+          method: api.method,
+          server: server.apitype,
+          body: api.body,
+        },
       ]);
     });
 }
