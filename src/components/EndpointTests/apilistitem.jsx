@@ -39,39 +39,43 @@ export default function ApiListItem(props) {
 
   // use callback so that component doesn't re-render
   // when callback gets registered
-  const queryAPI = useCallback(() => {
-    setLoading(true);
+  const queryAPI = useCallback(
+    (t) => {
+      setLoading(true);
+      // setToken(t);
 
-    if (api.setup) {
-      api.setup(stateRef.current.dev);
-    }
+      if (api.setup) {
+        api.setup(stateRef.current.dev);
+      }
 
-    return axiosQueue({
-      method: api.method,
-      url: api.getURL(server, stateRef.current.dev),
-      data: api.body,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        // Authorization: `Bearer ${stateRef.current.dev.token}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => {
-        console.log(`Success calling ${api.api}`);
-        return res;
+      return axiosQueue({
+        method: api.method,
+        url: api.getURL(server, stateRef.current.dev),
+        data: api.body,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${stateRef.current.dev.token}`,
+          Accept: "application/json",
+        },
       })
-      .catch((err) => {
-        console.log(`Failed calling ${api.api}`);
-        return err.response;
-      })
-      .then((res) => {
-        setResponse(res);
-        setShowMenu(true);
-        setShowData(true);
-        setLoading(false);
-        return res;
-      });
-  }, [api, server, token]);
+        .then((res) => {
+          console.log(`Success calling ${api.api}`);
+          return res;
+        })
+        .catch((err) => {
+          console.log(`Failed calling ${api.api}`);
+          return err.response;
+        })
+        .then((res) => {
+          setResponse(res);
+          setShowMenu(true);
+          setShowData(true);
+          setLoading(false);
+          return res;
+        });
+    },
+    [api, server, token]
+  );
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
@@ -130,10 +134,7 @@ export default function ApiListItem(props) {
             </p>
             <p>
               <b>URL: </b>
-              {
-                // server.endpointURL +
-                api.getURL(server, stateRef.current.dev)
-              }
+              {api.getURL(server, stateRef.current.dev)}
             </p>
             {api.body ? (
               <div>
@@ -158,7 +159,8 @@ export default function ApiListItem(props) {
             <button
               onClick={() => {
                 setResponse([]);
-                queryAPI();
+                // console.log(token);
+                queryAPI(token);
               }}
               className={"button test-button"}
             >

@@ -50,7 +50,7 @@ export const reducer = (state, action) => {
         },
         staging: {
           isAuthenticated: stagingAuth,
-          token: action.payload.jwt,
+          token: action.payload.stagingJWT,
           id: action.payload.userID,
           provNo: action.payload.provNo,
         },

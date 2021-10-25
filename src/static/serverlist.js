@@ -12,7 +12,7 @@ export const apiVersion = [
     endpointURL: "https://kennedy-staging1.gojitech.systems",
     suffix:
       "?siteURL=" +
-      encodeURIComponent("https://goji-oscar1.gojitech.systems") +
+      encodeURIComponent("https://goji-oscar2.gojitech.systems") +
       "&appVersion=staging",
   },
 ];

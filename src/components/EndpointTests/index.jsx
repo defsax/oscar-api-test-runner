@@ -1,15 +1,28 @@
-import { React, useRef, useState, useCallback, useEffect } from "react";
+import {
+  React,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+} from "react";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
 import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
 import ServerToggle from "../general/servertoggle";
+import { AuthContext } from "../../App";
 
 import "./css/button.css";
 import "./css/menu.css";
 
 export default function EndpointTestMenu() {
-  // const { state } = useContext(AuthContext);
+  const { state } = useContext(AuthContext);
+  const stateRef = useRef(state);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const testButtonRef = useRef();
   const expandButtonRef = useRef();
@@ -22,18 +35,21 @@ export default function EndpointTestMenu() {
   const [expanded, setExpanded] = useState(false);
   const [results, setResults] = useState([]);
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
+  const [token, setToken] = useState(stateRef.current.dev.token);
 
   useEffect(() => {
-    // setShuffleAPIs(apis.flat());
     setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   // If selected server is dev, set token to dev token
   // Otherwise, set to staging
-  // useEffect(() => {
-  //   if (server.apitype === "dev") setToken(state.dev.token);
-  //   else if (server.apitype === "staging") setToken(state.staging.token);
-  // }, [server, state]);
+  useEffect(() => {
+    if (server.apitype === "dev") setToken(stateRef.current.dev.token);
+    else if (server.apitype === "staging") {
+      setToken(stateRef.current.staging.token);
+      console.log(stateRef.current.staging.token);
+    }
+  }, [server, stateRef]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
@@ -52,6 +68,7 @@ export default function EndpointTestMenu() {
 
     return passes;
   };
+
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
@@ -79,7 +96,7 @@ export default function EndpointTestMenu() {
             onClick={() => {
               setExpanded(true);
               setResults([]);
-              testButtonRef.current(setResults);
+              testButtonRef.current(setResults, token);
             }}
           >
             Test All
