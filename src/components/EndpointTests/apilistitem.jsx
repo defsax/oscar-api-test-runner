@@ -3,7 +3,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  // useMemo,
   useRef,
   useState,
 } from "react";
@@ -28,14 +27,23 @@ export default function ApiListItem(props) {
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
+  const [token, setToken] = useState(stateRef.current.dev.token);
+
+  useEffect(() => {
+    if (server.apitype === "dev") {
+      setToken(stateRef.current.dev.token);
+    } else if (server.apitype === "staging") {
+      setToken(stateRef.current.staging.token);
+    }
+  }, [server, stateRef]);
 
   // use callback so that component doesn't re-render
   // when callback gets registered
   const queryAPI = useCallback(() => {
     setLoading(true);
 
-    if (api.func) {
-      api.func();
+    if (api.setup) {
+      api.setup(stateRef.current.dev);
     }
 
     return axiosQueue({
@@ -43,7 +51,8 @@ export default function ApiListItem(props) {
       url: api.getURL(server, stateRef.current.dev),
       data: api.body,
       headers: {
-        Authorization: `Bearer ${stateRef.current.dev.token}`,
+        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${stateRef.current.dev.token}`,
         Accept: "application/json",
       },
     })
@@ -62,7 +71,7 @@ export default function ApiListItem(props) {
         setLoading(false);
         return res;
       });
-  }, [api, server]);
+  }, [api, server, token]);
 
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);

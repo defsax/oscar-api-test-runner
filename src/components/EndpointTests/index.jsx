@@ -24,6 +24,7 @@ export default function EndpointTestMenu() {
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
+    // setShuffleAPIs(apis.flat());
     setShuffleAPIs(shuffle(apis).flat());
   }, []);
 

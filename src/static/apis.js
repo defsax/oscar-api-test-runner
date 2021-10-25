@@ -209,7 +209,7 @@ export const apis = [
         address: "92 Auburn Ave",
       },
     },
-    func: function () {
+    setup: function () {
       this.body.email = "test.patient." + uuidv4() + "@gmail.com";
     },
     getURL: formulateURL,
@@ -265,7 +265,7 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/completedEncounterForms",
+    api: "/api/v1/oscar/patients/121/forms/completedEncounterForms",
     getURL: formulateURL,
   },
   {
@@ -301,8 +301,10 @@ export const apis = [
       base64Content: "base64Content",
       userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
     },
-    getURL: function (server, userInfo) {
+    setup: function (userInfo) {
       this.body.userID = userInfo.id;
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -346,7 +348,7 @@ export const apis = [
     method: "post",
     api: "/api/v1/oscar/appointments",
     body: {
-      providerNo: 1,
+      providerNo: 0,
       appointmentDate: "2021-07-26 10:50",
       startTime: "2021-07-26 10:50",
       demographicNo: 121,
@@ -359,8 +361,10 @@ export const apis = [
       duration: 0,
       urgency: "string",
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
+    setup: function (userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -390,7 +394,7 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/appointments/202",
     body: {
-      providerNo: 1,
+      providerNo: 0,
       appointmentDate: "2021-07-26 10:50",
       startTime: "2021-07-26 10:50",
       demographicNo: 121,
@@ -403,8 +407,10 @@ export const apis = [
       duration: 0,
       urgency: "string",
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
+    setup: function (userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -428,8 +434,11 @@ export const apis = [
     method: "post",
     api: "/api/v1/templates",
     body: {
-      templateName: "test string" + uuidv4(),
+      templateName: "test string: " + uuidv4(),
       templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+    },
+    setup: function () {
+      this.body.templateName = "test string: " + uuidv4();
     },
     getURL: formulateURL,
   },
@@ -460,10 +469,13 @@ export const apis = [
   },
   {
     method: "put",
-    api: "/api/v1/template/id/2686ccb5-c8e8-4626-9bb1-7c458a232dbf",
+    api: "/api/v1/template/bed451b9-3b11-46b3-99f2-8510d160060e",
     body: {
-      templateName: "string",
+      templateName: "test string: " + uuidv4(),
       templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+    },
+    setup: function () {
+      this.body.templateName = "test string: " + uuidv4();
     },
     getURL: formulateURL,
   },
@@ -571,8 +583,10 @@ export const apis = [
       ],
       sendToList: ["string"],
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
+    setup: function (userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -663,8 +677,10 @@ export const apis = [
       ],
       sendToList: ["string"],
     },
-    getURL: function (server, userInfo) {
+    setup: function (userInfo) {
       this.body.providerNo = userInfo.provNo;
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -718,16 +734,16 @@ export const apis = [
     api: "/api/v1/oscar/ticklers",
     body: {
       id: 0,
-      demographicNo: 0,
+      demographicNo: 121,
       programId: 0,
       message: "string",
       status: "A",
       createDate: "2021-10-22T17:41:03.791Z",
       updateDate: "2021-10-22T17:41:03.791Z",
       serviceDate: "2021-10-22T17:41:03.791Z",
-      creator: "string",
+      creator: "8",
       priority: "High",
-      taskAssignedTo: "string",
+      taskAssignedTo: "8",
       categoryId: 0,
       ticklerCategory: {
         id: 0,
