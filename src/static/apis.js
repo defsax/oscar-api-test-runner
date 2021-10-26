@@ -88,13 +88,13 @@ export const apis = [
   // OTHER
   { method: "get", api: "/api/v1/status", getURL: formulateURL },
   { method: "get", api: "/api/v1/sites", getURL: formulateURL },
-  {
-    method: "get",
-    api: "/api/v1/check/",
-    getURL: function (server, userInfo) {
-      return server.endpointURL + this.api + userInfo.id + server.suffix;
-    },
-  },
+  // {
+  //   method: "get",
+  //   api: "/api/v1/check/",
+  //   getURL: function (server, userInfo) {
+  //     return server.endpointURL + this.api + userInfo.id + server.suffix;
+  //   },
+  // },
   // PROVIDERS
   {
     method: "get",
