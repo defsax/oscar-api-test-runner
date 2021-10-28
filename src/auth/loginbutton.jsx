@@ -70,6 +70,7 @@ export default function LoginButton(props) {
       setError
     );
     if (profile) {
+      console.log(profile);
       const success = await loginOscar(url, profile.jwt, credentials, setError);
       if (success) {
         clearInput();

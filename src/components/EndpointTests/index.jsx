@@ -1,7 +1,7 @@
 import { React, useRef, useState, useCallback, useEffect } from "react";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
-import shuffle from "../../helpers/shuffle";
+// import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
 import ServerToggle from "../general/servertoggle";
 
@@ -22,7 +22,8 @@ export default function EndpointTestMenu() {
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
-    setShuffleAPIs(shuffle(apis).flat());
+    setShuffleAPIs(apis.flat());
+    // setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   const setTestCallback = useCallback((callback) => {

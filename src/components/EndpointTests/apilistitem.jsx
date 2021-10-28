@@ -33,24 +33,24 @@ export default function ApiListItem(props) {
   const queryAPI = useCallback(() => {
     setLoading(true);
 
-    let token = "";
+    let userInfo = {};
     if (server.apitype === "dev") {
-      token = stateRef.current.dev.token;
+      userInfo = stateRef.current.dev;
     } else if (server.apitype === "staging") {
-      token = stateRef.current.staging.token;
+      userInfo = stateRef.current.staging;
     }
 
     // Run any setup if the api requires it
     if (api.setup) {
-      api.setup(stateRef.current.dev);
+      api.setup(userInfo);
     }
 
     return axiosQueue({
       method: api.method,
-      url: api.getURL(server, stateRef.current.dev),
+      url: api.getURL(server, userInfo),
       data: api.body,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userInfo.token}`,
         Accept: "application/json",
       },
     })

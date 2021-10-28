@@ -1,10 +1,10 @@
 export const reducer = (state, action) => {
   switch (action.type) {
     case "DEVLOGIN":
-      localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("dev-id", action.payload.profile.userID);
       localStorage.setItem("dev-token", action.payload.profile.jwt);
-      localStorage.setItem("providerNo", action.payload.profile.providerNo);
+      localStorage.setItem("dev-providerNo", action.payload.profile.providerNo);
 
       return {
         ...state,
@@ -18,11 +18,14 @@ export const reducer = (state, action) => {
       };
 
     case "STAGINGLOGIN":
-      localStorage.setItem("id", action.payload.profile.userID);
       localStorage.setItem("user", action.payload.profile.email);
+      localStorage.setItem("staging-id", action.payload.profile.userID);
       localStorage.setItem("staging-token", action.payload.profile.jwt);
-      localStorage.setItem("providerNo", action.payload.profile.providerNo);
-
+      localStorage.setItem(
+        "staging-providerNo",
+        action.payload.profile.providerNo
+      );
+      console.log(action.payload);
       return {
         ...state,
         user: action.payload.profile.email,
@@ -35,24 +38,20 @@ export const reducer = (state, action) => {
       };
 
     case "REFRESH":
-      let devAuth = false;
-      let stagingAuth = false;
-      if (action.payload.devJWT) devAuth = true;
-      if (action.payload.stagingJWT) stagingAuth = true;
       return {
         ...state,
         user: action.payload.email,
         dev: {
-          isAuthenticated: devAuth,
-          token: action.payload.devJWT,
-          id: action.payload.userID,
-          provNo: action.payload.provNo,
+          isAuthenticated: !!action.payload.devInfo.jwt,
+          token: action.payload.devInfo.jwt,
+          id: action.payload.devInfo.id,
+          provNo: action.payload.devInfo.provNo,
         },
         staging: {
-          isAuthenticated: stagingAuth,
-          token: action.payload.stagingJWT,
-          id: action.payload.userID,
-          provNo: action.payload.provNo,
+          isAuthenticated: !!action.payload.stagingInfo.jwt,
+          token: action.payload.stagingInfo.jwt,
+          id: action.payload.stagingInfo.id,
+          provNo: action.payload.stagingInfo.provNo,
         },
       };
 

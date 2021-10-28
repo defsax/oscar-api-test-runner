@@ -43,6 +43,7 @@ export default function Menu(props) {
       {toggle ? (
         devResults.length ? (
           devResults.map((test) => {
+            console.log(test);
             return <MenuItem key={test.id} test={test} server={"(dev) "} />;
           })
         ) : (
@@ -58,6 +59,7 @@ export default function Menu(props) {
       {!toggle ? (
         stagingResults.length ? (
           stagingResults.map((test) => {
+            console.log(test);
             return <MenuItem key={test.id} test={test} server={"(staging) "} />;
           })
         ) : (

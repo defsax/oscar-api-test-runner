@@ -1,5 +1,6 @@
+// import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-// import { base64Content } from "./testrecord";
+import { base64Content } from "./base64content";
 
 const formulateURL = function (server) {
   return server.endpointURL + this.api + server.suffix;
@@ -181,15 +182,13 @@ export const apis = [
     method: "get",
     api: "/api/v1/oscar/prescriptions",
     getURL: function (server, userInfo) {
-      if (server.endpointURL.search("dev") !== -1)
-        return (
-          server.endpointURL +
-          this.api +
-          server.suffix +
-          "&demographicNo=121&providerNo=" +
-          userInfo.provNo
-        );
-      else return server.endpointURL + this.api + server.suffix;
+      return (
+        server.endpointURL +
+        this.api +
+        server.suffix +
+        "&demographicNo=121&providerNo=" +
+        userInfo.provNo
+      );
     },
   },
   // PATIENTS
@@ -298,10 +297,11 @@ export const apis = [
     method: "post",
     api: "/api/v1/record",
     body: {
-      base64Content: "base64Content",
+      base64Content: base64Content,
       userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
     },
     setup: function (userInfo) {
+      console.log(userInfo.id);
       this.body.userID = userInfo.id;
     },
     getURL: function (server) {
@@ -364,9 +364,7 @@ export const apis = [
     setup: function (userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
     },
-    getURL: function (server) {
-      return server.endpointURL + this.api + server.suffix;
-    },
+    getURL: formulateURL,
   },
   {
     method: "get",
@@ -410,9 +408,7 @@ export const apis = [
     setup: function (userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
     },
-    getURL: function (server) {
-      return server.endpointURL + this.api + server.suffix;
-    },
+    getURL: formulateURL,
   },
   {
     method: "get",
@@ -454,8 +450,28 @@ export const apis = [
   },
   {
     method: "delete",
-    api: "/api/v1/template/id/1234",
-    getURL: formulateURL,
+    api: "/api/v1/template/id/",
+    id: "",
+    setup: async function (token) {
+      console.log(token);
+      // Create a dummy template to delete...
+      // const result = await axios({
+      //   method: "post",
+      //   url: server.endpointURL + "/api/v1/templates" + server.suffix,
+      //   data: {
+      //     templateName: "test string: " + uuidv4(),
+      //     templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+      //   },
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     Accept: "application/json",
+      //   },
+      // });
+      // console.log(result);
+    },
+    getURL: function (server) {
+      return server.endpointURL + this.api + this.id + server.suffix;
+    },
   },
   {
     method: "get",
