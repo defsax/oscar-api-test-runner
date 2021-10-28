@@ -1,4 +1,4 @@
-// import axios from "axios";
+import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { base64Content } from "./base64content";
 
@@ -451,26 +451,36 @@ export const apis = [
   {
     method: "delete",
     api: "/api/v1/template/id/",
-    id: "",
-    setup: async function (token) {
-      console.log(token);
+    id: { no: null },
+    setup: async function (userInfo, server) {
+      // this.id = uuidv4();
+
       // Create a dummy template to delete...
-      // const result = await axios({
-      //   method: "post",
-      //   url: server.endpointURL + "/api/v1/templates" + server.suffix,
-      //   data: {
-      //     templateName: "test string: " + uuidv4(),
-      //     templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
-      //   },
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     Accept: "application/json",
-      //   },
-      // });
-      // console.log(result);
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          data: {
+            templateName: "test string: " + uuidv4(),
+            templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log(result);
+        this.id.no = result.data.result.id;
+        // Object.freeze(this);
+        console.log("this.id:", this.id.no);
+      } catch (error) {
+        console.log("error creating document to delete:", error);
+        this.id = uuidv4();
+      }
     },
     getURL: function (server) {
-      return server.endpointURL + this.api + this.id + server.suffix;
+      return server.endpointURL + this.api + this.id.no + server.suffix;
     },
   },
   {

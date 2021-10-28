@@ -30,7 +30,7 @@ export default function ApiListItem(props) {
 
   // use callback so that component doesn't re-render
   // when callback gets registered
-  const queryAPI = useCallback(() => {
+  const queryAPI = useCallback(async () => {
     setLoading(true);
 
     let userInfo = {};
@@ -42,7 +42,7 @@ export default function ApiListItem(props) {
 
     // Run any setup if the api requires it
     if (api.setup) {
-      api.setup(userInfo);
+      await api.setup(userInfo, server);
     }
 
     return axiosQueue({
@@ -74,6 +74,17 @@ export default function ApiListItem(props) {
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
+
+  function truncate(str, n) {
+    let tempObj = JSON.parse(str);
+    if (tempObj.base64Content) {
+      return JSON.stringify({
+        base64Content: tempObj.base64Content.substr(0, n - 1) + "...",
+        userID: tempObj.userID,
+      });
+    }
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
+  }
 
   useEffect(() => {
     // Always register callbacks
@@ -134,7 +145,7 @@ export default function ApiListItem(props) {
               <div>
                 <p>Body:</p>
 
-                <pre>{JSON.stringify(api.body, null, 2)}</pre>
+                <pre>{truncate(JSON.stringify(api.body, null, 2), 5000)}</pre>
               </div>
             ) : null}
 

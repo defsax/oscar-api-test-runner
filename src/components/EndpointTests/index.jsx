@@ -43,7 +43,6 @@ export default function EndpointTestMenu() {
 
     return passes;
   };
-
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
