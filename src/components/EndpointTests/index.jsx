@@ -1,7 +1,7 @@
 import { React, useRef, useState, useCallback, useEffect } from "react";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
-import shuffle from "../../helpers/shuffle";
+// import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
 import ServerToggle from "../general/servertoggle";
 
@@ -9,8 +9,6 @@ import "./css/button.css";
 import "./css/menu.css";
 
 export default function EndpointTestMenu() {
-  // const { state } = useContext(AuthContext);
-
   const testButtonRef = useRef();
   const expandButtonRef = useRef();
 
@@ -24,15 +22,9 @@ export default function EndpointTestMenu() {
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
 
   useEffect(() => {
-    setShuffleAPIs(shuffle(apis).flat());
+    setShuffleAPIs(apis.flat());
+    // setShuffleAPIs(shuffle(apis).flat());
   }, []);
-
-  // If selected server is dev, set token to dev token
-  // Otherwise, set to staging
-  // useEffect(() => {
-  //   if (server.apitype === "dev") setToken(state.dev.token);
-  //   else if (server.apitype === "staging") setToken(state.staging.token);
-  // }, [server, state]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;

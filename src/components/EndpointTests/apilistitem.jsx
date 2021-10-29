@@ -3,7 +3,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  // useMemo,
   useRef,
   useState,
 } from "react";
@@ -31,19 +30,27 @@ export default function ApiListItem(props) {
 
   // use callback so that component doesn't re-render
   // when callback gets registered
-  const queryAPI = useCallback(() => {
+  const queryAPI = useCallback(async () => {
     setLoading(true);
 
-    if (api.func) {
-      api.func();
+    let userInfo = {};
+    if (server.apitype === "dev") {
+      userInfo = stateRef.current.dev;
+    } else if (server.apitype === "staging") {
+      userInfo = stateRef.current.staging;
+    }
+
+    // Run any setup if the api requires it
+    if (api.setup) {
+      await api.setup(server, userInfo);
     }
 
     return axiosQueue({
       method: api.method,
-      url: api.getURL(server, stateRef.current.dev),
+      url: api.getURL(server, userInfo),
       data: api.body,
       headers: {
-        Authorization: `Bearer ${stateRef.current.dev.token}`,
+        Authorization: `Bearer ${userInfo.token}`,
         Accept: "application/json",
       },
     })
@@ -67,6 +74,17 @@ export default function ApiListItem(props) {
   const expandContract = useCallback((isExpanded) => {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
+
+  function truncate(str, n) {
+    let tempObj = JSON.parse(str);
+    if (tempObj.base64Content) {
+      return JSON.stringify({
+        base64Content: tempObj.base64Content.substr(0, n - 1) + "...",
+        userID: tempObj.userID,
+      });
+    }
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
+  }
 
   useEffect(() => {
     // Always register callbacks
@@ -121,16 +139,13 @@ export default function ApiListItem(props) {
             </p>
             <p>
               <b>URL: </b>
-              {
-                // server.endpointURL +
-                api.getURL(server, stateRef.current.dev)
-              }
+              {api.getURL(server, stateRef.current.dev)}
             </p>
             {api.body ? (
               <div>
                 <p>Body:</p>
 
-                <pre>{JSON.stringify(api.body, null, 2)}</pre>
+                <pre>{truncate(JSON.stringify(api.body, null, 2), 5000)}</pre>
               </div>
             ) : null}
 

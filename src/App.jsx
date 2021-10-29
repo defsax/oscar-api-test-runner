@@ -27,14 +27,21 @@ function App() {
   useEffect(() => {
     // setResponse(res);
     const user = localStorage.getItem("user");
-    const devJWT = localStorage.getItem("dev-token");
-    const stagingJWT = localStorage.getItem("staging-token");
-    const provNo = localStorage.getItem("providerNo");
-    const userID = localStorage.getItem("id");
+    const devInfo = {
+      id: localStorage.getItem("dev-id"),
+      jwt: localStorage.getItem("dev-token"),
+      provNo: localStorage.getItem("dev-providerNo"),
+    };
+
+    const stagingInfo = {
+      id: localStorage.getItem("staging-id"),
+      jwt: localStorage.getItem("staging-token"),
+      provNo: localStorage.getItem("staging-providerNo"),
+    };
 
     dispatch({
       type: "REFRESH",
-      payload: { email: user, devJWT, stagingJWT, provNo, userID },
+      payload: { email: user, devInfo, stagingInfo },
     });
   }, []);
 

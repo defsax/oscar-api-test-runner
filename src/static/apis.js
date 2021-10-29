@@ -1,10 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-// import { base64Content } from "./testrecord";
-
-const formulateURL = function (server) {
-  return server.endpointURL + this.api + server.suffix;
-};
-
 /*
 Goji API URLs
 
@@ -18,7 +11,6 @@ Goji API URLs
 *  /api/v1/oscar/prescriptions (POST)
 *  /api/v1/oscar/prescriptions (GET ALL)
 *  /api/v1/oscar/drugs/search 
-
 *  /api/v1/oscar/patients (POST)
 *  /api/v1/oscar/patients (SEARCH BY KEYWORD)
 *  /api/v1/oscar/patients/all
@@ -28,20 +20,17 @@ Goji API URLs
 *  /api/v1/oscar/patients/{demographicNo}/fullSummary/RISK_FACTORS
 *  /api/v1/oscar/patients/{demographicNo}/documents
 *  /api/v1/oscar/patients/{demographicNo}/forms
-   /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
+*  /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
 *  /api/v1/oscar/patients/{demographicNo}/formOptions
 *  /api/v1/oscar/patients/{demographicNo}/labResults
-
 *  /api/v1/transcriptions       (GET ALL)
 *  /api/v1/transcriptions/{id}  (GET ONE)
    /api/v1/transcriptions/{id}  (DELETE ONE)
-   /api/v1/record
+*  /api/v1/record
 *  /api/v1/test/inputtext
-
 *  /api/v1/oscar/notes                                  (POST)
 *  /api/v1/oscar/notes                                  (GET BY PATIENT OR KEYWORD)
-   /api/v1/oscar/notest/noteId                          (GET ONE)
-
+*  /api/v1/oscar/notest/noteId                          (GET ONE)
 *  /api/v1/oscar/appointments                           (POST)
 *  /api/v1/oscar/appointments                           (GET ALL)
 *  /api/v1/oscar/appointments/{demographicNo}/history   (GET PATIENT APPOINTMENT HISTORY)
@@ -50,51 +39,79 @@ Goji API URLs
 *  /api/v1/oscar/appointments/reasons                   (GET)
 *  /api/v1/oscar/appointments/types                     (GET)
 *  /api/v1/oscar/appointments/statuses                  (GET)
-
 *  /api/v1/templates                                    (POST)
 *  /api/v1/templates                                    (GET)
 *  /api/v1/template/id/{id}                             (GET)
-   /api/v1/template/id/{id}                             (DELETE)
+*  /api/v1/template/id/{id}                             (DELETE)
 *  /api/v1/template/name/{templatename }                (GET)
-   /api/v1/template/name/{templatename }                (DELETE)
-   /api/v1/template/{id}                                (PUT)
-
-*  /api/v1/oscar/forms/allEncounterForms                (GET)
-*  /api/v1/oscar/forms/selectedEncounterForms           (GET)
-*  /api/v1/oscar/forms/formGroups                       (GET)
-*  /api/v1/oscar/forms/favouriteFormGroup               (GET)
-*  /api/v1/oscar/forms/groupNames                       (GET)
-
-   /api/v1/oscar/consults/requests                      (POST)
+*  /api/v1/template/name/{templatename }                (DELETE)
+*  /api/v1/template/{id}                                (PUT)
+   /api/v1/oscar/forms/allEncounterForms                (GET)
+   /api/v1/oscar/forms/selectedEncounterForms           (GET)
+   /api/v1/oscar/forms/formGroups                       (GET)
+   /api/v1/oscar/forms/favouriteFormGroup               (GET)
+   /api/v1/oscar/forms/groupNames                       (GET)
+*  /api/v1/oscar/consults/requests                      (POST)
    /api/v1/oscar/consults/requests                      (GET)
 *  /api/v1/oscar/consults/requests/{id}                 (GET)
-   /api/v1/oscar/consults/requests/{id}                 (PUT)
+*  /api/v1/oscar/consults/requests/{id}                 (PUT)
 *  /api/v1/oscar/consults/professionalSpecialist/{id}   (GET)
 *  /api/v1/oscar/consults/referAttachments              (GET)
 *  /api/v1/oscar/consults/requestAttachments            (GET)
 *  /api/v1/oscar/consults/getReferralPathwaysByService  (GET)
 *  /api/v1/oscar/consults/eSendRequest                  (GET)
-
 *  /api/v1/oscar/ticklers                               (GET)
-   /api/v1/oscar/ticklers                               (POST)
+*  /api/v1/oscar/ticklers                               (POST)
 *  /api/v1/oscar/ticklers/mine                          (GET)
 *  /api/v1/oscar/ticklers/{id}/complete                 (PATCH)
-   /api/v1/oscar/ticklers/{id}/update                   (PUT)
+*  /api/v1/oscar/ticklers/{id}/update                   (PUT)
 *  /api/v1/oscar/ticklers/{id}/update                   (DELETE)
 
 */
+
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { base64Content } from "./base64content";
+import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
+
+const formulateURL = function (server) {
+  return server.endpointURL + this.api + server.suffix;
+};
+const formulatePatientURL = function (server) {
+  return (
+    server.endpointURL +
+    "/api/v1/oscar/patients/" +
+    server.testDemoNo +
+    this.suffix +
+    server.suffix
+  );
+};
+
+const generateFirstName = () => {
+  const configName = {
+    dictionaries: [names],
+  };
+  return uniqueNamesGenerator(configName);
+};
+const generateLastName = () => {
+  const configAnimal = {
+    dictionaries: [animals],
+  };
+  const characterLastName = uniqueNamesGenerator(configAnimal);
+  return characterLastName.charAt(0).toUpperCase() + characterLastName.slice(1);
+};
 
 export const apis = [
   // OTHER
   { method: "get", api: "/api/v1/status", getURL: formulateURL },
   { method: "get", api: "/api/v1/sites", getURL: formulateURL },
-  {
-    method: "get",
-    api: "/api/v1/check/",
-    getURL: function (server, userInfo) {
-      return server.endpointURL + this.api + userInfo.id + server.suffix;
-    },
-  },
+  // {
+  //   method: "get",
+  //   api: "/api/v1/check/",
+  //   getURL: function (server, userInfo) {
+  //     return server.endpointURL + this.api + userInfo.id + server.suffix;
+  //   },
+  // },
   // PROVIDERS
   {
     method: "get",
@@ -175,21 +192,22 @@ export const apis = [
         },
       },
     ],
+    setup: function (server, userInfo) {
+      this.body[0].demographicNo = server.testDemoNo;
+    },
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/prescriptions",
     getURL: function (server, userInfo) {
-      if (server.endpointURL.search("dev") !== -1)
-        return (
-          server.endpointURL +
-          this.api +
-          server.suffix +
-          "&demographicNo=121&providerNo=" +
-          userInfo.provNo
-        );
-      else return server.endpointURL + this.api + server.suffix;
+      return (
+        server.endpointURL +
+        this.api +
+        server.suffix +
+        "&demographicNo=121&providerNo=" +
+        userInfo.provNo
+      );
     },
   },
   // PATIENTS
@@ -209,8 +227,10 @@ export const apis = [
         address: "92 Auburn Ave",
       },
     },
-    func: function () {
+    setup: function () {
       this.body.email = "test.patient." + uuidv4() + "@gmail.com";
+      this.body.firstName = generateFirstName();
+      this.body.lastName = generateLastName();
     },
     getURL: formulateURL,
   },
@@ -230,53 +250,63 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}",
+    suffix: "",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/ALLERGIES",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/ALLERGIES",
+    suffix: "/fullSummary/ALLERGIES",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/FAMILYHISTORY",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/FAMILYHISTORY",
+    suffix: "/fullSummary/FAMILYHISTORY",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/RISK_FACTORS",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/RISK_FACTORS",
+    suffix: "/fullSummary/RISK_FACTORS",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/measurements",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/measurements",
+    suffix: "/measurements",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/documents",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/documents",
+    suffix: "/documents",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/forms",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/forms",
+    suffix: "/forms",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/completedEncounterForms",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/forms/completedEncounterForms",
+    suffix: "/forms/completedEncounterForms",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/formOptions",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/formOptions",
+    suffix: "/formOptions",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/labResults",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/labResults",
+    suffix: "/labResults",
+    getURL: formulatePatientURL,
   },
   // TRANSCRIPTIONS
   {
@@ -286,23 +316,89 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/transcriptions/b89f3610-d992-4930-9b32-55df242a33d7",
-    getURL: formulateURL,
+    api: "/api/v1/transcriptions/{id}",
+
+    getURL: function (server, userInfo) {
+      let id = "dab882aa-352c-42a3-93e3-b6736fb5629a";
+      if (server.apitype === "dev") id = "b89f3610-d992-4930-9b32-55df242a33d7";
+      return (
+        server.endpointURL + "/api/v1/transcriptions/" + id + server.suffix
+      );
+    },
   },
   {
     method: "delete",
-    api: "/api/v1/transcriptions/" + uuidv4(),
-    getURL: formulateURL,
+    api: "/api/v1/transcriptions/{id}",
+    id: null,
+    setup: async function (server, userInfo) {
+      // Create a dummy transcription to delete...
+
+      // First create transcription
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/record" + server.suffix,
+          data: {
+            base64Content: base64Content,
+            userID: userInfo.id,
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Dummy record successfully created:", result);
+      } catch (error) {
+        console.log("Error creating dummy record:", error);
+      }
+
+      // Then fetch all transcriptions
+      try {
+        const transcriptions = await axios({
+          method: "get",
+          url: server.endpointURL + "/api/v1/transcriptions" + server.suffix,
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Fetched all transcriptions:", transcriptions);
+        console.log(
+          "Latest transcription:",
+          transcriptions.data.result.data[0]
+        );
+
+        // *** NOTE: this doesn't work on staging, since staging doesn't return reverse chronological
+        // Get latest transcription and get/set id
+        if (
+          transcriptions.data.result.data[0].original ===
+          "Create a prescription for Tamiflu 100 milligrams."
+        ) {
+          this.id = transcriptions.data.result.data[0].id;
+        }
+      } catch (error) {
+        console.log("Error fetching all transcriptions:", error);
+      }
+    },
+    getURL: function (server) {
+      return (
+        server.endpointURL + "/api/v1/transcriptions/" + this.id + server.suffix
+      );
+    },
   },
   {
     method: "post",
     api: "/api/v1/record",
     body: {
-      base64Content: "base64Content",
+      base64Content: base64Content,
       userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
     },
-    getURL: function (server, userInfo) {
+    setup: function (server, userInfo) {
       this.body.userID = userInfo.id;
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -325,6 +421,9 @@ export const apis = [
       updateDate: "2021-10-20T15:53:20.944Z",
       soapNote: {},
     },
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
+    },
     getURL: formulateURL,
   },
   {
@@ -332,13 +431,43 @@ export const apis = [
     api: "/api/v1/oscar/notes",
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&demographicNo=121"
+        server.endpointURL +
+        this.api +
+        server.suffix +
+        "&demographicNo=" +
+        server.testDemoNo
       );
     },
   },
   {
     method: "get",
     api: "/api/v1/oscar/notest/190",
+    id: null,
+    setup: async function (server, userInfo) {
+      // Create note, then get id from response and set id
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/oscar/notes" + server.suffix,
+          body: {
+            demographicNo: server.apitype === "dev" ? 121 : 76,
+            note: "Patient seems like a test.",
+            observationDate: "2021-10-20T15:53:20.944Z",
+            updateDate: "2021-10-20T15:53:20.944Z",
+            soapNote: {},
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Dummy note successfully created:", result);
+        this.id = result.noteId;
+      } catch (error) {
+        console.log("Error creating dummy note:", error);
+      }
+    },
     getURL: formulateURL,
   },
   // APPOINTMENTS
@@ -346,7 +475,7 @@ export const apis = [
     method: "post",
     api: "/api/v1/oscar/appointments",
     body: {
-      providerNo: 1,
+      providerNo: 0,
       appointmentDate: "2021-07-26 10:50",
       startTime: "2021-07-26 10:50",
       demographicNo: 121,
@@ -359,10 +488,11 @@ export const apis = [
       duration: 0,
       urgency: "string",
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
-      return server.endpointURL + this.api + server.suffix;
+    setup: function (server, userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+      this.body.demographicNo = server.testDemoNo;
     },
+    getURL: formulateURL,
   },
   {
     method: "get",
@@ -390,23 +520,51 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/appointments/202",
     body: {
-      providerNo: 1,
+      providerNo: 0,
       appointmentDate: "2021-07-26 10:50",
       startTime: "2021-07-26 10:50",
       demographicNo: 121,
       notes: "Patient is not sick",
-      reason: "string",
-      location: "string",
+      reason: "Counselling",
+      location: "Cardiology",
       resources: "string",
       type: "string",
       status: "string",
       duration: 0,
-      urgency: "string",
+      urgency: "Non-Urgent",
+
+      id: 130,
+      // providerNo: "11",
+      // appointmentDate: "2021-10-15",
+      // startTime: "15:00",
+      endTime: "15:30",
+      name: "USER, TEST",
+      // demographicNo: 30,
+      programId: 0,
+      // notes: "xcv",
+      // reason: "Counselling",
+      // location: "Cardiology",
+      // resources: "string",
+      // type: "string",
+      style: null,
+      billing: null,
+      // status: "string",
+      importedStatus: null,
+      creator: "11",
+      lastUpdateUser: "11",
+      remarks: "",
+      // urgency: "Non-Urgent",
+      creatorSecurityId: null,
+      bookingSource: null,
+      reasonCode: 14,
+      demographic: null,
+      provider: null,
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
-      return server.endpointURL + this.api + server.suffix;
+    setup: function (server, userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+      this.body.demographicNo = server.testDemoNo;
     },
+    getURL: formulateURL,
   },
   {
     method: "get",
@@ -428,8 +586,11 @@ export const apis = [
     method: "post",
     api: "/api/v1/templates",
     body: {
-      templateName: "test string" + uuidv4(),
+      templateName: "test string: " + uuidv4(),
       templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+    },
+    setup: function () {
+      this.body.templateName = "test string: " + uuidv4();
     },
     getURL: formulateURL,
   },
@@ -445,8 +606,33 @@ export const apis = [
   },
   {
     method: "delete",
-    api: "/api/v1/template/id/1234",
-    getURL: formulateURL,
+    api: "/api/v1/template/id/",
+    id: null,
+    setup: async function (server, userInfo) {
+      // Create a dummy template to delete...
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          data: {
+            templateName: "test string: " + uuidv4(),
+            templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        this.id = result.data.result.id;
+      } catch (error) {
+        console.log("error creating document to delete:", error);
+        this.id = uuidv4();
+      }
+    },
+    getURL: function (server) {
+      return server.endpointURL + this.api + this.id + server.suffix;
+    },
   },
   {
     method: "get",
@@ -460,10 +646,13 @@ export const apis = [
   },
   {
     method: "put",
-    api: "/api/v1/template/id/2686ccb5-c8e8-4626-9bb1-7c458a232dbf",
+    api: "/api/v1/template/bed451b9-3b11-46b3-99f2-8510d160060e",
     body: {
-      templateName: "string",
+      templateName: "test string: " + uuidv4(),
       templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+    },
+    setup: function () {
+      this.body.templateName = "test string: " + uuidv4();
     },
     getURL: formulateURL,
   },
@@ -498,81 +687,91 @@ export const apis = [
     method: "post",
     api: "/api/v1/oscar/consults/requests",
     body: {
-      id: 0,
-      referralDate: "2021-10-22T17:07:09.225Z",
-      serviceId: 0,
-      professionalSpecialist: {},
-      appointmentDate: "2021-10-22T17:07:09.225Z",
-      appointmentTime: "2021-10-22T17:07:09.225Z",
-      reasonForReferral: "string",
-      clinicalInfo: "string",
-      currentMeds: "string",
-      allergies: "string",
-      providerNo: 0,
+      referralDate: "2021-10-08T17:06:45.778Z",
+      serviceId: 57,
       demographicId: 121,
-      status: "1",
-      statusText: "string",
-      sendTo: "string",
-      concurrentProblems: "string",
       urgency: "2",
-      patientWillBook: true,
-      siteName: "string",
-      followUpDate: "2021-10-22T17:07:09.225Z",
-      signatureImg: "string",
-      letterheadName: "string",
-      letterheadAddress: "string",
-      letterheadPhone: "string",
-      letterheadFax: "string",
-      attachments: [{}],
-      letterheadList: [
-        {
-          id: "string",
-          name: "string",
-          address: "string",
-          phone: "string",
-        },
-      ],
-      faxList: [
-        {
-          faxUser: "string",
-          faxNumber: "string",
-        },
-      ],
-      serviceList: [
-        {
-          serviceId: 0,
-          serviceDesc: "string",
-          active: "string",
-          specialists: [
-            {
-              id: 0,
-              firstName: "string",
-              lastName: "string",
-              name: "string",
-              professionalLetters: "string",
-              streetAddress: "string",
-              phoneNumber: "string",
-              faxNumber: "string",
-              webSite: "string",
-              emailAddress: "string",
-              specialtyType: "string",
-              geteDataUrl: "string",
-              geteDataOscarKey: "string",
-              geteDataServiceKey: "string",
-              geteDataServiceName: "string",
-              annotation: "string",
-              referralNo: "string",
-              institutionId: 0,
-              departmentId: 0,
-              eformId: 0,
-            },
-          ],
-        },
-      ],
-      sendToList: ["string"],
+      status: "Pending_Specialist_Callback",
+      providerNo: 0,
     },
-    getURL: function (server, userInfo) {
-      this.body.providerNo = userInfo.provNo;
+    // body: {
+    //   id: 0,
+    //   referralDate: "2021-10-22T17:07:09.225Z",
+    //   serviceId: 0,
+    //   professionalSpecialist: {},
+    //   appointmentDate: "2021-10-22T17:07:09.225Z",
+    //   appointmentTime: "2021-10-22T17:07:09.225Z",
+    //   reasonForReferral: "string",
+    //   clinicalInfo: "string",
+    //   currentMeds: "string",
+    //   allergies: "string",
+    //   providerNo: 0,
+    //   demographicId: 121,
+    //   status: "1",
+    //   statusText: "string",
+    //   sendTo: "string",
+    //   concurrentProblems: "string",
+    //   urgency: "2",
+    //   patientWillBook: true,
+    //   siteName: "string",
+    //   followUpDate: "2021-10-22T17:07:09.225Z",
+    //   signatureImg: "string",
+    //   letterheadName: "string",
+    //   letterheadAddress: "string",
+    //   letterheadPhone: "string",
+    //   letterheadFax: "string",
+    //   attachments: [{}],
+    //   letterheadList: [
+    //     {
+    //       id: "string",
+    //       name: "string",
+    //       address: "string",
+    //       phone: "string",
+    //     },
+    //   ],
+    //   faxList: [
+    //     {
+    //       faxUser: "string",
+    //       faxNumber: "string",
+    //     },
+    //   ],
+    //   serviceList: [
+    //     {
+    //       serviceId: 0,
+    //       serviceDesc: "string",
+    //       active: "string",
+    //       specialists: [
+    //         {
+    //           id: 0,
+    //           firstName: "string",
+    //           lastName: "string",
+    //           name: "string",
+    //           professionalLetters: "string",
+    //           streetAddress: "string",
+    //           phoneNumber: "string",
+    //           faxNumber: "string",
+    //           webSite: "string",
+    //           emailAddress: "string",
+    //           specialtyType: "string",
+    //           geteDataUrl: "string",
+    //           geteDataOscarKey: "string",
+    //           geteDataServiceKey: "string",
+    //           geteDataServiceName: "string",
+    //           annotation: "string",
+    //           referralNo: "string",
+    //           institutionId: 0,
+    //           departmentId: 0,
+    //           eformId: 0,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   sendToList: ["string"],
+    // },
+    setup: function (server, userInfo) {
+      this.body.providerNo = parseInt(userInfo.provNo);
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -590,81 +789,92 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/consults/requests/3",
     body: {
-      id: 0,
-      referralDate: "2021-10-22T17:22:49.447Z",
-      serviceId: 0,
-      professionalSpecialist: {},
-      appointmentDate: "2021-10-22T17:22:49.447Z",
-      appointmentTime: "2021-10-22T17:22:49.447Z",
-      reasonForReferral: "string",
-      clinicalInfo: "string",
-      currentMeds: "string",
-      allergies: "string",
-      providerNo: 0,
+      referralDate: "2021-10-08T17:06:45.778Z",
+      serviceId: 57,
       demographicId: 121,
-      status: "1",
-      statusText: "string",
-      sendTo: "string",
-      concurrentProblems: "string",
       urgency: "2",
-      patientWillBook: true,
-      siteName: "string",
-      followUpDate: "2021-10-22T17:22:49.447Z",
-      signatureImg: "string",
-      letterheadName: "string",
-      letterheadAddress: "string",
-      letterheadPhone: "string",
-      letterheadFax: "string",
-      attachments: [{}],
-      letterheadList: [
-        {
-          id: "string",
-          name: "string",
-          address: "string",
-          phone: "string",
-        },
-      ],
-      faxList: [
-        {
-          faxUser: "string",
-          faxNumber: "string",
-        },
-      ],
-      serviceList: [
-        {
-          serviceId: 0,
-          serviceDesc: "string",
-          active: "string",
-          specialists: [
-            {
-              id: 0,
-              firstName: "string",
-              lastName: "string",
-              name: "string",
-              professionalLetters: "string",
-              streetAddress: "string",
-              phoneNumber: "string",
-              faxNumber: "string",
-              webSite: "string",
-              emailAddress: "string",
-              specialtyType: "string",
-              geteDataUrl: "string",
-              geteDataOscarKey: "string",
-              geteDataServiceKey: "string",
-              geteDataServiceName: "string",
-              annotation: "string",
-              referralNo: "string",
-              institutionId: 0,
-              departmentId: 0,
-              eformId: 0,
-            },
-          ],
-        },
-      ],
-      sendToList: ["string"],
+      status: "Completed",
+      providerNo: 0,
     },
-    getURL: function (server, userInfo) {
+
+    // body: {
+    //   id: 0,
+    //   referralDate: "2021-10-22T17:22:49.447Z",
+    //   serviceId: 0,
+    //   professionalSpecialist: {},
+    //   appointmentDate: "2021-10-22T17:22:49.447Z",
+    //   appointmentTime: "2021-10-22T17:22:49.447Z",
+    //   reasonForReferral: "string",
+    //   clinicalInfo: "string",
+    //   currentMeds: "string",
+    //   allergies: "string",
+    //   providerNo: 0,
+    //   demographicId: 121,
+    //   status: "1",
+    //   statusText: "string",
+    //   sendTo: "string",
+    //   concurrentProblems: "string",
+    //   urgency: "2",
+    //   patientWillBook: true,
+    //   siteName: "string",
+    //   followUpDate: "2021-10-22T17:22:49.447Z",
+    //   signatureImg: "string",
+    //   letterheadName: "string",
+    //   letterheadAddress: "string",
+    //   letterheadPhone: "string",
+    //   letterheadFax: "string",
+    //   attachments: [{}],
+    //   letterheadList: [
+    //     {
+    //       id: "string",
+    //       name: "string",
+    //       address: "string",
+    //       phone: "string",
+    //     },
+    //   ],
+    //   faxList: [
+    //     {
+    //       faxUser: "string",
+    //       faxNumber: "string",
+    //     },
+    //   ],
+    //   serviceList: [
+    //     {
+    //       serviceId: 0,
+    //       serviceDesc: "string",
+    //       active: "string",
+    //       specialists: [
+    //         {
+    //           id: 0,
+    //           firstName: "string",
+    //           lastName: "string",
+    //           name: "string",
+    //           professionalLetters: "string",
+    //           streetAddress: "string",
+    //           phoneNumber: "string",
+    //           faxNumber: "string",
+    //           webSite: "string",
+    //           emailAddress: "string",
+    //           specialtyType: "string",
+    //           geteDataUrl: "string",
+    //           geteDataOscarKey: "string",
+    //           geteDataServiceKey: "string",
+    //           geteDataServiceName: "string",
+    //           annotation: "string",
+    //           referralNo: "string",
+    //           institutionId: 0,
+    //           departmentId: 0,
+    //           eformId: 0,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   sendToList: ["string"],
+    // },
+    setup: function (server, userInfo) {
       this.body.providerNo = userInfo.provNo;
+    },
+    getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
   },
@@ -717,184 +927,193 @@ export const apis = [
     method: "post",
     api: "/api/v1/oscar/ticklers",
     body: {
-      id: 0,
-      demographicNo: 0,
-      programId: 0,
-      message: "string",
+      demographicNo: 121,
+      taskAssignedTo: "11",
       status: "A",
-      createDate: "2021-10-22T17:41:03.791Z",
-      updateDate: "2021-10-22T17:41:03.791Z",
-      serviceDate: "2021-10-22T17:41:03.791Z",
-      creator: "string",
-      priority: "High",
-      taskAssignedTo: "string",
-      categoryId: 0,
-      ticklerCategory: {
-        id: 0,
-        category: "string",
-        description: "string",
-        active: true,
-        persistent: true,
-      },
-      comments: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          message: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:41:03.792Z",
-          provider: {},
-          updateDateToday: true,
-          persistent: true,
-        },
-      ],
-      updates: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          status: "string",
-          assignedTo: "string",
-          serviceDate: "2021-10-22T17:41:03.792Z",
-          priority: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:41:03.792Z",
-          provider: {},
-          statusAsChar: "string",
-          persistent: true,
-        },
-      ],
-      demographic: {
-        id: "string",
-        name: "string",
-        chartNumber: "string",
-        gender: "Male",
-        dob: "2021-10-22T17:41:03.792Z",
-        docter: "string",
-        rosterStatus: "string",
-        phone: "string",
-        status: "string",
-      },
-      provider: {},
-      assignee: {},
-      program: {
-        hashCode: 0,
-        id: 0,
-        userDefined: true,
-        numOfMembers: 0,
-        numOfIntakes: 0,
-        queueSize: 0,
-        maxAllowed: 0,
-        type: "string",
-        description: "string",
-        functionalCentreId: "string",
-        address: "string",
-        phone: "string",
-        fax: "string",
-        url: "string",
-        email: "string",
-        emergencyNumber: "string",
-        location: "string",
-        name: "string",
-        holdingTank: true,
-        allowBatchAdmission: true,
-        allowBatchDischarge: true,
-        hic: true,
-        programStatus: "string",
-        intakeProgram: 0,
-        bedProgramLinkId: 0,
-        manOrWoman: "string",
-        genderDesc: "string",
-        transgender: true,
-        firstNation: true,
-        bedProgramAffiliated: true,
-        alcohol: true,
-        abstinenceSupport: "string",
-        physicalHealth: true,
-        mentalHealth: true,
-        housing: true,
-        exclusiveView: "string",
-        ageMin: 0,
-        ageMax: 0,
-        maximumServiceRestrictionDays: 0,
-        defaultServiceRestrictionDays: 0,
-        shelterId: 0,
-        facilityId: 0,
-        facilityDesc: "string",
-        orgCd: "string",
-        capacity_funding: 0,
-        capacity_space: 0,
-        capacity_actual: 0,
-        totalUsedRoom: 0,
-        lastUpdateUser: "string",
-        lastUpdateDate: "2021-10-22T17:41:03.792Z",
-        shelter: {
-          prefix: "string",
-          code: "string",
-          description: "string",
-          shortDesc: "string",
-          note: "string",
-          active: true,
-          selectable: true,
-          parentCode: "string",
-          codeTree: "string",
-          codecsv: "string",
-          lastUpdateUser: "string",
-          lastUpdateDate: "2021-10-22T17:41:03.792Z",
-          buf1: "string",
-          buf2: "string",
-          buf3: "string",
-          buf4: "string",
-          buf5: "string",
-          buf6: "string",
-          buf7: "string",
-          buf8: "string",
-          buf9: "string",
-          orderByIndex: 0,
-          associates: [null],
-          descriptionJs: "string",
-          codeId: "string",
-        },
-        siteSpecificField: "string",
-        enableEncounterTime: true,
-        enableEncounterTransportationTime: true,
-        emailNotificationAddressesCsv: "string",
-        lastReferralNotification: "2021-10-22T17:41:03.792Z",
-        enableOCAN: true,
-        noOfVacancy: 0,
-        vacancyName: "string",
-        dateCreated: "string",
-        matches: 0,
-        vacancyId: 0,
-        vacancyTemplateName: "string",
-        active: true,
-        external: true,
-        full: true,
-        service: true,
-        bed: true,
-        community: true,
-        nameJs: "string",
-      },
-      demographic_webName: "string",
-      taskAssignedToName: "string",
-      commentsSortedByDate: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          message: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:41:03.792Z",
-          provider: {},
-          updateDateToday: true,
-          persistent: true,
-        },
-      ],
-      serviceDateWeb: "string",
-      serviceTime: "string",
-      statusWeb: "string",
-      priorityWeb: "string",
-      priorityAsString: "string",
-      statusAsChar: "string",
-      persistent: true,
+      priority: "Normal",
+      message: "Test to add new Tickler",
+    },
+    // body: {
+    // id: 0,
+    // programId: 0,
+    // message: "Test to add new Tickler",
+    // status: "A",
+    // createDate: "2021-10-22T17:41:03.791Z",
+    // updateDate: "2021-10-22T17:41:03.791Z",
+    // serviceDate: "2021-10-22T17:41:03.791Z",
+    // creator: "8",
+    // priority: "High",
+    // taskAssignedTo: "8",
+    // categoryId: 0,
+    // ticklerCategory: {
+    //   id: 0,
+    //   category: "string",
+    //   description: "string",
+    //   active: true,
+    //   persistent: true,
+    // },
+    // comments: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     message: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:41:03.792Z",
+    //     provider: {},
+    //     updateDateToday: true,
+    //     persistent: true,
+    //   },
+    // ],
+    // updates: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     status: "string",
+    //     assignedTo: "string",
+    //     serviceDate: "2021-10-22T17:41:03.792Z",
+    //     priority: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:41:03.792Z",
+    //     provider: {},
+    //     statusAsChar: "string",
+    //     persistent: true,
+    //   },
+    // ],
+    // demographic: {
+    //   id: "string",
+    //   name: "string",
+    //   chartNumber: "string",
+    //   gender: "Male",
+    //   dob: "2021-10-22T17:41:03.792Z",
+    //   docter: "string",
+    //   rosterStatus: "string",
+    //   phone: "string",
+    //   status: "string",
+    // },
+    // provider: {},
+    // assignee: {},
+    // program: {
+    //   hashCode: 0,
+    //   id: 0,
+    //   userDefined: true,
+    //   numOfMembers: 0,
+    //   numOfIntakes: 0,
+    //   queueSize: 0,
+    //   maxAllowed: 0,
+    //   type: "string",
+    //   description: "string",
+    //   functionalCentreId: "string",
+    //   address: "string",
+    //   phone: "string",
+    //   fax: "string",
+    //   url: "string",
+    //   email: "string",
+    //   emergencyNumber: "string",
+    //   location: "string",
+    //   name: "string",
+    //   holdingTank: true,
+    //   allowBatchAdmission: true,
+    //   allowBatchDischarge: true,
+    //   hic: true,
+    //   programStatus: "string",
+    //   intakeProgram: 0,
+    //   bedProgramLinkId: 0,
+    //   manOrWoman: "string",
+    //   genderDesc: "string",
+    //   transgender: true,
+    //   firstNation: true,
+    //   bedProgramAffiliated: true,
+    //   alcohol: true,
+    //   abstinenceSupport: "string",
+    //   physicalHealth: true,
+    //   mentalHealth: true,
+    //   housing: true,
+    //   exclusiveView: "string",
+    //   ageMin: 0,
+    //   ageMax: 0,
+    //   maximumServiceRestrictionDays: 0,
+    //   defaultServiceRestrictionDays: 0,
+    //   shelterId: 0,
+    //   facilityId: 0,
+    //   facilityDesc: "string",
+    //   orgCd: "string",
+    //   capacity_funding: 0,
+    //   capacity_space: 0,
+    //   capacity_actual: 0,
+    //   totalUsedRoom: 0,
+    //   lastUpdateUser: "string",
+    //   lastUpdateDate: "2021-10-22T17:41:03.792Z",
+    //   shelter: {
+    //     prefix: "string",
+    //     code: "string",
+    //     description: "string",
+    //     shortDesc: "string",
+    //     note: "string",
+    //     active: true,
+    //     selectable: true,
+    //     parentCode: "string",
+    //     codeTree: "string",
+    //     codecsv: "string",
+    //     lastUpdateUser: "string",
+    //     lastUpdateDate: "2021-10-22T17:41:03.792Z",
+    //     buf1: "string",
+    //     buf2: "string",
+    //     buf3: "string",
+    //     buf4: "string",
+    //     buf5: "string",
+    //     buf6: "string",
+    //     buf7: "string",
+    //     buf8: "string",
+    //     buf9: "string",
+    //     orderByIndex: 0,
+    //     associates: [null],
+    //     descriptionJs: "string",
+    //     codeId: "string",
+    //   },
+    //   siteSpecificField: "string",
+    //   enableEncounterTime: true,
+    //   enableEncounterTransportationTime: true,
+    //   emailNotificationAddressesCsv: "string",
+    //   lastReferralNotification: "2021-10-22T17:41:03.792Z",
+    //   enableOCAN: true,
+    //   noOfVacancy: 0,
+    //   vacancyName: "string",
+    //   dateCreated: "string",
+    //   matches: 0,
+    //   vacancyId: 0,
+    //   vacancyTemplateName: "string",
+    //   active: true,
+    //   external: true,
+    //   full: true,
+    //   service: true,
+    //   bed: true,
+    //   community: true,
+    //   nameJs: "string",
+    // },
+    // demographic_webName: "string",
+    // taskAssignedToName: "string",
+    // commentsSortedByDate: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     message: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:41:03.792Z",
+    //     provider: {},
+    //     updateDateToday: true,
+    //     persistent: true,
+    //   },
+    // ],
+    // serviceDateWeb: "string",
+    // serviceTime: "string",
+    // statusWeb: "string",
+    // priorityWeb: "string",
+    // priorityAsString: "string",
+    // statusAsChar: "string",
+    // persistent: true,
+    // }
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
     },
     getURL: formulateURL,
   },
@@ -912,185 +1131,193 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/ticklers/2/update",
     body: {
-      id: 0,
-      demographicNo: 0,
-      programId: 0,
-      message: "string",
+      id: 3,
+      taskAssignedTo: "12",
       status: "A",
-      createDate: "2021-10-22T17:59:21.368Z",
-      updateDate: "2021-10-22T17:59:21.368Z",
-      serviceDate: "2021-10-22T17:59:21.368Z",
-      creator: "string",
-      priority: "High",
-      taskAssignedTo: "string",
-      categoryId: 0,
-      ticklerCategory: {
-        id: 0,
-        category: "string",
-        description: "string",
-        active: true,
-        persistent: true,
-      },
-      comments: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          message: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:59:21.368Z",
-          provider: {},
-          updateDateToday: true,
-          persistent: true,
-        },
-      ],
-      updates: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          status: "string",
-          assignedTo: "string",
-          serviceDate: "2021-10-22T17:59:21.368Z",
-          priority: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:59:21.368Z",
-          provider: {},
-          statusAsChar: "string",
-          persistent: true,
-        },
-      ],
-      demographic: {
-        id: "string",
-        name: "string",
-        chartNumber: "string",
-        gender: "Male",
-        dob: "2021-10-22T17:59:21.368Z",
-        docter: "string",
-        rosterStatus: "string",
-        phone: "string",
-        status: "string",
-      },
-      provider: {},
-      assignee: {},
-      program: {
-        hashCode: 0,
-        id: 0,
-        userDefined: true,
-        numOfMembers: 0,
-        numOfIntakes: 0,
-        queueSize: 0,
-        maxAllowed: 0,
-        type: "string",
-        description: "string",
-        functionalCentreId: "string",
-        address: "string",
-        phone: "string",
-        fax: "string",
-        url: "string",
-        email: "string",
-        emergencyNumber: "string",
-        location: "string",
-        name: "string",
-        holdingTank: true,
-        allowBatchAdmission: true,
-        allowBatchDischarge: true,
-        hic: true,
-        programStatus: "string",
-        intakeProgram: 0,
-        bedProgramLinkId: 0,
-        manOrWoman: "string",
-        genderDesc: "string",
-        transgender: true,
-        firstNation: true,
-        bedProgramAffiliated: true,
-        alcohol: true,
-        abstinenceSupport: "string",
-        physicalHealth: true,
-        mentalHealth: true,
-        housing: true,
-        exclusiveView: "string",
-        ageMin: 0,
-        ageMax: 0,
-        maximumServiceRestrictionDays: 0,
-        defaultServiceRestrictionDays: 0,
-        shelterId: 0,
-        facilityId: 0,
-        facilityDesc: "string",
-        orgCd: "string",
-        capacity_funding: 0,
-        capacity_space: 0,
-        capacity_actual: 0,
-        totalUsedRoom: 0,
-        lastUpdateUser: "string",
-        lastUpdateDate: "2021-10-22T17:59:21.368Z",
-        shelter: {
-          prefix: "string",
-          code: "string",
-          description: "string",
-          shortDesc: "string",
-          note: "string",
-          active: true,
-          selectable: true,
-          parentCode: "string",
-          codeTree: "string",
-          codecsv: "string",
-          lastUpdateUser: "string",
-          lastUpdateDate: "2021-10-22T17:59:21.368Z",
-          buf1: "string",
-          buf2: "string",
-          buf3: "string",
-          buf4: "string",
-          buf5: "string",
-          buf6: "string",
-          buf7: "string",
-          buf8: "string",
-          buf9: "string",
-          orderByIndex: 0,
-          associates: [null],
-          descriptionJs: "string",
-          codeId: "string",
-        },
-        siteSpecificField: "string",
-        enableEncounterTime: true,
-        enableEncounterTransportationTime: true,
-        emailNotificationAddressesCsv: "string",
-        lastReferralNotification: "2021-10-22T17:59:21.368Z",
-        enableOCAN: true,
-        noOfVacancy: 0,
-        vacancyName: "string",
-        dateCreated: "string",
-        matches: 0,
-        vacancyId: 0,
-        vacancyTemplateName: "string",
-        active: true,
-        external: true,
-        full: true,
-        service: true,
-        bed: true,
-        community: true,
-        nameJs: "string",
-      },
-      demographic_webName: "string",
-      taskAssignedToName: "string",
-      commentsSortedByDate: [
-        {
-          id: 0,
-          ticklerNo: 0,
-          message: "string",
-          providerNo: "string",
-          updateDate: "2021-10-22T17:59:21.369Z",
-          provider: {},
-          updateDateToday: true,
-          persistent: true,
-        },
-      ],
-      serviceDateWeb: "string",
-      serviceTime: "string",
-      statusWeb: "string",
-      priorityWeb: "string",
-      priorityAsString: "string",
-      statusAsChar: "string",
-      persistent: true,
+      priority: "Normal",
+      message: "Test to update tickler",
+      serviceDate: "2021-10-12",
     },
+    // body: {
+    // id: 0,
+    // demographicNo: 0,
+    // programId: 0,
+    // message: "string",
+    // status: "A",
+    // createDate: "2021-10-22T17:59:21.368Z",
+    // updateDate: "2021-10-22T17:59:21.368Z",
+    // serviceDate: "2021-10-22T17:59:21.368Z",
+    // creator: "string",
+    // priority: "High",
+    // taskAssignedTo: "string",
+    // categoryId: 0,
+    // ticklerCategory: {
+    //   id: 0,
+    //   category: "string",
+    //   description: "string",
+    //   active: true,
+    //   persistent: true,
+    // },
+    // comments: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     message: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:59:21.368Z",
+    //     provider: {},
+    //     updateDateToday: true,
+    //     persistent: true,
+    //   },
+    // ],
+    // updates: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     status: "string",
+    //     assignedTo: "string",
+    //     serviceDate: "2021-10-22T17:59:21.368Z",
+    //     priority: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:59:21.368Z",
+    //     provider: {},
+    //     statusAsChar: "string",
+    //     persistent: true,
+    //   },
+    // ],
+    // demographic: {
+    //   id: "string",
+    //   name: "string",
+    //   chartNumber: "string",
+    //   gender: "Male",
+    //   dob: "2021-10-22T17:59:21.368Z",
+    //   docter: "string",
+    //   rosterStatus: "string",
+    //   phone: "string",
+    //   status: "string",
+    // },
+    // provider: {},
+    // assignee: {},
+    // program: {
+    //   hashCode: 0,
+    //   id: 0,
+    //   userDefined: true,
+    //   numOfMembers: 0,
+    //   numOfIntakes: 0,
+    //   queueSize: 0,
+    //   maxAllowed: 0,
+    //   type: "string",
+    //   description: "string",
+    //   functionalCentreId: "string",
+    //   address: "string",
+    //   phone: "string",
+    //   fax: "string",
+    //   url: "string",
+    //   email: "string",
+    //   emergencyNumber: "string",
+    //   location: "string",
+    //   name: "string",
+    //   holdingTank: true,
+    //   allowBatchAdmission: true,
+    //   allowBatchDischarge: true,
+    //   hic: true,
+    //   programStatus: "string",
+    //   intakeProgram: 0,
+    //   bedProgramLinkId: 0,
+    //   manOrWoman: "string",
+    //   genderDesc: "string",
+    //   transgender: true,
+    //   firstNation: true,
+    //   bedProgramAffiliated: true,
+    //   alcohol: true,
+    //   abstinenceSupport: "string",
+    //   physicalHealth: true,
+    //   mentalHealth: true,
+    //   housing: true,
+    //   exclusiveView: "string",
+    //   ageMin: 0,
+    //   ageMax: 0,
+    //   maximumServiceRestrictionDays: 0,
+    //   defaultServiceRestrictionDays: 0,
+    //   shelterId: 0,
+    //   facilityId: 0,
+    //   facilityDesc: "string",
+    //   orgCd: "string",
+    //   capacity_funding: 0,
+    //   capacity_space: 0,
+    //   capacity_actual: 0,
+    //   totalUsedRoom: 0,
+    //   lastUpdateUser: "string",
+    //   lastUpdateDate: "2021-10-22T17:59:21.368Z",
+    //   shelter: {
+    //     prefix: "string",
+    //     code: "string",
+    //     description: "string",
+    //     shortDesc: "string",
+    //     note: "string",
+    //     active: true,
+    //     selectable: true,
+    //     parentCode: "string",
+    //     codeTree: "string",
+    //     codecsv: "string",
+    //     lastUpdateUser: "string",
+    //     lastUpdateDate: "2021-10-22T17:59:21.368Z",
+    //     buf1: "string",
+    //     buf2: "string",
+    //     buf3: "string",
+    //     buf4: "string",
+    //     buf5: "string",
+    //     buf6: "string",
+    //     buf7: "string",
+    //     buf8: "string",
+    //     buf9: "string",
+    //     orderByIndex: 0,
+    //     associates: [null],
+    //     descriptionJs: "string",
+    //     codeId: "string",
+    //   },
+    //   siteSpecificField: "string",
+    //   enableEncounterTime: true,
+    //   enableEncounterTransportationTime: true,
+    //   emailNotificationAddressesCsv: "string",
+    //   lastReferralNotification: "2021-10-22T17:59:21.368Z",
+    //   enableOCAN: true,
+    //   noOfVacancy: 0,
+    //   vacancyName: "string",
+    //   dateCreated: "string",
+    //   matches: 0,
+    //   vacancyId: 0,
+    //   vacancyTemplateName: "string",
+    //   active: true,
+    //   external: true,
+    //   full: true,
+    //   service: true,
+    //   bed: true,
+    //   community: true,
+    //   nameJs: "string",
+    // },
+    // demographic_webName: "string",
+    // taskAssignedToName: "string",
+    // commentsSortedByDate: [
+    //   {
+    //     id: 0,
+    //     ticklerNo: 0,
+    //     message: "string",
+    //     providerNo: "string",
+    //     updateDate: "2021-10-22T17:59:21.369Z",
+    //     provider: {},
+    //     updateDateToday: true,
+    //     persistent: true,
+    //   },
+    // ],
+    // serviceDateWeb: "string",
+    // serviceTime: "string",
+    // statusWeb: "string",
+    // priorityWeb: "string",
+    // priorityAsString: "string",
+    // statusAsChar: "string",
+    // persistent: true,
+    //}
     getURL: formulateURL,
   },
   {
