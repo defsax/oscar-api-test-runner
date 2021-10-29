@@ -316,12 +316,19 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/transcriptions/b89f3610-d992-4930-9b32-55df242a33d7",
-    getURL: formulateURL,
+    api: "/api/v1/transcriptions/{id}",
+
+    getURL: function (server, userInfo) {
+      let id = "dab882aa-352c-42a3-93e3-b6736fb5629a";
+      if (server.apitype === "dev") id = "b89f3610-d992-4930-9b32-55df242a33d7";
+      return (
+        server.endpointURL + "/api/v1/transcriptions/" + id + server.suffix
+      );
+    },
   },
   {
     method: "delete",
-    api: "/api/v1/transcriptions/",
+    api: "/api/v1/transcriptions/{id}",
     id: null,
     setup: async function (server, userInfo) {
       // Create a dummy transcription to delete...
@@ -363,6 +370,7 @@ export const apis = [
           transcriptions.data.result.data[0]
         );
 
+        // *** NOTE: this doesn't work on staging, since staging doesn't return reverse chronological
         // Get latest transcription and get/set id
         if (
           transcriptions.data.result.data[0].original ===
@@ -375,7 +383,9 @@ export const apis = [
       }
     },
     getURL: function (server) {
-      return server.endpointURL + this.api + this.id + server.suffix;
+      return (
+        server.endpointURL + "/api/v1/transcriptions/" + this.id + server.suffix
+      );
     },
   },
   {
@@ -421,13 +431,43 @@ export const apis = [
     api: "/api/v1/oscar/notes",
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&demographicNo=121"
+        server.endpointURL +
+        this.api +
+        server.suffix +
+        "&demographicNo=" +
+        server.testDemoNo
       );
     },
   },
   {
     method: "get",
     api: "/api/v1/oscar/notest/190",
+    id: null,
+    setup: async function (server, userInfo) {
+      // Create note, then get id from response and set id
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/oscar/notes" + server.suffix,
+          body: {
+            demographicNo: server.apitype === "dev" ? 121 : 76,
+            note: "Patient seems like a test.",
+            observationDate: "2021-10-20T15:53:20.944Z",
+            updateDate: "2021-10-20T15:53:20.944Z",
+            soapNote: {},
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Dummy note successfully created:", result);
+        this.id = result.noteId;
+      } catch (error) {
+        console.log("Error creating dummy note:", error);
+      }
+    },
     getURL: formulateURL,
   },
   // APPOINTMENTS
