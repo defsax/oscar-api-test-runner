@@ -42,7 +42,7 @@ export default function ApiListItem(props) {
 
     // Run any setup if the api requires it
     if (api.setup) {
-      await api.setup(userInfo, server);
+      await api.setup(server, userInfo);
     }
 
     return axiosQueue({

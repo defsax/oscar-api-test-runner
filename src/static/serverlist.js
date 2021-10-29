@@ -6,6 +6,7 @@ export const apiVersion = [
       "?siteURL=" +
       encodeURIComponent("https://goji-oscar1.gojitech.systems") +
       "&appVersion=dev",
+    testDemoNo: 121,
   },
   {
     apitype: "staging",
@@ -14,5 +15,6 @@ export const apiVersion = [
       "?siteURL=" +
       encodeURIComponent("https://goji-oscar2.gojitech.systems") +
       "&appVersion=staging",
+    testDemoNo: 76,
   },
 ];

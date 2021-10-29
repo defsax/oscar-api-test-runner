@@ -1,26 +1,3 @@
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
-import { base64Content } from "./base64content";
-import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
-
-const formulateURL = function (server) {
-  return server.endpointURL + this.api + server.suffix;
-};
-
-const generateFirstName = () => {
-  const configName = {
-    dictionaries: [names],
-  };
-  return uniqueNamesGenerator(configName);
-};
-const generateLastName = () => {
-  const configAnimal = {
-    dictionaries: [animals],
-  };
-  const characterLastName = uniqueNamesGenerator(configAnimal);
-  return characterLastName.charAt(0).toUpperCase() + characterLastName.slice(1);
-};
-
 /*
 Goji API URLs
 
@@ -91,6 +68,38 @@ Goji API URLs
 *  /api/v1/oscar/ticklers/{id}/update                   (DELETE)
 
 */
+
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { base64Content } from "./base64content";
+import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
+
+const formulateURL = function (server) {
+  return server.endpointURL + this.api + server.suffix;
+};
+const formulatePatientURL = function (server) {
+  return (
+    server.endpointURL +
+    "/api/v1/oscar/patients/" +
+    server.testDemoNo +
+    this.suffix +
+    server.suffix
+  );
+};
+
+const generateFirstName = () => {
+  const configName = {
+    dictionaries: [names],
+  };
+  return uniqueNamesGenerator(configName);
+};
+const generateLastName = () => {
+  const configAnimal = {
+    dictionaries: [animals],
+  };
+  const characterLastName = uniqueNamesGenerator(configAnimal);
+  return characterLastName.charAt(0).toUpperCase() + characterLastName.slice(1);
+};
 
 export const apis = [
   // OTHER
@@ -183,6 +192,9 @@ export const apis = [
         },
       },
     ],
+    setup: function (server, userInfo) {
+      this.body[0].demographicNo = server.testDemoNo;
+    },
     getURL: formulateURL,
   },
   {
@@ -239,59 +251,62 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}",
-    getURL: function (server) {
-      if (server.apitype === "dev")
-        return (
-          server.endpointURL + "/api/v1/oscar/patients/121" + server.suffix
-        );
-
-      return server.endpointURL + "/api/v1/oscar/patients/76" + server.suffix;
-    },
+    suffix: "",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/ALLERGIES",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/ALLERGIES",
+    suffix: "/fullSummary/ALLERGIES",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/FAMILYHISTORY",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/FAMILYHISTORY",
+    suffix: "/fullSummary/FAMILYHISTORY",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/fullSummary/RISK_FACTORS",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/fullSummary/RISK_FACTORS",
+    suffix: "/fullSummary/RISK_FACTORS",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/measurements",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/measurements",
+    suffix: "/measurements",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/documents",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/documents",
+    suffix: "/documents",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/forms",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/forms",
+    suffix: "/forms",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/forms/completedEncounterForms",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/forms/completedEncounterForms",
+    suffix: "/forms/completedEncounterForms",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/formOptions",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/formOptions",
+    suffix: "/formOptions",
+    getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121/labResults",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}/labResults",
+    suffix: "/labResults",
+    getURL: formulatePatientURL,
   },
   // TRANSCRIPTIONS
   {
@@ -308,7 +323,7 @@ export const apis = [
     method: "delete",
     api: "/api/v1/transcriptions/",
     id: null,
-    setup: async function (userInfo, server) {
+    setup: async function (server, userInfo) {
       // Create a dummy transcription to delete...
 
       // First create transcription
@@ -370,7 +385,7 @@ export const apis = [
       base64Content: base64Content,
       userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
     },
-    setup: function (userInfo) {
+    setup: function (server, userInfo) {
       this.body.userID = userInfo.id;
     },
     getURL: function (server) {
@@ -395,6 +410,9 @@ export const apis = [
       observationDate: "2021-10-20T15:53:20.944Z",
       updateDate: "2021-10-20T15:53:20.944Z",
       soapNote: {},
+    },
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
     },
     getURL: formulateURL,
   },
@@ -430,8 +448,9 @@ export const apis = [
       duration: 0,
       urgency: "string",
     },
-    setup: function (userInfo) {
+    setup: function (server, userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
+      this.body.demographicNo = server.testDemoNo;
     },
     getURL: formulateURL,
   },
@@ -501,8 +520,9 @@ export const apis = [
       demographic: null,
       provider: null,
     },
-    setup: function (userInfo) {
+    setup: function (server, userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
+      this.body.demographicNo = server.testDemoNo;
     },
     getURL: formulateURL,
   },
@@ -548,7 +568,7 @@ export const apis = [
     method: "delete",
     api: "/api/v1/template/id/",
     id: null,
-    setup: async function (userInfo, server) {
+    setup: async function (server, userInfo) {
       // Create a dummy template to delete...
       try {
         const result = await axios({
@@ -708,7 +728,7 @@ export const apis = [
     //   ],
     //   sendToList: ["string"],
     // },
-    setup: function (userInfo) {
+    setup: function (server, userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
     },
     getURL: function (server) {
@@ -811,7 +831,7 @@ export const apis = [
     //   ],
     //   sendToList: ["string"],
     // },
-    setup: function (userInfo) {
+    setup: function (server, userInfo) {
       this.body.providerNo = userInfo.provNo;
     },
     getURL: function (server) {
@@ -1052,6 +1072,9 @@ export const apis = [
     // statusAsChar: "string",
     // persistent: true,
     // }
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
+    },
     getURL: formulateURL,
   },
   {
