@@ -1,9 +1,24 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { base64Content } from "./base64content";
+import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
 
 const formulateURL = function (server) {
   return server.endpointURL + this.api + server.suffix;
+};
+
+const generateFirstName = () => {
+  const configName = {
+    dictionaries: [names],
+  };
+  return uniqueNamesGenerator(configName);
+};
+const generateLastName = () => {
+  const configAnimal = {
+    dictionaries: [animals],
+  };
+  const characterLastName = uniqueNamesGenerator(configAnimal);
+  return characterLastName.charAt(0).toUpperCase() + characterLastName.slice(1);
 };
 
 /*
@@ -19,7 +34,6 @@ Goji API URLs
 *  /api/v1/oscar/prescriptions (POST)
 *  /api/v1/oscar/prescriptions (GET ALL)
 *  /api/v1/oscar/drugs/search 
-
 *  /api/v1/oscar/patients (POST)
 *  /api/v1/oscar/patients (SEARCH BY KEYWORD)
 *  /api/v1/oscar/patients/all
@@ -29,20 +43,17 @@ Goji API URLs
 *  /api/v1/oscar/patients/{demographicNo}/fullSummary/RISK_FACTORS
 *  /api/v1/oscar/patients/{demographicNo}/documents
 *  /api/v1/oscar/patients/{demographicNo}/forms
-   /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
+*  /api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms
 *  /api/v1/oscar/patients/{demographicNo}/formOptions
 *  /api/v1/oscar/patients/{demographicNo}/labResults
-
 *  /api/v1/transcriptions       (GET ALL)
 *  /api/v1/transcriptions/{id}  (GET ONE)
    /api/v1/transcriptions/{id}  (DELETE ONE)
-   /api/v1/record
+*  /api/v1/record
 *  /api/v1/test/inputtext
-
 *  /api/v1/oscar/notes                                  (POST)
 *  /api/v1/oscar/notes                                  (GET BY PATIENT OR KEYWORD)
-   /api/v1/oscar/notest/noteId                          (GET ONE)
-
+*  /api/v1/oscar/notest/noteId                          (GET ONE)
 *  /api/v1/oscar/appointments                           (POST)
 *  /api/v1/oscar/appointments                           (GET ALL)
 *  /api/v1/oscar/appointments/{demographicNo}/history   (GET PATIENT APPOINTMENT HISTORY)
@@ -51,36 +62,32 @@ Goji API URLs
 *  /api/v1/oscar/appointments/reasons                   (GET)
 *  /api/v1/oscar/appointments/types                     (GET)
 *  /api/v1/oscar/appointments/statuses                  (GET)
-
 *  /api/v1/templates                                    (POST)
 *  /api/v1/templates                                    (GET)
 *  /api/v1/template/id/{id}                             (GET)
-   /api/v1/template/id/{id}                             (DELETE)
+*  /api/v1/template/id/{id}                             (DELETE)
 *  /api/v1/template/name/{templatename }                (GET)
-   /api/v1/template/name/{templatename }                (DELETE)
-   /api/v1/template/{id}                                (PUT)
-
-*  /api/v1/oscar/forms/allEncounterForms                (GET)
-*  /api/v1/oscar/forms/selectedEncounterForms           (GET)
-*  /api/v1/oscar/forms/formGroups                       (GET)
-*  /api/v1/oscar/forms/favouriteFormGroup               (GET)
-*  /api/v1/oscar/forms/groupNames                       (GET)
-
-   /api/v1/oscar/consults/requests                      (POST)
+*  /api/v1/template/name/{templatename }                (DELETE)
+*  /api/v1/template/{id}                                (PUT)
+   /api/v1/oscar/forms/allEncounterForms                (GET)
+   /api/v1/oscar/forms/selectedEncounterForms           (GET)
+   /api/v1/oscar/forms/formGroups                       (GET)
+   /api/v1/oscar/forms/favouriteFormGroup               (GET)
+   /api/v1/oscar/forms/groupNames                       (GET)
+*  /api/v1/oscar/consults/requests                      (POST)
    /api/v1/oscar/consults/requests                      (GET)
 *  /api/v1/oscar/consults/requests/{id}                 (GET)
-   /api/v1/oscar/consults/requests/{id}                 (PUT)
+*  /api/v1/oscar/consults/requests/{id}                 (PUT)
 *  /api/v1/oscar/consults/professionalSpecialist/{id}   (GET)
 *  /api/v1/oscar/consults/referAttachments              (GET)
 *  /api/v1/oscar/consults/requestAttachments            (GET)
 *  /api/v1/oscar/consults/getReferralPathwaysByService  (GET)
 *  /api/v1/oscar/consults/eSendRequest                  (GET)
-
 *  /api/v1/oscar/ticklers                               (GET)
-   /api/v1/oscar/ticklers                               (POST)
+*  /api/v1/oscar/ticklers                               (POST)
 *  /api/v1/oscar/ticklers/mine                          (GET)
 *  /api/v1/oscar/ticklers/{id}/complete                 (PATCH)
-   /api/v1/oscar/ticklers/{id}/update                   (PUT)
+*  /api/v1/oscar/ticklers/{id}/update                   (PUT)
 *  /api/v1/oscar/ticklers/{id}/update                   (DELETE)
 
 */
@@ -210,6 +217,8 @@ export const apis = [
     },
     setup: function () {
       this.body.email = "test.patient." + uuidv4() + "@gmail.com";
+      this.body.firstName = generateFirstName();
+      this.body.lastName = generateLastName();
     },
     getURL: formulateURL,
   },
@@ -229,8 +238,15 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/121",
-    getURL: formulateURL,
+    api: "/api/v1/oscar/patients/{id}",
+    getURL: function (server) {
+      if (server.apitype === "dev")
+        return (
+          server.endpointURL + "/api/v1/oscar/patients/121" + server.suffix
+        );
+
+      return server.endpointURL + "/api/v1/oscar/patients/76" + server.suffix;
+    },
   },
   {
     method: "get",
@@ -290,8 +306,62 @@ export const apis = [
   },
   {
     method: "delete",
-    api: "/api/v1/transcriptions/58ce9494-cb37-4318-9acc-99e0d76808ec",
-    getURL: formulateURL,
+    api: "/api/v1/transcriptions/",
+    id: null,
+    setup: async function (userInfo, server) {
+      // Create a dummy transcription to delete...
+
+      // First create transcription
+      try {
+        const result = await axios({
+          method: "post",
+          url: server.endpointURL + "/api/v1/record" + server.suffix,
+          data: {
+            base64Content: base64Content,
+            userID: userInfo.id,
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Dummy record successfully created:", result);
+      } catch (error) {
+        console.log("Error creating dummy record:", error);
+      }
+
+      // Then fetch all transcriptions
+      try {
+        const transcriptions = await axios({
+          method: "get",
+          url: server.endpointURL + "/api/v1/transcriptions" + server.suffix,
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Fetched all transcriptions:", transcriptions);
+        console.log(
+          "Latest transcription:",
+          transcriptions.data.result.data[0]
+        );
+
+        // Get latest transcription and get/set id
+        if (
+          transcriptions.data.result.data[0].original ===
+          "Create a prescription for Tamiflu 100 milligrams."
+        ) {
+          this.id = transcriptions.data.result.data[0].id;
+        }
+      } catch (error) {
+        console.log("Error fetching all transcriptions:", error);
+      }
+    },
+    getURL: function (server) {
+      return server.endpointURL + this.api + this.id + server.suffix;
+    },
   },
   {
     method: "post",
@@ -301,7 +371,6 @@ export const apis = [
       userID: "d523c4b5-3568-4ac5-88e6-6aa254e91371",
     },
     setup: function (userInfo) {
-      console.log(userInfo.id);
       this.body.userID = userInfo.id;
     },
     getURL: function (server) {
@@ -478,10 +547,8 @@ export const apis = [
   {
     method: "delete",
     api: "/api/v1/template/id/",
-    id: { no: null },
+    id: null,
     setup: async function (userInfo, server) {
-      // this.id = uuidv4();
-
       // Create a dummy template to delete...
       try {
         const result = await axios({
@@ -497,17 +564,14 @@ export const apis = [
           },
         });
 
-        console.log(result);
-        this.id.no = result.data.result.id;
-        // Object.freeze(this);
-        console.log("this.id:", this.id.no);
+        this.id = result.data.result.id;
       } catch (error) {
         console.log("error creating document to delete:", error);
         this.id = uuidv4();
       }
     },
     getURL: function (server) {
-      return server.endpointURL + this.api + this.id.no + server.suffix;
+      return server.endpointURL + this.api + this.id + server.suffix;
     },
   },
   {
@@ -565,10 +629,10 @@ export const apis = [
     body: {
       referralDate: "2021-10-08T17:06:45.778Z",
       serviceId: 57,
-      demographicId: 45,
+      demographicId: 121,
       urgency: "2",
-      status: "1",
-      providerNo: 11,
+      status: "Pending_Specialist_Callback",
+      providerNo: 0,
     },
     // body: {
     //   id: 0,
@@ -665,79 +729,88 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/consults/requests/3",
     body: {
-      id: 0,
-      referralDate: "2021-10-22T17:22:49.447Z",
-      serviceId: 0,
-      professionalSpecialist: {},
-      appointmentDate: "2021-10-22T17:22:49.447Z",
-      appointmentTime: "2021-10-22T17:22:49.447Z",
-      reasonForReferral: "string",
-      clinicalInfo: "string",
-      currentMeds: "string",
-      allergies: "string",
-      providerNo: 0,
+      referralDate: "2021-10-08T17:06:45.778Z",
+      serviceId: 57,
       demographicId: 121,
-      status: "1",
-      statusText: "string",
-      sendTo: "string",
-      concurrentProblems: "string",
       urgency: "2",
-      patientWillBook: true,
-      siteName: "string",
-      followUpDate: "2021-10-22T17:22:49.447Z",
-      signatureImg: "string",
-      letterheadName: "string",
-      letterheadAddress: "string",
-      letterheadPhone: "string",
-      letterheadFax: "string",
-      attachments: [{}],
-      letterheadList: [
-        {
-          id: "string",
-          name: "string",
-          address: "string",
-          phone: "string",
-        },
-      ],
-      faxList: [
-        {
-          faxUser: "string",
-          faxNumber: "string",
-        },
-      ],
-      serviceList: [
-        {
-          serviceId: 0,
-          serviceDesc: "string",
-          active: "string",
-          specialists: [
-            {
-              id: 0,
-              firstName: "string",
-              lastName: "string",
-              name: "string",
-              professionalLetters: "string",
-              streetAddress: "string",
-              phoneNumber: "string",
-              faxNumber: "string",
-              webSite: "string",
-              emailAddress: "string",
-              specialtyType: "string",
-              geteDataUrl: "string",
-              geteDataOscarKey: "string",
-              geteDataServiceKey: "string",
-              geteDataServiceName: "string",
-              annotation: "string",
-              referralNo: "string",
-              institutionId: 0,
-              departmentId: 0,
-              eformId: 0,
-            },
-          ],
-        },
-      ],
-      sendToList: ["string"],
+      status: "Completed",
+      providerNo: 0,
     },
+
+    // body: {
+    //   id: 0,
+    //   referralDate: "2021-10-22T17:22:49.447Z",
+    //   serviceId: 0,
+    //   professionalSpecialist: {},
+    //   appointmentDate: "2021-10-22T17:22:49.447Z",
+    //   appointmentTime: "2021-10-22T17:22:49.447Z",
+    //   reasonForReferral: "string",
+    //   clinicalInfo: "string",
+    //   currentMeds: "string",
+    //   allergies: "string",
+    //   providerNo: 0,
+    //   demographicId: 121,
+    //   status: "1",
+    //   statusText: "string",
+    //   sendTo: "string",
+    //   concurrentProblems: "string",
+    //   urgency: "2",
+    //   patientWillBook: true,
+    //   siteName: "string",
+    //   followUpDate: "2021-10-22T17:22:49.447Z",
+    //   signatureImg: "string",
+    //   letterheadName: "string",
+    //   letterheadAddress: "string",
+    //   letterheadPhone: "string",
+    //   letterheadFax: "string",
+    //   attachments: [{}],
+    //   letterheadList: [
+    //     {
+    //       id: "string",
+    //       name: "string",
+    //       address: "string",
+    //       phone: "string",
+    //     },
+    //   ],
+    //   faxList: [
+    //     {
+    //       faxUser: "string",
+    //       faxNumber: "string",
+    //     },
+    //   ],
+    //   serviceList: [
+    //     {
+    //       serviceId: 0,
+    //       serviceDesc: "string",
+    //       active: "string",
+    //       specialists: [
+    //         {
+    //           id: 0,
+    //           firstName: "string",
+    //           lastName: "string",
+    //           name: "string",
+    //           professionalLetters: "string",
+    //           streetAddress: "string",
+    //           phoneNumber: "string",
+    //           faxNumber: "string",
+    //           webSite: "string",
+    //           emailAddress: "string",
+    //           specialtyType: "string",
+    //           geteDataUrl: "string",
+    //           geteDataOscarKey: "string",
+    //           geteDataServiceKey: "string",
+    //           geteDataServiceName: "string",
+    //           annotation: "string",
+    //           referralNo: "string",
+    //           institutionId: 0,
+    //           departmentId: 0,
+    //           eformId: 0,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    //   sendToList: ["string"],
+    // },
     setup: function (userInfo) {
       this.body.providerNo = userInfo.provNo;
     },

@@ -25,7 +25,6 @@ export const reducer = (state, action) => {
         "staging-providerNo",
         action.payload.profile.providerNo
       );
-      console.log(action.payload);
       return {
         ...state,
         user: action.payload.profile.email,
