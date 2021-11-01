@@ -40,3 +40,6 @@ p {
 button:hover {
   cursor: pointer;
 }
+button:disabled:hover {
+  cursor: default;
+}

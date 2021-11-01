@@ -20,11 +20,18 @@ export default function EndpointTestMenu() {
   const [expanded, setExpanded] = useState(false);
   const [results, setResults] = useState([]);
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
     setShuffleAPIs(apis.flat());
     // setShuffleAPIs(shuffle(apis).flat());
   }, []);
+
+  useEffect(() => {
+    if (results.length === apis.length) {
+      setButtonDisabled(false);
+    }
+  }, [results]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
@@ -43,6 +50,7 @@ export default function EndpointTestMenu() {
 
     return passes;
   };
+
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
@@ -67,7 +75,9 @@ export default function EndpointTestMenu() {
           ) : null}
           <button
             className={"button test-all-button"}
+            disabled={buttonDisabled}
             onClick={() => {
+              setButtonDisabled(true);
               setExpanded(true);
               setResults([]);
               testButtonRef.current(setResults);
