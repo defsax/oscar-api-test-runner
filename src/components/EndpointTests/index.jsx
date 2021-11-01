@@ -33,6 +33,10 @@ export default function EndpointTestMenu() {
     }
   }, [results]);
 
+  useEffect(() => {
+    console.log("shuffledAPIs");
+  }, [shuffledAPIs]);
+
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
   }, []);
