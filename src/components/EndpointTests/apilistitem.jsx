@@ -10,7 +10,8 @@ import Loader from "react-loader-spinner";
 
 import { AuthContext } from "../../App";
 import StatusBox from "../statusbox";
-import axiosQueue from "../../helpers/axios";
+// import axiosQueue from "../../helpers/axios";
+import axios from "axios";
 import Method from "../general/method";
 import "./css/listitem.css";
 
@@ -23,7 +24,7 @@ export default function ApiListItem(props) {
     stateRef.current = state;
   }, [state]);
 
-  const [response, setResponse] = useState([]);
+  // const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
@@ -45,7 +46,7 @@ export default function ApiListItem(props) {
       await api.setup(server, userInfo);
     }
 
-    return axiosQueue({
+    return axios({
       method: api.method,
       url: api.getURL(server, userInfo),
       data: api.body,
@@ -63,7 +64,8 @@ export default function ApiListItem(props) {
         return err.response;
       })
       .then((res) => {
-        setResponse(res);
+        api.result = res;
+        // setResponse(res);
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
@@ -113,9 +115,9 @@ export default function ApiListItem(props) {
             <h2>
               <Method method={api.method} />
             </h2>
-            {response.status !== undefined ? (
+            {api.result.status !== undefined ? (
               <div className="pass-fail-container">
-                <StatusBox response={response} />
+                <StatusBox response={api.result} />
               </div>
             ) : null}
             {loading ? (
@@ -150,20 +152,22 @@ export default function ApiListItem(props) {
             ) : null}
 
             <p>
-              <b>Status:</b> {JSON.stringify(response.status)}
+              <b>Status:</b> {JSON.stringify(api.result.status)}
+              {/* <b>Status:</b> {JSON.stringify(response.status)} */}
             </p>
 
             <p>
               <b>Data:</b>{" "}
             </p>
             {showData ? (
-              <pre>{JSON.stringify(response.data, null, 2)}</pre>
+              // <pre>{JSON.stringify(response.data, null, 2)}</pre>
+              <pre>{JSON.stringify(api.result.data, null, 2)}</pre>
             ) : null}
           </div>
           <div className="flex-results-right">
             <button
               onClick={() => {
-                setResponse([]);
+                // setResponse([]);
                 queryAPI();
               }}
               className={"button test-button"}

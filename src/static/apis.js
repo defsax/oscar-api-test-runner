@@ -103,25 +103,33 @@ const generateLastName = () => {
 
 export const apis = [
   // OTHER
-  { method: "get", api: "/api/v1/status", getURL: formulateURL },
-  { method: "get", api: "/api/v1/sites", getURL: formulateURL },
+  { method: "get", api: "/api/v1/status", result: {}, getURL: formulateURL },
+  { method: "get", api: "/api/v1/sites", result: {}, getURL: formulateURL },
 
   // PROVIDERS
   {
     method: "get",
     api: "/api/v1/oscar/providers/timeslots",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/providers/me",
+    result: {},
     getURL: formulateURL,
   },
-  { method: "get", api: "/api/v1/getSpeechkey", getURL: formulateURL },
+  {
+    method: "get",
+    api: "/api/v1/getSpeechkey",
+    result: {},
+    getURL: formulateURL,
+  },
   // DRUGS
   {
     method: "get",
     api: "/api/v1/oscar/drugs/search",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL + this.api + server.suffix + "&keyword=AMOXICILLIN"
@@ -189,11 +197,13 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body[0].demographicNo = server.testDemoNo;
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/prescriptions",
+    result: {},
     getURL: function (server, userInfo) {
       return (
         server.endpointURL +
@@ -226,11 +236,13 @@ export const apis = [
       this.body.firstName = generateFirstName();
       this.body.lastName = generateLastName();
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL + this.api + server.suffix + "&keyword=STARDUST"
@@ -240,78 +252,91 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/patients/all",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}",
     suffix: "",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/fullSummary/ALLERGIES",
     suffix: "/fullSummary/ALLERGIES",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/fullSummary/FAMILYHISTORY",
     suffix: "/fullSummary/FAMILYHISTORY",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/fullSummary/RISK_FACTORS",
     suffix: "/fullSummary/RISK_FACTORS",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/measurements",
     suffix: "/measurements",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/documents",
     suffix: "/documents",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/forms",
     suffix: "/forms",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/forms/completedEncounterForms",
     suffix: "/forms/completedEncounterForms",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/formOptions",
     suffix: "/formOptions",
+    result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/patients/{id}/labResults",
     suffix: "/labResults",
+    result: {},
     getURL: formulatePatientURL,
   },
   // TRANSCRIPTIONS
   {
     method: "get",
     api: "/api/v1/transcriptions",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/transcriptions/{id}",
 
+    result: {},
     getURL: function (server, userInfo) {
       let id = "dab882aa-352c-42a3-93e3-b6736fb5629a";
       if (server.apitype === "dev") id = "b89f3610-d992-4930-9b32-55df242a33d7";
@@ -376,6 +401,7 @@ export const apis = [
         console.log("Error fetching all transcriptions:", error);
       }
     },
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL + "/api/v1/transcriptions/" + this.id + server.suffix
@@ -392,6 +418,7 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body.userID = userInfo.id;
     },
+    result: {},
     getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
@@ -402,6 +429,7 @@ export const apis = [
     body: {
       phrase: "Create a prescription for claritin 100mg capsules.",
     },
+    result: {},
     getURL: formulateURL,
   },
   // NOTES
@@ -418,11 +446,13 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body.demographicNo = server.testDemoNo;
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/notes",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL +
@@ -462,6 +492,7 @@ export const apis = [
         console.log("Error creating dummy note:", error);
       }
     },
+    result: {},
     getURL: formulateURL,
   },
   // APPOINTMENTS
@@ -486,11 +517,13 @@ export const apis = [
       this.body.providerNo = parseInt(userInfo.provNo);
       this.body.demographicNo = server.testDemoNo;
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/appointments",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL +
@@ -503,11 +536,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/appointments/121/history",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "delete",
     api: "/api/v1/oscar/appointments/1234",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -558,21 +593,25 @@ export const apis = [
       this.body.providerNo = parseInt(userInfo.provNo);
       this.body.demographicNo = server.testDemoNo;
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/appointments/reasons",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/appointments/types",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/appointments/statuses",
+    result: {},
     getURL: formulateURL,
   },
   // TEMPLATES
@@ -586,16 +625,19 @@ export const apis = [
     setup: function () {
       this.body.templateName = "test string: " + uuidv4();
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/templates",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/template/id/2686ccb5-c8e8-4626-9bb1-7c458a232dbf",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -624,6 +666,7 @@ export const apis = [
         this.id = uuidv4();
       }
     },
+    result: {},
     getURL: function (server) {
       return server.endpointURL + this.api + this.id + server.suffix;
     },
@@ -631,11 +674,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/template/name/string",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "delete",
     api: "/api/v1/template/name/test",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -648,32 +693,38 @@ export const apis = [
     setup: function () {
       this.body.templateName = "test string: " + uuidv4();
     },
+    result: {},
     getURL: formulateURL,
   },
   // FORMS
   {
     method: "get",
     api: "/api/v1/oscar/forms/allEncounterForms",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/forms/selectedEncounterForms",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/forms/formGroups",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/forms/favouriteFormGroup",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/forms/groupNames",
+    result: {},
     getURL: formulateURL,
   },
   // CONSULTS
@@ -691,6 +742,7 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
     },
+    result: {},
     getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
@@ -698,11 +750,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/consults/requests",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/consults/requests/3",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -719,6 +773,7 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body.providerNo = userInfo.provNo;
     },
+    result: {},
     getURL: function (server) {
       return server.endpointURL + this.api + server.suffix;
     },
@@ -726,11 +781,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/consults/professionalSpecialist/3",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/consults/referAttachments",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL + this.api + server.suffix + "&demographicNo=121"
@@ -740,6 +797,7 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/consults/requestAttachments",
+    result: {},
     getURL: function (server) {
       return (
         server.endpointURL + this.api + server.suffix + "&demographicNo=121"
@@ -749,11 +807,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/consults/getReferralPathwaysByService",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/consults/eSendRequest",
+    result: {},
     getURL: formulateURL,
   },
 
@@ -761,11 +821,13 @@ export const apis = [
   {
     method: "get",
     api: "/api/v1/oscar/ticklers/textSuggestions",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/ticklers",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -781,16 +843,19 @@ export const apis = [
     setup: function (server, userInfo) {
       this.body.demographicNo = server.testDemoNo;
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "get",
     api: "/api/v1/oscar/ticklers/mine",
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "patch",
     api: "/api/v1/oscar/ticklers/2/complete",
+    result: {},
     getURL: formulateURL,
   },
   {
@@ -804,11 +869,13 @@ export const apis = [
       message: "Test to update tickler",
       serviceDate: "2021-10-12",
     },
+    result: {},
     getURL: formulateURL,
   },
   {
     method: "delete",
     api: "/api/v1/oscar/ticklers/1234",
+    result: {},
     getURL: formulateURL,
   },
 ];

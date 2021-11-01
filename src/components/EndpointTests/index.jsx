@@ -1,7 +1,7 @@
 import { React, useRef, useState, useCallback, useEffect } from "react";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
-// import shuffle from "../../helpers/shuffle";
+import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
 import ServerToggle from "../general/servertoggle";
 
@@ -23,19 +23,36 @@ export default function EndpointTestMenu() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    setShuffleAPIs(apis.flat());
-    // setShuffleAPIs(shuffle(apis).flat());
+    // setShuffleAPIs(apis.flat());
+    setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   useEffect(() => {
     if (results.length === apis.length) {
       setButtonDisabled(false);
+
+      setShuffleAPIs(
+        apis.sort((first, second) => {
+          // console.log("first:", first, "second:", second);
+          return second.result.status - first.result.status;
+        })
+      );
     }
   }, [results]);
 
-  useEffect(() => {
-    console.log("shuffledAPIs");
-  }, [shuffledAPIs]);
+  // useEffect(() => {
+  //   // console.log("shuffledAPIs");
+  //   for (let i = 0; i < shuffledAPIs.length; i++) {
+  //     console.log(shuffledAPIs[i].result.status);
+  //     // if (shuffledAPIs[i].result. === "post") console.log(shuffledAPIs[i]);
+  //   }
+  //   // setShuffleAPIs(
+  //   //   apis.sort((first, second) => {
+  //   //     console.log("first:", first, "second:", second);
+  //   //     return first.result.status - second.result.status;
+  //   //   })
+  //   // );
+  // }, [shuffledAPIs]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
