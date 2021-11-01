@@ -23,7 +23,6 @@ export default function EndpointTestMenu() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    // setShuffleAPIs(apis.flat());
     setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
@@ -33,26 +32,11 @@ export default function EndpointTestMenu() {
 
       setShuffleAPIs(
         apis.sort((first, second) => {
-          // console.log("first:", first, "second:", second);
           return second.result.status - first.result.status;
         })
       );
     }
   }, [results]);
-
-  // useEffect(() => {
-  //   // console.log("shuffledAPIs");
-  //   for (let i = 0; i < shuffledAPIs.length; i++) {
-  //     console.log(shuffledAPIs[i].result.status);
-  //     // if (shuffledAPIs[i].result. === "post") console.log(shuffledAPIs[i]);
-  //   }
-  //   // setShuffleAPIs(
-  //   //   apis.sort((first, second) => {
-  //   //     console.log("first:", first, "second:", second);
-  //   //     return first.result.status - second.result.status;
-  //   //   })
-  //   // );
-  // }, [shuffledAPIs]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
@@ -81,6 +65,12 @@ export default function EndpointTestMenu() {
           setServer={setServer}
           setToggle={setToggle}
           toggle={toggle}
+          customFunc={() => {
+            setResults([]);
+            apis.forEach((api) => {
+              api.result = {};
+            });
+          }}
         />
 
         <div className={"flex-right"}>

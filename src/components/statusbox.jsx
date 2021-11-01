@@ -1,14 +1,14 @@
 import { React } from "react";
 
 export default function StatusBox(props) {
-  const { response } = props;
-  if (response) {
+  const { status } = props;
+  if (status) {
     return (
       <div>
-        {response.status < 300 ? (
-          <h2 className="passes info-box">{response.status} </h2>
+        {status < 300 ? (
+          <h2 className="passes info-box">{status} </h2>
         ) : (
-          <h2 className="fails info-box">{response.status} </h2>
+          <h2 className="fails info-box">{status} </h2>
         )}
       </div>
     );
@@ -17,4 +17,5 @@ export default function StatusBox(props) {
       <h2 className="fails info-box">N/A</h2>
     </div>;
   }
+  return null;
 }

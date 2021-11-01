@@ -56,11 +56,11 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        console.log(`Success calling ${api.api}`);
+        // console.log(`Success calling ${api.api}`);
         return res;
       })
       .catch((err) => {
-        console.log(`Failed calling ${api.api}`);
+        // console.log(`Failed calling ${api.api}`);
         return err.response;
       })
       .then((res) => {
@@ -89,10 +89,16 @@ export default function ApiListItem(props) {
   }
 
   useEffect(() => {
-    // Always register callbacks
-    expandCallBack(expandContract);
+    // Register test callback
     testCallBack(queryAPI);
-  }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
+
+    // Order of dependencies matters
+  }, [testCallBack, queryAPI]);
+
+  useEffect(() => {
+    // Register expansion callback
+    expandCallBack(expandContract);
+  }, [expandCallBack, expandContract]);
 
   return (
     <div className="list-item">
@@ -117,7 +123,7 @@ export default function ApiListItem(props) {
             </h2>
             {api.result.status !== undefined ? (
               <div className="pass-fail-container">
-                <StatusBox response={api.result} />
+                <StatusBox status={api.result.status} />
               </div>
             ) : null}
             {loading ? (
