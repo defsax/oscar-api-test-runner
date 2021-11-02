@@ -11,8 +11,6 @@ export default function UserFlowListItem(props) {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
-  console.log(result);
-
   useEffect(() => {
     // Register expand callback
     expandCallback(expandContract);

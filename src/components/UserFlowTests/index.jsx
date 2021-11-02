@@ -110,15 +110,23 @@ export default function UserFlowMenu() {
   };
 
   const handleFlow = async (list) => {
-    const token = stateRef.current.dev.token;
-    const provNo = stateRef.current.dev.provNo;
+    // const token = stateRef.current.dev.token;
+    // const provNo = stateRef.current.dev.provNo;
     let currentAPI = list.post.api;
+
+    // Get current state userinfo
+    let userInfo = {};
+    if (server.apitype === "dev") {
+      userInfo = stateRef.current.dev;
+    } else if (server.apitype === "staging") {
+      userInfo = stateRef.current.staging;
+    }
 
     if (list.post.refreshId) {
       list.post.refreshId();
     }
     // If the submission requires a specific providerNo
-    if (list.post.setProviderNo) list.post.setProviderNo(provNo);
+    if (list.post.setProviderNo) list.post.setProviderNo(userInfo.provNo);
 
     try {
       const postReq = await axios({
@@ -126,7 +134,7 @@ export default function UserFlowMenu() {
         url: list.post.getURL(server),
         data: list.post.body,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userInfo.token}`,
           Accept: "application/json",
         },
       });
@@ -157,7 +165,7 @@ export default function UserFlowMenu() {
             postReq.data.result.templateName
           );
 
-        return await queryAPI(api, server, token, provNo, setResults);
+        return await queryAPI(api, server, userInfo, setResults);
       });
     } catch (e) {
       // console.error(e);

@@ -34,6 +34,7 @@ export default function ApiListItem(props) {
   const queryAPI = useCallback(async () => {
     setLoading(true);
 
+    // Get current state userinfo
     let userInfo = {};
     if (server.apitype === "dev") {
       userInfo = stateRef.current.dev;
