@@ -349,7 +349,7 @@ export const apis = [
   {
     method: "delete",
     api: "/api/v1/transcriptions/{id}",
-    id: null,
+    id: "{id}",
     setup: async function (server, userInfo) {
       // Create a dummy transcription to delete...
 
@@ -466,35 +466,37 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/oscar/notest/190",
-    id: null,
+    api: "/api/v1/oscar/notest/{id}",
+    id: "{id}",
     setup: async function (server, userInfo) {
-      // Create note, then get id from response and set id
+      // Get all notes for demographic, then get id from first note in result
       try {
         const result = await axiosQueue({
-          method: "post",
-          url: server.endpointURL + "/api/v1/oscar/notes" + server.suffix,
-          body: {
-            demographicNo: server.apitype === "dev" ? 121 : 76,
-            note: "Patient seems like a test.",
-            observationDate: "2021-10-20T15:53:20.944Z",
-            updateDate: "2021-10-20T15:53:20.944Z",
-            soapNote: {},
-          },
+          method: "get",
+          url:
+            server.endpointURL +
+            "/api/v1/oscar/notes" +
+            server.suffix +
+            "&demographicNo=" +
+            server.testDemoNo,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             Accept: "application/json",
           },
         });
 
-        console.log("Dummy note successfully created:", result);
-        this.id = result.noteId;
+        console.log("Successfully fetched notes:", result);
+        this.id = result.data.result[0].noteId;
       } catch (error) {
-        console.log("Error creating dummy note:", error);
+        console.log("Error fetching notes:", error);
       }
     },
     result: {},
-    getURL: formulateURL,
+    getURL: function (server) {
+      return (
+        server.endpointURL + "/api/v1/oscar/notest/" + this.id + server.suffix
+      );
+    },
   },
   // APPOINTMENTS
   {
@@ -637,14 +639,37 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/template/id/2686ccb5-c8e8-4626-9bb1-7c458a232dbf",
+    api: "/api/v1/template/id/{id}",
+    id: "{id}",
     result: {},
-    getURL: formulateURL,
+    setup: async function (server, userInfo) {
+      // Create a dummy template to delete...
+      try {
+        const result = await axiosQueue({
+          method: "get",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+        console.log("Success fetching templates:", result);
+        this.id = result.data.result.data[1].id;
+      } catch (error) {
+        console.log("Error fetching templates:", error);
+        this.id = uuidv4();
+      }
+    },
+    getURL: function (server) {
+      return (
+        server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
+      );
+    },
   },
   {
     method: "delete",
-    api: "/api/v1/template/id/",
-    id: null,
+    api: "/api/v1/template/id/{id}",
+    id: "{id}",
     setup: async function (server, userInfo) {
       // Create a dummy template to delete...
       try {
@@ -661,41 +686,123 @@ export const apis = [
           },
         });
 
+        console.log("Success creating dummy template to delete:", result);
         this.id = result.data.result.id;
       } catch (error) {
-        console.log("error creating document to delete:", error);
+        console.log("Error creating template to delete:", error);
         this.id = uuidv4();
       }
     },
     result: {},
     getURL: function (server) {
-      return server.endpointURL + this.api + this.id + server.suffix;
+      return (
+        server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
+      );
     },
   },
   {
     method: "get",
-    api: "/api/v1/template/name/string",
+    api: "/api/v1/template/name/{templatename}",
+    templateName: "{templatename}",
     result: {},
-    getURL: formulateURL,
+    setup: async function (server, userInfo) {
+      // Get a an already created template to update by name...
+      try {
+        const result = await axiosQueue({
+          method: "get",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+        console.log(
+          "Success fetching templates:",
+          result.data.result.data[2].templateName
+        );
+        this.templateName = result.data.result.data[2].templateName;
+      } catch (error) {
+        console.log("Error fetching templates:", error);
+      }
+    },
+    getURL: function (server) {
+      console.log(this.templateName);
+      return (
+        server.endpointURL +
+        "/api/v1/template/name/" +
+        this.templateName +
+        server.suffix
+      );
+    },
   },
   {
     method: "delete",
-    api: "/api/v1/template/name/test",
+    api: "/api/v1/template/name/{templatename}",
     result: {},
-    getURL: formulateURL,
+    templateName: "{templatename}",
+    setup: async function (server, userInfo) {
+      // Create a dummy template to delete by name...
+      try {
+        const result = await axiosQueue({
+          method: "post",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          data: {
+            templateName: "test string: " + uuidv4(),
+            templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
+          },
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+
+        console.log("Success creating dummy template to delete:", result);
+        this.templateName = result.data.result.templateName;
+      } catch (error) {
+        console.log("Error creating template to delete:", error);
+        this.templateName = uuidv4();
+      }
+    },
+    getURL: function (server) {
+      return (
+        server.endpointURL +
+        "/api/v1/template/name/" +
+        this.templateName +
+        server.suffix
+      );
+    },
   },
   {
     method: "put",
-    api: "/api/v1/template/bed451b9-3b11-46b3-99f2-8510d160060e",
+    api: "/api/v1/template/{id}",
+    id: "{id}",
     body: {
       templateName: "test string: " + uuidv4(),
       templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
     },
-    setup: function () {
+    setup: async function (server, userInfo) {
       this.body.templateName = "test string: " + uuidv4();
+      // Get a an already created template to update by id...
+      try {
+        const result = await axiosQueue({
+          method: "get",
+          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            Accept: "application/json",
+          },
+        });
+        console.log("Success fetching templates:", result);
+        this.id = result.data.result.data[0].id;
+      } catch (error) {
+        console.log("Error fetching templates:", error);
+        this.id = uuidv4();
+      }
     },
     result: {},
-    getURL: formulateURL,
+    getURL: function (server) {
+      return server.endpointURL + "/api/v1/template/" + this.id + server.suffix;
+    },
   },
   // FORMS
   {
@@ -735,13 +842,14 @@ export const apis = [
     body: {
       referralDate: "2021-10-08T17:06:45.778Z",
       serviceId: 57,
-      demographicId: 121,
+      demographicId: 0,
       urgency: "2",
       status: "Pending_Specialist_Callback",
       providerNo: 0,
     },
     setup: function (server, userInfo) {
       this.body.providerNo = parseInt(userInfo.provNo);
+      this.body.demographicId = server.testDemoNo;
     },
     result: {},
     getURL: function (server) {
@@ -766,13 +874,14 @@ export const apis = [
     body: {
       referralDate: "2021-10-08T17:06:45.778Z",
       serviceId: 57,
-      demographicId: 121,
+      demographicId: 0,
       urgency: "2",
       status: "Completed",
       providerNo: 0,
     },
     setup: function (server, userInfo) {
       this.body.providerNo = userInfo.provNo;
+      this.body.demographicId = server.testDemoNo;
     },
     result: {},
     getURL: function (server) {

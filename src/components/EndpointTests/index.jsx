@@ -24,18 +24,18 @@ export default function EndpointTestMenu() {
 
   useEffect(() => {
     setShuffleAPIs(apis.flat());
-    setShuffleAPIs(shuffle(apis).flat());
+    // setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   useEffect(() => {
     if (results.length === apis.length) {
       setButtonDisabled(false);
 
-      setShuffleAPIs(
-        apis.sort((first, second) => {
-          return second.result.status - first.result.status;
-        })
-      );
+      // setShuffleAPIs(
+      //   apis.sort((first, second) => {
+      //     return second.result.status - first.result.status;
+      //   })
+      // );
     }
   }, [results]);
 
