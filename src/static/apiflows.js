@@ -4,87 +4,6 @@ const formulateURL = function (server) {
   return server.endpointURL + this.api + server.suffix;
 };
 
-export const PatientFlow = {
-  post: {
-    api: "/api/v1/oscar/patients",
-    body: {
-      firstName: "Test",
-      lastName: "Patient",
-      email: "1234@gmail.com",
-      sex: "M",
-      dateOfBirth: "1978-12-31T00:00:00.000Z",
-      address: {
-        province: "ON",
-        postal: "M6H 2L9",
-        city: "Toronto",
-        address: "92 Auburn Ave",
-      },
-    },
-    refreshId: function () {
-      this.body.email = "test.patient." + uuidv4() + "@gmail.com";
-    },
-
-    getURL: formulateURL,
-  },
-  apiList: [
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id;
-      },
-      getURL: formulateURL,
-    },
-    // {
-    //   method: "get",
-    //   api: "/api/v1/oscar/patients/all",
-    //   idRequired: false,
-    //   suffix: "",
-    // },
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id + "/allergies";
-      },
-      getURL: formulateURL,
-    },
-
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id + "/measurements";
-      },
-      getURL: formulateURL,
-    },
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id + "/documents";
-      },
-      getURL: formulateURL,
-    },
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id + "/forms";
-      },
-      getURL: formulateURL,
-    },
-    {
-      api: "",
-      method: "get",
-      setPatientId: function (id) {
-        this.api = "/api/v1/oscar/patients/" + id + "/labResults";
-      },
-      getURL: formulateURL,
-    },
-  ],
-};
-
 export const PrescriptionFlow = {
   post: {
     api: "/api/v1/oscar/prescriptions",
@@ -145,8 +64,8 @@ export const PrescriptionFlow = {
     ],
 
     getURL: formulateURL,
-    setProviderNo: function (providerNo) {
-      this.body[0].drugs[0].providerNo = providerNo;
+    setup: function (server, userInfo) {
+      this.body[0].demographicNo = server.testDemoNo;
     },
   },
   apiList: [
@@ -162,6 +81,94 @@ export const PrescriptionFlow = {
           providerNo
         );
       },
+    },
+  ],
+};
+
+export const PatientFlow = {
+  post: {
+    api: "/api/v1/oscar/patients",
+    body: {
+      firstName: "Test",
+      lastName: "Patient",
+      email: "1234@gmail.com",
+      sex: "M",
+      dateOfBirth: "1978-12-31T00:00:00.000Z",
+      address: {
+        province: "ON",
+        postal: "M6H 2L9",
+        city: "Toronto",
+        address: "92 Auburn Ave",
+      },
+    },
+    // refreshId: function () {
+    //   this.body.email = "test.patient." + uuidv4() + "@gmail.com";
+    // },
+    setup: function () {
+      this.body.email = "test.patient." + uuidv4() + "@gmail.com";
+    },
+
+    getURL: formulateURL,
+  },
+  apiList: [
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api = "/api/v1/oscar/patients/" + result.demographicNo;
+      },
+      getURL: formulateURL,
+    },
+    // {
+    //   method: "get",
+    //   api: "/api/v1/oscar/patients/all",
+    //   idRequired: false,
+    //   suffix: "",
+    // },
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api =
+          "/api/v1/oscar/patients/" + result.demographicNo + "/allergies";
+      },
+      getURL: formulateURL,
+    },
+
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api =
+          "/api/v1/oscar/patients/" + result.demographicNo + "/measurements";
+      },
+      getURL: formulateURL,
+    },
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api =
+          "/api/v1/oscar/patients/" + result.demographicNo + "/documents";
+      },
+      getURL: formulateURL,
+    },
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api = "/api/v1/oscar/patients/" + result.demographicNo + "/forms";
+      },
+      getURL: formulateURL,
+    },
+    {
+      api: "",
+      method: "get",
+      setup: function (result) {
+        this.api =
+          "/api/v1/oscar/patients/" + result.demographicNo + "/labResults";
+      },
+      getURL: formulateURL,
     },
   ],
 };
@@ -190,9 +197,9 @@ export const NoteFlow = {
     },
     {
       method: "get",
-      api: "/api/v1/oscar/notest/190",
-      setNoteId: function (id) {
-        this.api = "/api/v1/oscar/notest/" + id;
+      api: "/api/v1/oscar/notest/{id}",
+      setup: function (result) {
+        this.api = "/api/v1/oscar/notest/" + result.noteId;
       },
       getURL: formulateURL,
     },
@@ -219,24 +226,38 @@ export const AppointmentFlow = {
     getURL: function (server, userInfo) {
       return server.endpointURL + this.api + server.suffix;
     },
-    setProviderNo: function (providerNo) {
-      this.body.providerNo = providerNo;
+
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
+      this.body.providerNo = userInfo.provNo;
     },
   },
   apiList: [
     {
       method: "get",
-      api: "/api/v1/oscar/appointments",
+      api: "/api/v1/oscar/appointments&demographicNo={demographicNo}",
       getURL: function (server) {
         return (
-          server.endpointURL + this.api + server.suffix + "&demographicNo=121"
+          server.endpointURL +
+          "/api/v1/oscar/appointments" +
+          server.suffix +
+          "&demographicNo=" +
+          server.testDemoNo
         );
       },
     },
     {
       method: "get",
-      api: "/api/v1/oscar/appointments/121/history",
-      getURL: formulateURL,
+      api: "/api/v1/oscar/appointments/{demographicNo}/history",
+      getURL: function (server) {
+        return (
+          server.endpointURL +
+          "/api/v1/oscar/appointments/" +
+          server.testDemoNo +
+          "/history" +
+          server.suffix
+        );
+      },
     },
     {
       method: "put",
@@ -259,8 +280,8 @@ export const AppointmentFlow = {
         this.body.providerNo = provNo;
         return server.endpointURL + this.api + server.suffix;
       },
-      setAppointmentId: function (id) {
-        this.api = "/api/v1/oscar/appointments/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/oscar/appointments/" + result.id;
       },
     },
     {
@@ -282,8 +303,8 @@ export const AppointmentFlow = {
       method: "delete",
       api: "",
       getURL: formulateURL,
-      setAppointmentId: function (id) {
-        this.api = "/api/v1/oscar/appointments/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/oscar/appointments/" + result.id;
       },
     },
   ],
@@ -313,8 +334,8 @@ export const TemplateFlow = {
       method: "get",
       api: "",
       getURL: formulateURL,
-      setTemplateIdName: function (id) {
-        this.api = "/api/v1/template/id/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/template/id/" + result.id;
       },
     },
     {
@@ -325,24 +346,24 @@ export const TemplateFlow = {
         templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
       },
       getURL: formulateURL,
-      setTemplateIdName: function (id) {
-        this.api = "/api/v1/template/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/template/" + result.id;
       },
     },
     {
       method: "get",
       api: "",
       getURL: formulateURL,
-      setTemplateIdName: function (id) {
-        this.api = "/api/v1/template/id/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/template/id/" + result.id;
       },
     },
     {
       method: "delete",
       api: "/api/v1/template/id/1234",
       getURL: formulateURL,
-      setTemplateIdName: function (id) {
-        this.api = "/api/v1/template/id/" + id;
+      setup: function (result) {
+        this.api = "/api/v1/template/id/" + result.id;
       },
     },
     {
