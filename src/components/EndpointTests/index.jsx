@@ -31,11 +31,11 @@ export default function EndpointTestMenu() {
     if (results.length === apis.length) {
       setButtonDisabled(false);
 
-      // setShuffleAPIs(
-      //   apis.sort((first, second) => {
-      //     return second.result.status - first.result.status;
-      //   })
-      // );
+      setShuffleAPIs(
+        apis.sort((first, second) => {
+          return second.result.status - first.result.status;
+        })
+      );
     }
   }, [results]);
 

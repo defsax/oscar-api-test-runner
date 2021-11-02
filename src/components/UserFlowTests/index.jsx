@@ -247,7 +247,7 @@ export default function UserFlowMenu() {
       </div>
       <hr />
 
-      {results ? results.map(renderFlowItem) : null}
+      {results ? results.slice(0).reverse().map(renderFlowItem) : null}
     </div>
   );
 }

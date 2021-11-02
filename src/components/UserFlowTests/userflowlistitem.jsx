@@ -11,6 +11,8 @@ export default function UserFlowListItem(props) {
     isExpanded ? setShowMenu(false) : setShowMenu(true);
   }, []);
 
+  console.log(result);
+
   useEffect(() => {
     // Register expand callback
     expandCallback(expandContract);
@@ -39,7 +41,7 @@ export default function UserFlowListItem(props) {
             </h2>
             {result.status !== undefined ? (
               <div className="pass-fail-container">
-                <StatusBox response={result} />
+                <StatusBox status={result.status} />
               </div>
             ) : null}
           </div>
