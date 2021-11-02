@@ -110,15 +110,22 @@ export default function UserFlowMenu() {
   };
 
   const handleFlow = async (list) => {
-    const token = stateRef.current.dev.token;
-    const provNo = stateRef.current.dev.provNo;
+    // const token = stateRef.current.dev.token;
+    // const provNo = stateRef.current.dev.provNo;
     let currentAPI = list.post.api;
 
-    if (list.post.refreshId) {
-      list.post.refreshId();
+    // Get current state userinfo
+    let userInfo = {};
+    if (server.apitype === "dev") {
+      userInfo = stateRef.current.dev;
+    } else if (server.apitype === "staging") {
+      userInfo = stateRef.current.staging;
     }
-    // If the submission requires a specific providerNo
-    if (list.post.setProviderNo) list.post.setProviderNo(provNo);
+
+    // Run any setup code
+    if (list.post.setup) {
+      list.post.setup(server, userInfo);
+    }
 
     try {
       const postReq = await axios({
@@ -126,7 +133,7 @@ export default function UserFlowMenu() {
         url: list.post.getURL(server),
         data: list.post.body,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userInfo.token}`,
           Accept: "application/json",
         },
       });
@@ -147,17 +154,11 @@ export default function UserFlowMenu() {
         currentAPI = api.api;
 
         // If there's a setID function, set api with #
-        if (api.setPatientId)
-          api.setPatientId(postReq.data.result.demographicNo);
-        if (api.setNoteId) api.setNoteId(postReq.data.result.noteId);
-        if (api.setAppointmentId) api.setAppointmentId(postReq.data.result.id);
-        if (api.setTemplateIdName)
-          api.setTemplateIdName(
-            postReq.data.result.id,
-            postReq.data.result.templateName
-          );
+        if (api.setup) {
+          api.setup(postReq.data.result);
+        }
 
-        return await queryAPI(api, server, token, provNo, setResults);
+        return await queryAPI(api, server, userInfo, setResults);
       });
     } catch (e) {
       // console.error(e);
@@ -247,7 +248,7 @@ export default function UserFlowMenu() {
       </div>
       <hr />
 
-      {results ? results.map(renderFlowItem) : null}
+      {results ? results.slice(0).reverse().map(renderFlowItem) : null}
     </div>
   );
 }

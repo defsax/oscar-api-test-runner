@@ -11,6 +11,7 @@ import Loader from "react-loader-spinner";
 import { AuthContext } from "../../App";
 import StatusBox from "../statusbox";
 import axiosQueue from "../../helpers/axios";
+// import axios from "axios";
 import Method from "../general/method";
 import "./css/listitem.css";
 
@@ -23,7 +24,7 @@ export default function ApiListItem(props) {
     stateRef.current = state;
   }, [state]);
 
-  const [response, setResponse] = useState([]);
+  // const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showData, setShowData] = useState(false);
@@ -33,6 +34,7 @@ export default function ApiListItem(props) {
   const queryAPI = useCallback(async () => {
     setLoading(true);
 
+    // Get current state userinfo
     let userInfo = {};
     if (server.apitype === "dev") {
       userInfo = stateRef.current.dev;
@@ -63,7 +65,8 @@ export default function ApiListItem(props) {
         return err.response;
       })
       .then((res) => {
-        setResponse(res);
+        api.result = res;
+        // setResponse(res);
         setShowMenu(true);
         setShowData(true);
         setLoading(false);
@@ -87,10 +90,16 @@ export default function ApiListItem(props) {
   }
 
   useEffect(() => {
-    // Always register callbacks
-    expandCallBack(expandContract);
+    // Register test callback
     testCallBack(queryAPI);
-  }, [expandCallBack, testCallBack, queryAPI, expandContract, server]);
+
+    // Order of dependencies matters
+  }, [testCallBack, queryAPI]);
+
+  useEffect(() => {
+    // Register expansion callback
+    expandCallBack(expandContract);
+  }, [expandCallBack, expandContract]);
 
   return (
     <div className="list-item">
@@ -113,9 +122,9 @@ export default function ApiListItem(props) {
             <h2>
               <Method method={api.method} />
             </h2>
-            {response.status !== undefined ? (
+            {api.result.status !== undefined ? (
               <div className="pass-fail-container">
-                <StatusBox response={response} />
+                <StatusBox status={api.result.status} />
               </div>
             ) : null}
             {loading ? (
@@ -150,20 +159,22 @@ export default function ApiListItem(props) {
             ) : null}
 
             <p>
-              <b>Status:</b> {JSON.stringify(response.status)}
+              <b>Status:</b> {JSON.stringify(api.result.status)}
+              {/* <b>Status:</b> {JSON.stringify(response.status)} */}
             </p>
 
             <p>
               <b>Data:</b>{" "}
             </p>
             {showData ? (
-              <pre>{JSON.stringify(response.data, null, 2)}</pre>
+              // <pre>{JSON.stringify(response.data, null, 2)}</pre>
+              <pre>{JSON.stringify(api.result.data, null, 2)}</pre>
             ) : null}
           </div>
           <div className="flex-results-right">
             <button
               onClick={() => {
-                setResponse([]);
+                // setResponse([]);
                 queryAPI();
               }}
               className={"button test-button"}

@@ -1,7 +1,7 @@
 import { React, useRef, useState, useCallback, useEffect } from "react";
 import { apiVersion } from "../../static/serverlist";
 import ApiList from "./apilist";
-// import shuffle from "../../helpers/shuffle";
+import shuffle from "../../helpers/shuffle";
 import { apis } from "../../static/apis";
 import ServerToggle from "../general/servertoggle";
 
@@ -20,11 +20,23 @@ export default function EndpointTestMenu() {
   const [expanded, setExpanded] = useState(false);
   const [results, setResults] = useState([]);
   const [shuffledAPIs, setShuffleAPIs] = useState([]);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    setShuffleAPIs(apis.flat());
-    // setShuffleAPIs(shuffle(apis).flat());
+    setShuffleAPIs(shuffle(apis).flat());
   }, []);
+
+  useEffect(() => {
+    if (results.length === apis.length) {
+      setButtonDisabled(false);
+
+      setShuffleAPIs(
+        apis.sort((first, second) => {
+          return second.result.status - first.result.status;
+        })
+      );
+    }
+  }, [results]);
 
   const setTestCallback = useCallback((callback) => {
     testButtonRef.current = callback;
@@ -43,6 +55,7 @@ export default function EndpointTestMenu() {
 
     return passes;
   };
+
   return (
     <div className="menu">
       <h1>Oscar API Endpoint Testing</h1>
@@ -52,6 +65,12 @@ export default function EndpointTestMenu() {
           setServer={setServer}
           setToggle={setToggle}
           toggle={toggle}
+          customFunc={() => {
+            setResults([]);
+            apis.forEach((api) => {
+              api.result = {};
+            });
+          }}
         />
 
         <div className={"flex-right"}>
@@ -67,7 +86,9 @@ export default function EndpointTestMenu() {
           ) : null}
           <button
             className={"button test-all-button"}
+            disabled={buttonDisabled}
             onClick={() => {
+              setButtonDisabled(true);
               setExpanded(true);
               setResults([]);
               testButtonRef.current(setResults);

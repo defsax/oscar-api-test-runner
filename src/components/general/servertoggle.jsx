@@ -1,6 +1,10 @@
 import { apiVersion } from "../../static/serverlist";
 
-export default function ServerToggle({ setServer = () => {}, ...props }) {
+export default function ServerToggle({
+  setServer = () => {},
+  customFunc = () => {},
+  ...props
+}) {
   const { setToggle, toggle } = props;
   return (
     <div className={"flex-left"}>
@@ -9,6 +13,7 @@ export default function ServerToggle({ setServer = () => {}, ...props }) {
         onClick={() => {
           setServer(apiVersion[0]);
           setToggle(!toggle);
+          customFunc();
         }}
         disabled={toggle}
       >
@@ -20,6 +25,7 @@ export default function ServerToggle({ setServer = () => {}, ...props }) {
         onClick={() => {
           setServer(apiVersion[1]);
           setToggle(!toggle);
+          customFunc();
         }}
         disabled={!toggle}
       >

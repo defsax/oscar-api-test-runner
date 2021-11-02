@@ -1,34 +1,22 @@
 import axiosQueue from "../../../helpers/axios";
 
-export default async function queryAPI(api, server, token, provNo, setResults) {
-  axiosQueue({
+export default async function queryAPI(api, server, userInfo, setResults) {
+  console.log(server, userInfo);
+  await axiosQueue({
     method: api.method,
-    url: api.getURL(server, provNo),
+    url: api.getURL(server, userInfo.provNo),
     data: api.body,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${userInfo.token}`,
       Accept: "application/json",
     },
   })
     .then((res) => {
       console.log(`Success calling ${api.api}`);
-      // console.log(res.data);
-
       return res;
     })
     .catch((err) => {
       console.log(`Failed calling ${api.api}`);
-      // if (err.response) {
-      //   console.log(err.response);
-      // } else if (err.request) {
-      //   console.log(err.request);
-      // } else {
-      //   console.log("Error", err.message);
-      // }
-      // console.log(err.config);
-
-      // throw new Error("Error");
-
       return err.response;
     })
     .then((res) => {

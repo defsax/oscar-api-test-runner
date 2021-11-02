@@ -1,4 +1,3 @@
-// import { queryEqual } from "@firebase/firestore";
 import { useCallback, useRef } from "react";
 import ApiListItem from "./apilistitem";
 
@@ -10,9 +9,13 @@ export default function ApiList(props) {
   const expandRefs = useRef([]);
 
   // useCallback so that component doesn't reload on setCallback updating
-  const setTestCallback = useCallback((callback) => {
-    testRefs.current.push(callback);
-  }, []);
+  const setTestCallback = useCallback(
+    (callback) => {
+      if (testRefs.current.length < apis.length)
+        testRefs.current.push(callback);
+    },
+    [apis]
+  );
 
   const setExpandCallback = useCallback((callback) => {
     expandRefs.current.push(callback);

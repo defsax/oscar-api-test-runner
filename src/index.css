@@ -40,3 +40,7 @@ p {
 button:hover {
   cursor: pointer;
 }
+button:disabled:hover {
+  cursor: default;
+  background-color: rgb(121, 204, 141);
+}
