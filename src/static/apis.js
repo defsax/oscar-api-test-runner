@@ -355,7 +355,7 @@ export const apis = [
 
       // First create transcription
       try {
-        const result = await axiosQueue({
+        await axiosQueue({
           method: "post",
           url: server.endpointURL + "/api/v1/record" + server.suffix,
           data: {
@@ -368,9 +368,9 @@ export const apis = [
           },
         });
 
-        console.log("Dummy record successfully created:", result);
+        console.log("Success creating dummy record for deletion");
       } catch (error) {
-        console.log("Error creating dummy record:", error);
+        console.log("Error creating dummy record for deletion:", error);
       }
 
       // Then fetch all transcriptions
@@ -384,11 +384,7 @@ export const apis = [
           },
         });
 
-        console.log("Fetched all transcriptions:", transcriptions);
-        console.log(
-          "Latest transcription:",
-          transcriptions.data.result.data[0]
-        );
+        console.log("Fetched all transcriptions to get latest one to delete");
 
         // *** NOTE: this doesn't work on staging, since staging doesn't return reverse chronological
         // Get latest transcription and get/set id
@@ -485,7 +481,7 @@ export const apis = [
           },
         });
 
-        console.log("Successfully fetched notes:", result);
+        console.log("Successfully fetched notes");
         this.id = result.data.result[0].noteId;
       } catch (error) {
         console.log("Error fetching notes:", error);
@@ -643,7 +639,7 @@ export const apis = [
     id: "{id}",
     result: {},
     setup: async function (server, userInfo) {
-      // Create a dummy template to delete...
+      // Fetch all templates then grab first id...
       try {
         const result = await axiosQueue({
           method: "get",
@@ -653,10 +649,10 @@ export const apis = [
             Accept: "application/json",
           },
         });
-        console.log("Success fetching templates:", result);
-        this.id = result.data.result.data[1].id;
+        console.log("Success fetching templates to get one by id");
+        this.id = result.data.result.data[0].id;
       } catch (error) {
-        console.log("Error fetching templates:", error);
+        console.log("Error fetching templates to get one by id:", error);
         this.id = uuidv4();
       }
     },
@@ -686,10 +682,13 @@ export const apis = [
           },
         });
 
-        console.log("Success creating dummy template to delete:", result);
+        console.log("Success creating dummy template to delete one by id");
         this.id = result.data.result.id;
       } catch (error) {
-        console.log("Error creating template to delete:", error);
+        console.log(
+          "Error creating dummy template to delete one by id:",
+          error
+        );
         this.id = uuidv4();
       }
     },
@@ -716,17 +715,16 @@ export const apis = [
             Accept: "application/json",
           },
         });
-        console.log(
-          "Success fetching templates:",
-          result.data.result.data[2].templateName
-        );
+        console.log("Success fetching templates to get one by templatename");
         this.templateName = result.data.result.data[2].templateName;
       } catch (error) {
-        console.log("Error fetching templates:", error);
+        console.log(
+          "Error fetching templates to get one by templatename:",
+          error
+        );
       }
     },
     getURL: function (server) {
-      console.log(this.templateName);
       return (
         server.endpointURL +
         "/api/v1/template/name/" +
@@ -756,10 +754,15 @@ export const apis = [
           },
         });
 
-        console.log("Success creating dummy template to delete:", result);
+        console.log(
+          "Success creating dummy template to delete by templatename"
+        );
         this.templateName = result.data.result.templateName;
       } catch (error) {
-        console.log("Error creating template to delete:", error);
+        console.log(
+          "Error creating dummy template to delete by templatename:",
+          error
+        );
         this.templateName = uuidv4();
       }
     },
@@ -792,10 +795,10 @@ export const apis = [
             Accept: "application/json",
           },
         });
-        console.log("Success fetching templates:", result);
-        this.id = result.data.result.data[0].id;
+        console.log("Success fetching templates to update one by id");
+        this.id = result.data.result.data[4].id;
       } catch (error) {
-        console.log("Error fetching templates:", error);
+        console.log("Error fetching templates to update one by id:", error);
         this.id = uuidv4();
       }
     },

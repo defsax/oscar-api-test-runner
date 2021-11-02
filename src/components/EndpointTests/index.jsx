@@ -23,8 +23,8 @@ export default function EndpointTestMenu() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
-    setShuffleAPIs(apis.flat());
-    // setShuffleAPIs(shuffle(apis).flat());
+    // setShuffleAPIs(apis.flat());
+    setShuffleAPIs(shuffle(apis).flat());
   }, []);
 
   useEffect(() => {
