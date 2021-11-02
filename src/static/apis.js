@@ -69,7 +69,8 @@ Goji API URLs
 
 */
 
-import axios from "axios";
+// import axios from "axios";
+import axiosQueue from "../helpers/axios";
 import { v4 as uuidv4 } from "uuid";
 import { base64Content } from "./base64content";
 import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
@@ -354,8 +355,7 @@ export const apis = [
 
       // First create transcription
       try {
-        // const result =
-        await axios({
+        const result = await axiosQueue({
           method: "post",
           url: server.endpointURL + "/api/v1/record" + server.suffix,
           data: {
@@ -368,14 +368,14 @@ export const apis = [
           },
         });
 
-        ////console.log("Dummy record successfully created:", result);
+        console.log("Dummy record successfully created:", result);
       } catch (error) {
-        //console.log("Error creating dummy record:", error);
+        console.log("Error creating dummy record:", error);
       }
 
       // Then fetch all transcriptions
       try {
-        const transcriptions = await axios({
+        const transcriptions = await axiosQueue({
           method: "get",
           url: server.endpointURL + "/api/v1/transcriptions" + server.suffix,
           headers: {
@@ -384,11 +384,11 @@ export const apis = [
           },
         });
 
-        //console.log("Fetched all transcriptions:", transcriptions);
-        //console.log(
-        //   "Latest transcription:",
-        //   transcriptions.data.result.data[0]
-        // );
+        console.log("Fetched all transcriptions:", transcriptions);
+        console.log(
+          "Latest transcription:",
+          transcriptions.data.result.data[0]
+        );
 
         // *** NOTE: this doesn't work on staging, since staging doesn't return reverse chronological
         // Get latest transcription and get/set id
@@ -399,7 +399,7 @@ export const apis = [
           this.id = transcriptions.data.result.data[0].id;
         }
       } catch (error) {
-        //console.log("Error fetching all transcriptions:", error);
+        console.log("Error fetching all transcriptions:", error);
       }
     },
     result: {},
@@ -471,7 +471,7 @@ export const apis = [
     setup: async function (server, userInfo) {
       // Create note, then get id from response and set id
       try {
-        const result = await axios({
+        const result = await axiosQueue({
           method: "post",
           url: server.endpointURL + "/api/v1/oscar/notes" + server.suffix,
           body: {
@@ -487,10 +487,10 @@ export const apis = [
           },
         });
 
-        //console.log("Dummy note successfully created:", result);
+        console.log("Dummy note successfully created:", result);
         this.id = result.noteId;
       } catch (error) {
-        //console.log("Error creating dummy note:", error);
+        console.log("Error creating dummy note:", error);
       }
     },
     result: {},
@@ -648,7 +648,7 @@ export const apis = [
     setup: async function (server, userInfo) {
       // Create a dummy template to delete...
       try {
-        const result = await axios({
+        const result = await axiosQueue({
           method: "post",
           url: server.endpointURL + "/api/v1/templates" + server.suffix,
           data: {
@@ -663,7 +663,7 @@ export const apis = [
 
         this.id = result.data.result.id;
       } catch (error) {
-        //console.log("error creating document to delete:", error);
+        console.log("error creating document to delete:", error);
         this.id = uuidv4();
       }
     },

@@ -10,8 +10,8 @@ import Loader from "react-loader-spinner";
 
 import { AuthContext } from "../../App";
 import StatusBox from "../statusbox";
-// import axiosQueue from "../../helpers/axios";
-import axios from "axios";
+import axiosQueue from "../../helpers/axios";
+// import axios from "axios";
 import Method from "../general/method";
 import "./css/listitem.css";
 
@@ -46,7 +46,7 @@ export default function ApiListItem(props) {
       await api.setup(server, userInfo);
     }
 
-    return axios({
+    return axiosQueue({
       method: api.method,
       url: api.getURL(server, userInfo),
       data: api.body,
@@ -56,11 +56,11 @@ export default function ApiListItem(props) {
       },
     })
       .then((res) => {
-        // console.log(`Success calling ${api.api}`);
+        console.log(`Success calling ${api.api}`);
         return res;
       })
       .catch((err) => {
-        // console.log(`Failed calling ${api.api}`);
+        console.log(`Failed calling ${api.api}`);
         return err.response;
       })
       .then((res) => {

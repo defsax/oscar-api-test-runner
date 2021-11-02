@@ -11,7 +11,6 @@ export default function ApiList(props) {
   // useCallback so that component doesn't reload on setCallback updating
   const setTestCallback = useCallback(
     (callback) => {
-      console.log(testRefs.current.length);
       if (testRefs.current.length < apis.length)
         testRefs.current.push(callback);
     },
@@ -25,8 +24,6 @@ export default function ApiList(props) {
   // Called when user presses expand button from index.jsx
   expandCallback((expanded) => {
     // Calls all registered expansion functions from apilistitem.jsx
-    console.log("before expandrefs", expandRefs.current.length);
-
     expandRefs.current.forEach((expand) => {
       expand(expanded);
     });
@@ -35,14 +32,10 @@ export default function ApiList(props) {
   // Called when user presses test all button from index.jsx
   testCallback((setResults) => {
     // Calls all registered test functions from apilistitem.jsx
-    console.log("before testrefs", testRefs.current.length);
     testRefs.current.forEach(async (test) => {
       const result = await test();
       setResults((prevResults) => [...prevResults, result]);
     });
-    // console.log("after testrefs", testRefs.current.length);
-    // testRefs.current = [];
-    // console.log("after testrefs reset", testRefs.current.length);
   });
 
   return (
