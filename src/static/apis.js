@@ -224,6 +224,8 @@ export const apis = [
       lastName: "Patient",
       email: "test.patient." + uuidv4() + "@gmail.com",
       sex: "M",
+      title: "MR",
+      officialLanguage: "English",
       dateOfBirth: "1978-12-31T00:00:00.000Z",
       dateJoined: new Date().toISOString(),
       patientStatusDate: new Date().toISOString(),
