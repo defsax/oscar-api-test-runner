@@ -235,7 +235,7 @@ export const AppointmentFlow = {
   apiList: [
     {
       method: "get",
-      api: "/api/v1/oscar/appointments&demographicNo={demographicNo}",
+      api: "/api/v1/oscar/appointments",
       getURL: function (server) {
         return (
           server.endpointURL +
@@ -257,6 +257,10 @@ export const AppointmentFlow = {
           "/history" +
           server.suffix
         );
+      },
+      setup: function (result, server, userInfo) {
+        console.log(server);
+        this.api = `/api/v1/oscar/appointments/${server.testDemoNo}/history`;
       },
     },
     {

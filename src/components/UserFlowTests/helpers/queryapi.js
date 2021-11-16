@@ -1,8 +1,7 @@
 import axiosQueue from "../../../helpers/axios";
 
 export default async function queryAPI(api, server, userInfo, setResults) {
-  console.log(server, userInfo);
-  await axiosQueue({
+  return await axiosQueue({
     method: api.method,
     url: api.getURL(server, userInfo.provNo),
     data: api.body,
@@ -30,5 +29,7 @@ export default async function queryAPI(api, server, userInfo, setResults) {
           body: api.body,
         },
       ]);
+
+      return res;
     });
 }

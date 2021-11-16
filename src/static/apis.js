@@ -225,6 +225,8 @@ export const apis = [
       email: "test.patient." + uuidv4() + "@gmail.com",
       sex: "M",
       dateOfBirth: "1978-12-31T00:00:00.000Z",
+      dateJoined: new Date().toISOString(),
+      patientStatusDate: new Date().toISOString(),
       address: {
         province: "ON",
         postal: "M6H 2L9",

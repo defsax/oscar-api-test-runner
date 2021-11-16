@@ -137,7 +137,6 @@ export default function UserFlowMenu() {
           Accept: "application/json",
         },
       });
-      console.log(server);
 
       setResults((oldResults) => [
         ...oldResults,
@@ -150,16 +149,17 @@ export default function UserFlowMenu() {
         },
       ]);
 
-      list.apiList.map(async (api) => {
+      for (let api of list.apiList) {
         currentAPI = api.api;
 
-        // If there's a setID function, set api with #
+        // If there's a setup function, run it
         if (api.setup) {
-          api.setup(postReq.data.result);
+          api.setup(postReq.data.result, server, userInfo);
         }
 
-        return await queryAPI(api, server, userInfo, setResults);
-      });
+        const res = await queryAPI(api, server, userInfo, setResults);
+        console.log(res);
+      }
     } catch (e) {
       // console.error(e);
       // console.log(e.response);
