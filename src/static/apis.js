@@ -76,15 +76,14 @@ import { base64Content } from "./base64content";
 import { uniqueNamesGenerator, names, animals } from "unique-names-generator";
 
 const formulateURL = function (server) {
-  return server.endpointURL + this.api + server.suffix;
+  return server.endpointURL + this.api;
 };
 const formulatePatientURL = function (server) {
   return (
     server.endpointURL +
     "/api/v1/oscar/patients/" +
     server.testDemoNo +
-    this.suffix +
-    server.suffix
+    this.suffix 
   );
 };
 
@@ -133,7 +132,7 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&keyword=AMOXICILLIN"
+        server.endpointURL + this.api + "?keyword=AMOXICILLIN"
       );
     },
   },
@@ -206,19 +205,48 @@ export const apis = [
     api: "/api/v1/oscar/prescriptions",
     result: {},
     getURL: function (server, userInfo) {
+ 
       return (
         server.endpointURL +
         this.api +
-        server.suffix +
-        "&demographicNo=121&providerNo=" +
+        "?demographicNo=121&providerNo=" +
         userInfo.provNo
       );
     },
   },
   // PATIENTS
+  // TEMPORARILY DISABLED
+  // {
+  //   method: "post",
+  //   api: "/api/v1/oscar/patients",
+  //   body: {
+  //     firstName: "Test",
+  //     lastName: "Patient",
+  //     email: "test.patient." + uuidv4() + "@gmail.com",
+  //     sex: "M",
+  //     title: "MR",
+  //     officialLanguage: "English",
+  //     dateOfBirth: "1978-12-31T00:00:00.000Z",
+  //     dateJoined: new Date().toISOString(),
+  //     patientStatusDate: new Date().toISOString(),
+  //     address: {
+  //       province: "ON",
+  //       postal: "M6H 2L9",
+  //       city: "Toronto",
+  //       address: "92 Auburn Ave",
+  //     },
+  //   },
+  //   setup: function () {
+  //     this.body.email = "test.patient." + uuidv4() + "@gmail.com";
+  //     this.body.firstName = generateFirstName();
+  //     this.body.lastName = generateLastName();
+  //   },
+  //   result: {},
+  //   getURL: formulateURL,
+  // },
   {
-    method: "post",
-    api: "/api/v1/oscar/patients",
+    method: "put",
+    api: "/api/v1/oscar/patients/{demographicNo}",
     body: {
       firstName: "Test",
       lastName: "Patient",
@@ -243,6 +271,7 @@ export const apis = [
     },
     result: {},
     getURL: formulateURL,
+    // getURL: formulatePatientURL,
   },
   {
     method: "get",
@@ -250,7 +279,7 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&keyword=STARDUST"
+        server.endpointURL + this.api + "?keyword=STARDUST"
       );
     },
   },
@@ -262,73 +291,78 @@ export const apis = [
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}",
+    api: "/api/v1/oscar/patients/{demographicNo}",
     suffix: "",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/fullSummary/ALLERGIES",
-    suffix: "/fullSummary/ALLERGIES",
+    api: "/api/v1/oscar/patients/{demographicNo}/allergies",
+    suffix: "/allergies",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/fullSummary/FAMILYHISTORY",
-    suffix: "/fullSummary/FAMILYHISTORY",
-    result: {},
-    getURL: formulatePatientURL,
-  },
-  {
-    method: "get",
-    api: "/api/v1/oscar/patients/{id}/fullSummary/RISK_FACTORS",
-    suffix: "/fullSummary/RISK_FACTORS",
-    result: {},
-    getURL: formulatePatientURL,
-  },
-  {
-    method: "get",
-    api: "/api/v1/oscar/patients/{id}/measurements",
+    api: "/api/v1/oscar/patients/{demographicNo}/measurements",
     suffix: "/measurements",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/documents",
+    api: "/api/v1/oscar/patients/{demographicNo}/documents",
     suffix: "/documents",
     result: {},
     getURL: formulatePatientURL,
   },
+  // DEPRECATED???
+  // {
+  //   method: "get",
+  //   api: "/api/v1/oscar/patients/{demographicNo}/fullSummary/RISK_FACTORS",
+  //   suffix: "/fullSummary/RISK_FACTORS",
+  //   result: {},
+  //   getURL: formulatePatientURL,
+  // },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/forms",
+    api: "/api/v1/oscar/patients/{demographicNo}/forms",
     suffix: "/forms",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/forms/completedEncounterForms",
+    api: "/api/v1/oscar/patients/{demographicNo}/forms/completedEncounterForms",
     suffix: "/forms/completedEncounterForms",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/formOptions",
+    api: "/api/v1/oscar/patients/{demographicNo}/formOptions",
     suffix: "/formOptions",
     result: {},
     getURL: formulatePatientURL,
   },
   {
     method: "get",
-    api: "/api/v1/oscar/patients/{id}/labResults",
+    api: "/api/v1/oscar/patients/{demographicNo}/labResults",
     suffix: "/labResults",
     result: {},
     getURL: formulatePatientURL,
+  },
+  {
+    method: "get",
+    api: "/api/v1/oscar/patients/{demographicNo}/fullSummary/{summaryCode}",
+    suffix: "/fullSummary",
+    result: {},
+    getURL: function (server) {
+      return (
+        server.endpointURL + "/api/v1/oscar/patients/" + server.testDemoNo + this.suffix + "/ASSESSMENTS"
+      );
+    },
   },
   // TRANSCRIPTIONS
   {
@@ -346,7 +380,8 @@ export const apis = [
       let id = "dab882aa-352c-42a3-93e3-b6736fb5629a";
       if (server.apitype === "dev") id = "b89f3610-d992-4930-9b32-55df242a33d7";
       return (
-        server.endpointURL + "/api/v1/transcriptions/" + id + server.suffix
+        // server.endpointURL + "/api/v1/transcriptions/" + id + server.suffix
+        server.endpointURL + "/api/v1/transcriptions/" + id
       );
     },
   },
@@ -361,7 +396,8 @@ export const apis = [
       try {
         await axiosQueue({
           method: "post",
-          url: server.endpointURL + "/api/v1/record" + server.suffix,
+          url: server.endpointURL + "/api/v1/record",
+          // url: server.endpointURL + "/api/v1/record" + server.suffix,
           data: {
             base64Content: base64Content,
             userID: userInfo.id,
@@ -381,7 +417,8 @@ export const apis = [
       try {
         const transcriptions = await axiosQueue({
           method: "get",
-          url: server.endpointURL + "/api/v1/transcriptions" + server.suffix,
+          url: server.endpointURL + "/api/v1/transcriptions",
+          // url: server.endpointURL + "/api/v1/transcriptions" + server.suffix,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             Accept: "application/json",
@@ -405,7 +442,8 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + "/api/v1/transcriptions/" + this.id + server.suffix
+        server.endpointURL + "/api/v1/transcriptions/" + this.id
+        // server.endpointURL + "/api/v1/transcriptions/" + this.id + server.suffix
       );
     },
   },
@@ -421,7 +459,8 @@ export const apis = [
     },
     result: {},
     getURL: function (server) {
-      return server.endpointURL + this.api + server.suffix;
+      return server.endpointURL + this.api;
+      // return server.endpointURL + this.api + server.suffix;
     },
   },
   {
@@ -458,8 +497,7 @@ export const apis = [
       return (
         server.endpointURL +
         this.api +
-        server.suffix +
-        "&demographicNo=" +
+        "?demographicNo=" +
         server.testDemoNo
       );
     },
@@ -475,9 +513,7 @@ export const apis = [
           method: "get",
           url:
             server.endpointURL +
-            "/api/v1/oscar/notes" +
-            server.suffix +
-            "&demographicNo=" +
+            "/api/v1/oscar/notes?demographicNo=" +
             server.testDemoNo,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -494,7 +530,8 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + "/api/v1/oscar/notest/" + this.id + server.suffix
+        server.endpointURL + "/api/v1/oscar/notest/" + this.id
+        // server.endpointURL + "/api/v1/oscar/notest/" + this.id + server.suffix
       );
     },
   },
@@ -531,8 +568,7 @@ export const apis = [
       return (
         server.endpointURL +
         this.api +
-        server.suffix +
-        "&demographicNo=121&appointmentDate=2021-07-26"
+        "?demographicNo=121&appointmentDate=2021-07-26"
       );
     },
   },
@@ -647,7 +683,8 @@ export const apis = [
       try {
         const result = await axiosQueue({
           method: "get",
-          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          url: server.endpointURL + "/api/v1/templates" ,
+          // url: server.endpointURL + "/api/v1/templates" + server.suffix,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             Accept: "application/json",
@@ -662,7 +699,8 @@ export const apis = [
     },
     getURL: function (server) {
       return (
-        server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
+        server.endpointURL + "/api/v1/template/id/" + this.id
+        // server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
       );
     },
   },
@@ -675,7 +713,8 @@ export const apis = [
       try {
         const result = await axiosQueue({
           method: "post",
-          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          url: server.endpointURL + "/api/v1/templates",
+          // url: server.endpointURL + "/api/v1/templates" + server.suffix,
           data: {
             templateName: "test string: " + uuidv4(),
             templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
@@ -699,7 +738,8 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
+        server.endpointURL + "/api/v1/template/id/" + this.id
+        // server.endpointURL + "/api/v1/template/id/" + this.id + server.suffix
       );
     },
   },
@@ -713,7 +753,8 @@ export const apis = [
       try {
         const result = await axiosQueue({
           method: "get",
-          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          url: server.endpointURL + "/api/v1/templates",
+          // url: server.endpointURL + "/api/v1/templates" + server.suffix,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             Accept: "application/json",
@@ -732,8 +773,8 @@ export const apis = [
       return (
         server.endpointURL +
         "/api/v1/template/name/" +
-        this.templateName +
-        server.suffix
+        this.templateName
+        //+ server.suffix
       );
     },
   },
@@ -747,7 +788,8 @@ export const apis = [
       try {
         const result = await axiosQueue({
           method: "post",
-          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          url: server.endpointURL + "/api/v1/templates",
+          // url: server.endpointURL + "/api/v1/templates" + server.suffix,
           data: {
             templateName: "test string: " + uuidv4(),
             templateURL: "https://api.jsonbin.io/b/60d5f2fe8ea8ec25bd157bae/1",
@@ -774,8 +816,8 @@ export const apis = [
       return (
         server.endpointURL +
         "/api/v1/template/name/" +
-        this.templateName +
-        server.suffix
+        this.templateName
+        // +server.suffix
       );
     },
   },
@@ -793,7 +835,8 @@ export const apis = [
       try {
         const result = await axiosQueue({
           method: "get",
-          url: server.endpointURL + "/api/v1/templates" + server.suffix,
+          url: server.endpointURL + "/api/v1/templates",
+          // url: server.endpointURL + "/api/v1/templates" + server.suffix,
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             Accept: "application/json",
@@ -808,7 +851,8 @@ export const apis = [
     },
     result: {},
     getURL: function (server) {
-      return server.endpointURL + "/api/v1/template/" + this.id + server.suffix;
+      return server.endpointURL + "/api/v1/template/" + this.id;
+      // return server.endpointURL + "/api/v1/template/" + this.id + server.suffix;
     },
   },
   // FORMS
@@ -860,7 +904,8 @@ export const apis = [
     },
     result: {},
     getURL: function (server) {
-      return server.endpointURL + this.api + server.suffix;
+      return server.endpointURL + this.api;
+      // return server.endpointURL + this.api + server.suffix;
     },
   },
   {
@@ -892,7 +937,8 @@ export const apis = [
     },
     result: {},
     getURL: function (server) {
-      return server.endpointURL + this.api + server.suffix;
+      return server.endpointURL + this.api;
+      // return server.endpointURL + this.api + server.suffix;
     },
   },
   {
@@ -907,7 +953,7 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&demographicNo=121"
+        server.endpointURL + this.api + "?demographicNo=121"
       );
     },
   },
@@ -917,7 +963,7 @@ export const apis = [
     result: {},
     getURL: function (server) {
       return (
-        server.endpointURL + this.api + server.suffix + "&demographicNo=121"
+        server.endpointURL + this.api + "?demographicNo=121"
       );
     },
   },
@@ -951,14 +997,16 @@ export const apis = [
     method: "post",
     api: "/api/v1/oscar/ticklers",
     body: {
-      demographicNo: 121,
-      taskAssignedTo: "11",
+      providerNo: "{providerNo}",
       status: "A",
       priority: "Normal",
       message: "Test to add new Tickler",
+      demographicNo: "{demographicNo}",
+      serviceDate: "2021-12-02T23:19:55.284Z"
     },
     setup: function (server, userInfo) {
       this.body.demographicNo = server.testDemoNo;
+      this.body.providerNo = userInfo.provNo;
     },
     result: {},
     getURL: formulateURL,
@@ -979,12 +1027,16 @@ export const apis = [
     method: "put",
     api: "/api/v1/oscar/ticklers/2/update",
     body: {
-      id: 3,
-      taskAssignedTo: "12",
+      providerNo: "{providerNo}",
       status: "A",
       priority: "Normal",
-      message: "Test to update tickler",
-      serviceDate: "2021-10-12",
+      message: "Test to add new Tickler",
+      demographicNo: 121,
+      serviceDate: "2021-12-02T23:19:55.284Z"
+    },
+    setup: function (server, userInfo) {
+      this.body.demographicNo = server.testDemoNo;
+      this.body.providerNo = userInfo.provNo;
     },
     result: {},
     getURL: formulateURL,

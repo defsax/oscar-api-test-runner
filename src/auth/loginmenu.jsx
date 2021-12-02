@@ -22,7 +22,7 @@ export default function LoginMenu() {
     dev: true,
     staging: false,
     server: apiVersion[0].endpointURL,
-    suffix: apiVersion[0].suffix,
+    siteURL: apiVersion[0].siteURL,
   });
   const [devSignIn, setDevSignIn] = useState({
     providerNo: "",
@@ -54,7 +54,7 @@ export default function LoginMenu() {
             key={"dev"}
             signIn={devSignIn}
             setSignIn={setDevSignIn}
-            url={{ server: selected.server, suffix: selected.suffix }}
+            url={{ server: selected.server, siteURL: selected.siteURL }}
             isAuthenticated={state.dev.isAuthenticated}
           />
         ) : (
@@ -62,7 +62,7 @@ export default function LoginMenu() {
             key={"staging"}
             signIn={stagingSignIn}
             setSignIn={setStagingSignIn}
-            url={{ server: selected.server, suffix: selected.suffix }}
+            url={{ server: selected.server, siteURL: selected.siteURL }}
             isAuthenticated={state.staging.isAuthenticated}
           />
         )}
@@ -74,7 +74,7 @@ export default function LoginMenu() {
                 dev: true,
                 staging: false,
                 server: apiVersion[0].endpointURL,
-                suffix: apiVersion[0].suffix,
+                siteURL: apiVersion[0].siteURL,
               });
             }}
           >
@@ -87,7 +87,7 @@ export default function LoginMenu() {
                 dev: false,
                 staging: true,
                 server: apiVersion[1].endpointURL,
-                suffix: apiVersion[1].suffix,
+                siteURL: apiVersion[1].siteURL,
               });
             }}
           >

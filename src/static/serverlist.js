@@ -2,10 +2,7 @@ export const apiVersion = [
   {
     apitype: "dev",
     endpointURL: "https://kennedy-dev1.gojitech.systems",
-    suffix:
-      "?siteURL=" +
-      encodeURIComponent("https://goji-oscar1.gojitech.systems") +
-      "&appVersion=dev",
+    siteURL:"https://goji-oscar1.gojitech.systems",
     testDemoNo: 121,
   },
   {

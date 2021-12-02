@@ -6,15 +6,16 @@ import { AuthContext } from "../App";
 import "../components/Nav/css/nav.css";
 
 const getAuthToken = async function (url, providerNo, tokenId, setError) {
+  console.log(url);
   try {
     const response = await axios({
       method: "post",
-      url: url.server + "/api/v1/login" + url.suffix,
+      url: url.server + "/api/v1/login",
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${tokenId}`,
       },
-      data: { token: tokenId, providerNo },
+      data: { token: tokenId, providerNo, siteURL: url.siteURL },
     });
 
     if (response.data.msg === "Wrong providerNo") {
@@ -22,6 +23,7 @@ const getAuthToken = async function (url, providerNo, tokenId, setError) {
     }
 
     console.log("Token approved.");
+    console.log(response);
 
     return response.data.profile;
   } catch (err) {
@@ -34,7 +36,7 @@ const loginOscar = async function (url, token, credentials, setError) {
   try {
     await axios({
       method: "post",
-      url: url.server + "/api/v1/oscar/login" + url.suffix,
+      url: url.server + "/api/v1/oscar/login",
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
@@ -70,6 +72,7 @@ export default function LoginButton(props) {
       setError
     );
     if (profile) {
+      console.log(profile);
       const success = await loginOscar(url, profile.jwt, credentials, setError);
       if (success) {
         clearInput();
